@@ -1,0 +1,32 @@
+$color1: #2caf04;
+$color2: #1d7702;
+$color3: #0f3f00;
+
+.header {
+    height: 60px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    background-color: #131821;
+    position: sticky;
+    z-index: 2;
+}
+
+.login, .signUp {
+    align-self: flex-end;
+    font-family: 'Courier Prime';
+    padding: 8px 12px;
+    background: $color1;
+    border: 0;
+    border-bottom: 5px solid $color2;
+    border-left: 1px solid $color2;
+    border-radius: 2px;
+    color: $color3;
+    cursor: pointer;
+    position: relative;
+    margin-right: 10px;
+}
+
+.login:active, .signUp:active {
+    border-bottom-width: 2px;
+}

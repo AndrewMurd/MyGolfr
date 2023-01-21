@@ -1,0 +1,7 @@
+<input 
+    *ngIf="showField"
+    (keyup.enter)="submit()" 
+    id="{{ id }}" 
+    type="text"
+    [(ngModel)]="value"
+>
