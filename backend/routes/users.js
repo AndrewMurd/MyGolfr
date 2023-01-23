@@ -28,7 +28,7 @@ router.post(
       .withMessage("Must be 7 characters long"),
   ],
   async (req, res) => {
-    // Authenticate new user
+    // Create new user and store in database
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -62,7 +62,16 @@ router.post("/login", async (req, res) => {
   }
   try {
     if (await bcrypt.compare(req.body.password, result[0].password)) {
-      res.status(200).send("Logged In User");
+      const user = {
+        id: result[0].id,
+        name: result[0].name,
+        email: result[0].email,
+        password: result[0].password,
+      };
+
+      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+
+      res.status(200).json({ accessToken: accessToken });
     } else {
       res.send("This password does not match!");
     }
