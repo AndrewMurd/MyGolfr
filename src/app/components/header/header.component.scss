@@ -5,15 +5,14 @@ $color3: #0f3f00;
 .header {
     height: 60px;
     display: flex;
-    width: 100%;
     align-items: center;
-    background-color: #131821;
+    background-color: #252525;
     position: sticky;
     z-index: 2;
+    box-shadow: 0.5px 0.5px 0.5px 0.5px;
 }
 
 .login, .signUp {
-    align-self: flex-end;
     font-family: 'Courier Prime';
     padding: 8px 12px;
     background: $color1;
@@ -23,8 +22,16 @@ $color3: #0f3f00;
     border-radius: 2px;
     color: $color3;
     cursor: pointer;
-    position: relative;
+    position: absolute;
     margin-right: 10px;
+}
+
+.login {
+    right: 2vh;
+}
+
+.signUp {
+    right: 9vh;
 }
 
 .login:active, .signUp:active {
