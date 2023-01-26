@@ -7,11 +7,5 @@ import { Component } from '@angular/core';
 })
 
 export class HeaderComponent {
-  login() {
-
-  }  
-
-  signUp() {
-    
-  }
+  
 }

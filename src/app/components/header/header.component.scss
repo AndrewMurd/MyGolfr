@@ -1,3 +1,5 @@
+@import "../../utilities/variables.scss";
+
 $color1: #2caf04;
 $color2: #1d7702;
 $color3: #0f3f00;
@@ -6,34 +8,56 @@ $color3: #0f3f00;
     height: 60px;
     display: flex;
     align-items: center;
-    background-color: #252525;
+    background-color: $theme;
     position: sticky;
     z-index: 2;
     box-shadow: 0.5px 0.5px 0.5px 0.5px;
 }
 
-.login, .signUp {
-    font-family: 'Courier Prime';
-    padding: 8px 12px;
-    background: $color1;
-    border: 0;
-    border-bottom: 5px solid $color2;
-    border-left: 1px solid $color2;
-    border-radius: 2px;
-    color: $color3;
-    cursor: pointer;
+.logo {
+    height: 50px;
+    width: 50px;
     position: absolute;
-    margin-right: 10px;
+    left: 20%;
+}
+
+a {
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.loginLink {
+    right: 20%;
+    position: absolute;
+    color: white;
+}
+
+.login, .signUp {
+
 }
 
 .login {
-    right: 2vh;
+    right: 20%;
 }
 
 .signUp {
-    right: 9vh;
+    right: 25%;
 }
 
 .login:active, .signUp:active {
     border-bottom-width: 2px;
 }
+ 
+
+//animated button
+// font-family: 'Courier Prime';
+// padding: 8px 12px;
+// background: $color1;
+// border: 0;
+// border-bottom: 5px solid $color2;
+// border-left: 1px solid $color2;
+// border-radius: 2px;
+// color: $color3;
+// cursor: pointer;
+// position: absolute;
+// margin-right: 10px;

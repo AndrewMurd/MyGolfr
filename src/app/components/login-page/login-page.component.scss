@@ -1,0 +1,121 @@
+@import "../../utilities/variables.scss";
+
+$containerColor: rgb(102, 102, 102);
+
+.container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  margin-top: 9%;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  height: 400px;
+  max-width: 800px;
+  background-color: $containerColor;
+  border-radius: 10px;
+}
+
+.input-contain {
+  position: relative;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width: 600px;
+}
+
+input {
+  height: 4.5rem;
+  border: 3px solid $theme;
+  border-radius: 2rem;
+  background-color: $theme;
+  color: white;
+  width: 93%;
+}
+
+.placeholder-text {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border: 3px solid transparent;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.text {
+  font-size: 1.4rem;
+  padding: 0 0.5rem;
+  background-color: transparent;
+  color: black;
+}
+
+input, .placeholder-text {
+  font-size: 1.4rem;
+  padding: 0 1.2rem;
+}
+
+input:focus{
+  outline: none;
+  border-color: black;
+}
+
+.text {
+  transform: translate(0);
+  transition: transform 0.15s ease-out, font-size 0.15s ease-out, background-color 0.2s ease-out, color 0.15s ease-out;
+}
+
+input:focus + .placeholder-text .text, :not(input[value=""]) + .placeholder-text .text {
+  background-color: $theme;
+  font-size: 1.1rem;
+  color: black;
+  transform: translate(0, -120%);
+}
+
+// input:focus + .placeholder-text .text {
+//   border-color: blueviolet;
+//   color: blueviolet;
+// }
+
+.logo {
+  margin-left: auto;
+  margin-right: auto;
+  height: 150px;
+  width: 150px;
+}
+
+// input {
+//   margin: auto;
+//   margin-top: 10px;
+//   margin-bottom: 20px;
+//   height: 40px;
+//   border-radius: 10px;
+//   border: 1px solid $theme;
+//   height: 25px;
+//   font-size: 1.1rem;
+//   background-color: $theme;
+//   color: white;
+//   padding: 12px 45px;
+// }
+
+// input:focus {
+//   outline: none;
+// }
+
+// .email {
+//   background-image: url('../../../assets/mail.png');
+//   background-repeat: no-repeat;
+//   background-position: center;
+//   background-position-x: 1%;
+// }
+
+// .password {
+//   background-image: url('../../../assets/padlock.png');
+//   background-repeat: no-repeat;
+//   background-position: center;
+//   background-position-x: 1%;
+// }

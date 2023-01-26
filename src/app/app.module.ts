@@ -13,6 +13,7 @@ import { ScorecardInputComponent } from './components/scorecard-input/scorecard-
 import { NewGolfCourseScoreCardComponent } from './components/new-golf-course-score-card/new-golf-course-score-card.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
+import { LoginPageComponent } from './components/login-page/login-page.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
     ScorecardComponent,
     ScorecardInputComponent,
     NewGolfCourseScoreCardComponent,
+    LoginPageComponent,
   ],
   imports: [
     BrowserModule,

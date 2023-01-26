@@ -1,5 +1,7 @@
+@import "./utilities/variables.scss";
+
 div {
   width: 100vw;
   height: 100vh;
-  background-color: rgb(0, 15, 0);
+  background-color: $theme2;
 }
