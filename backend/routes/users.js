@@ -61,6 +61,8 @@ router.post("/login", async (req, res) => {
     return res.status(404).send("Cannot find user!");
   }
   try {
+    if (req.body.password == "")
+      return res.status(404).send("Must enter password");
     if (await bcrypt.compare(req.body.password, result[0].password)) {
       const user = {
         id: result[0].id,
@@ -73,7 +75,7 @@ router.post("/login", async (req, res) => {
 
       res.status(200).json({ accessToken: accessToken });
     } else {
-      res.send("This password does not match!");
+      res.status(404).send("This password does not match!");
     }
   } catch (error) {
     res.status(500).send(error);

@@ -54,32 +54,30 @@ input {
   color: black;
 }
 
-input, .placeholder-text {
+input,
+.placeholder-text {
   font-size: 1.4rem;
   padding: 0 1.2rem;
 }
 
-input:focus{
+input:focus {
   outline: none;
   border-color: black;
 }
 
 .text {
   transform: translate(0);
-  transition: transform 0.15s ease-out, font-size 0.15s ease-out, background-color 0.2s ease-out, color 0.15s ease-out;
+  transition: transform 0.15s ease-out, font-size 0.15s ease-out,
+    background-color 0.2s ease-out, color 0.15s ease-out;
 }
 
-input:focus + .placeholder-text .text, :not(input[value=""]) + .placeholder-text .text {
+input:focus + .placeholder-text .text,
+:not(input[value=""]) + .placeholder-text .text {
   background-color: $theme;
   font-size: 1.1rem;
   color: black;
   transform: translate(0, -120%);
 }
-
-// input:focus + .placeholder-text .text {
-//   border-color: blueviolet;
-//   color: blueviolet;
-// }
 
 .logo {
   margin-left: auto;
@@ -87,35 +85,3 @@ input:focus + .placeholder-text .text, :not(input[value=""]) + .placeholder-text
   height: 150px;
   width: 150px;
 }
-
-// input {
-//   margin: auto;
-//   margin-top: 10px;
-//   margin-bottom: 20px;
-//   height: 40px;
-//   border-radius: 10px;
-//   border: 1px solid $theme;
-//   height: 25px;
-//   font-size: 1.1rem;
-//   background-color: $theme;
-//   color: white;
-//   padding: 12px 45px;
-// }
-
-// input:focus {
-//   outline: none;
-// }
-
-// .email {
-//   background-image: url('../../../assets/mail.png');
-//   background-repeat: no-repeat;
-//   background-position: center;
-//   background-position-x: 1%;
-// }
-
-// .password {
-//   background-image: url('../../../assets/padlock.png');
-//   background-repeat: no-repeat;
-//   background-position: center;
-//   background-position-x: 1%;
-// }
