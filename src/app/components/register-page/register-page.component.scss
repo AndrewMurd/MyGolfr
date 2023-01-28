@@ -11,7 +11,7 @@ $containerColor: rgb(102, 102, 102);
   margin-right: auto;
   left: 0;
   right: 0;
-  height: 450px;
+  height: 520px;
   max-width: 800px;
   background-color: $containerColor;
   border-radius: 10px;
@@ -106,7 +106,7 @@ input:focus + .placeholder-text .text,
 
 .btn-contain {
   position: absolute;
-  top: 350px;
+  top: 445px;
   left: 0;
   right: 0;
   margin: auto;
@@ -139,7 +139,7 @@ button {
     letter-spacing: 2px;
   }
   &:after {
-    content:"LOGIN";
+    content: "CREATE ACCOUNT";
   }
 }
 .onclic {
@@ -166,7 +166,7 @@ button {
   color: white;
   background: $green;
   &:after {
-    content: url('../../../assets/check.png');
+    content: url("../../../assets/check.png");
   }
   &:hover {
     color: $green;

@@ -33,8 +33,7 @@
   background-repeat: no-repeat;
   background-position: center;
   background-position-x: 98%;
-}
-
-.searchInput:focus {
-  outline: none;
+  &:focus {
+    outline: none;
+  }
 }

@@ -14,6 +14,7 @@ import { NewGolfCourseScoreCardComponent } from './components/new-golf-course-sc
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { LoginPageComponent } from './components/login-page/login-page.component';
+import { RegisterPageComponent } from './components/register-page/register-page.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { LoginPageComponent } from './components/login-page/login-page.component
     ScorecardInputComponent,
     NewGolfCourseScoreCardComponent,
     LoginPageComponent,
+    RegisterPageComponent,
   ],
   imports: [
     BrowserModule,

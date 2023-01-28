@@ -15,7 +15,7 @@ $color3: #0f3f00;
 }
 
 .logo {
-    height: 50px;
+    height: 45px;
     width: 50px;
     position: absolute;
     left: 20%;
@@ -32,10 +32,6 @@ a {
     color: white;
 }
 
-.login, .signUp {
-
-}
-
 .login {
     right: 20%;
 }
@@ -47,17 +43,3 @@ a {
 .login:active, .signUp:active {
     border-bottom-width: 2px;
 }
- 
-
-//animated button
-// font-family: 'Courier Prime';
-// padding: 8px 12px;
-// background: $color1;
-// border: 0;
-// border-bottom: 5px solid $color2;
-// border-left: 1px solid $color2;
-// border-radius: 2px;
-// color: $color3;
-// cursor: pointer;
-// position: absolute;
-// margin-right: 10px;

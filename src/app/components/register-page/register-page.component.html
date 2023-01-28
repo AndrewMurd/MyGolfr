@@ -8,6 +8,17 @@
 
   <form class="login" (ngSubmit)="onSubmit()">
     <div class="input-contain">
+      <input id="nameInput" name="name" [(ngModel)]="name" type="text" value="" />
+      <label class="placeholder-text">
+        <div class="text">Name</div>
+      </label>
+      <div class="errorContainer">
+        <img *ngIf="error == 'name'" class="errorImg" src="../../../assets/error.png" alt="">
+        <label id="nameError" class="error"></label>
+      </div>
+    </div>
+
+    <div class="input-contain">
       <input id="emailInput" name="email" [(ngModel)]="email" type="text" value="" />
       <label class="placeholder-text">
         <div class="text">Email</div>
@@ -33,6 +44,4 @@
       <button id="button" type="submit" (click)="onClick()"></button>
     </div>
   </form>
-
-  <a routerLink="/register" id="registerLink">Create Account</a>
 </div>

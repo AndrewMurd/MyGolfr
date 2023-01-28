@@ -3,17 +3,20 @@ import { AuthenticationService } from '../../Service/authentication.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login-page',
-  templateUrl: './login-page.component.html',
-  styleUrls: ['./login-page.component.scss'],
+  selector: 'app-register-page',
+  templateUrl: './register-page.component.html',
+  styleUrls: ['./register-page.component.scss'],
 })
-export class LoginPageComponent {
+export class RegisterPageComponent {
   error: string = '';
+  name: string = '';
   email: string = '';
   password: string = '';
   btn: any;
+  nameError: any;
   emailError: any;
   passwordError: any;
+  nameInput: any;
   emailInput: any;
   passwordInput: any;
 
@@ -24,19 +27,23 @@ export class LoginPageComponent {
 
   ngOnInit() {
     this.btn = document.querySelector('#button');
+    this.nameError = document.querySelector('#nameError');
     this.emailError = document.querySelector('#emailError');
     this.passwordError = document.querySelector('#passwordError');
+    this.nameInput = <HTMLInputElement>document.querySelector('#nameInput');
     this.emailInput = <HTMLInputElement>document.querySelector('#emailInput');
     this.passwordInput = <HTMLInputElement>(
       document.getElementById('passwordInput')
     );
 
-    this.emailInput!.addEventListener('keyup', () => {
-      this.emailInput!.setAttribute('value', this.emailInput.value);
+    this.nameInput.addEventListener('keyup', () => {
+      this.nameInput.setAttribute('value', this.nameInput.value);
     });
-
-    this.passwordInput!.addEventListener('keyup', () => {
-      this.passwordInput!.setAttribute('value', this.passwordInput.value);
+    this.emailInput.addEventListener('keyup', () => {
+      this.emailInput.setAttribute('value', this.emailInput.value);
+    });
+    this.passwordInput.addEventListener('keyup', () => {
+      this.passwordInput.setAttribute('value', this.passwordInput.value);
     });
   }
 
@@ -45,11 +52,13 @@ export class LoginPageComponent {
   }
 
   resetInnerText() {
+    this.nameError.innerText = '';
     this.emailError.innerText = '';
     this.passwordError.innerText = '';
   }
 
   resetInputClass() {
+    this.nameInput.classList.remove('inputError');
     this.emailInput.classList.remove('inputError');
     this.passwordInput.classList.remove('inputError');
   }
@@ -58,42 +67,35 @@ export class LoginPageComponent {
     this.error = '';
     this.resetInnerText();
     this.resetInputClass();
-    
+
     this.authService
-      .login(this.email, this.password)
+      .signUp(this.name, this.email, this.password)
       .then((data) => {
         console.log(data);
-        this.btn!.classList.remove('onclic');
-        this.btn!.classList.add('validate');
+
+        this.btn.classList.remove('onclic');
+        this.btn.classList.add('validate');
         this.resetInnerText();
         this.resetInputClass();
-        
-        // set jwt access token in local storage
-        
 
         setTimeout(() => {
           this.router.navigate(['/']);
         }, 1000);
       })
       .catch((error) => {
-        this.error = error.error.type;
-        if (error.error.type == 'email') {
+        this.error = error.error.errors[0].param;
+        if (this.error == 'name') {
+          this.nameInput.classList.add('inputError');
+          this.nameError.innerText = error.error.errors[0].msg;
+        } else if (this.error == 'email') {
           this.emailInput.classList.add('inputError');
-          if (this.email == '') {
-            this.emailError.innerText = 'Must enter an email';
-          } else {
-            this.emailError.innerText = 'This email does not exist';
-          }
-        } else if (error.error.type == 'password') {
+          this.emailError.innerText = error.error.errors[0].msg;
+        } else if (this.error == 'password') {
           this.passwordInput.classList.add('inputError');
-          if (this.password == '') {
-            this.passwordError.innerText = 'Must enter a password';
-          } else {
-            this.passwordError.innerText = 'Incorrect password';
-          }
+          this.passwordError.innerText = error.error.errors[0].msg;
         }
         setTimeout(() => {
-          this.btn!.classList.remove('onclic');
+          this.btn.classList.remove('onclic');
         }, 800);
       });
   }

@@ -30,16 +30,21 @@ export class AuthenticationService {
   }
 
   signUp(name: string, email: string, password: string) {
-    const res = this.http.post(this.ROOT_URL + '/signup', {
-      name: name,
-      email: email,
-      password: password,
+    return new Promise((resolve, reject) => {
+      this.http
+        .post(this.ROOT_URL + '/signup', {
+          name: name,
+          email: email,
+          password: password,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
     });
-    console.log(res);
-  }
-
-  catchAuthError(error: any): Observable<Response> {
-    console.log(error.error);
-    return error;
   }
 }

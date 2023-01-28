@@ -15,7 +15,7 @@ router.post(
       .withMessage("Must be 4 characters long"),
     check("email")
       .isEmail()
-      .withMessage("Please enter a valid email")
+      .withMessage("Please enter a valid email address")
       .custom(async (email) => {
         const user = await User.find(email);
         if (user.length > 0) {
@@ -43,9 +43,8 @@ router.post(
       };
 
       const result = await User.save(userDetails);
-      console.log("from server", result);
 
-      res.status(201).send("User registered!");
+      res.status(201).send({msg: "User registered!", fromDatabase: result});
     } catch (error) {
       console.log("Error with registering user!");
       res.status(500).send(error);
@@ -58,11 +57,9 @@ router.post("/login", async (req, res) => {
   const result = await User.find(req.body.email);
 
   if (result.length == 0) {
-    return res.status(404).send("Cannot find user!");
+    return res.status(404).send({type: 'email'});
   }
   try {
-    if (req.body.password == "")
-      return res.status(404).send("Must enter password");
     if (await bcrypt.compare(req.body.password, result[0].password)) {
       const user = {
         id: result[0].id,
@@ -75,7 +72,7 @@ router.post("/login", async (req, res) => {
 
       res.status(200).json({ accessToken: accessToken });
     } else {
-      res.status(404).send("This password does not match!");
+      res.status(404).send({type: 'password'});
     }
   } catch (error) {
     res.status(500).send(error);
