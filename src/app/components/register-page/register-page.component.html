@@ -8,38 +8,93 @@
 
   <form class="login" (ngSubmit)="onSubmit()">
     <div class="input-contain">
-      <input id="nameInput" name="name" [(ngModel)]="name" type="text" value="" />
+      <input
+        id="nameInput"
+        name="name"
+        [(ngModel)]="name"
+        type="text"
+        value=""
+      />
       <label class="placeholder-text">
         <div class="text">Name</div>
       </label>
       <div class="errorContainer">
-        <img *ngIf="error == 'name'" class="errorImg" src="../../../assets/error.png" alt="">
+        <img
+          *ngIf="error == 'name'"
+          class="errorImg"
+          src="../../../assets/error.png"
+          alt=""
+        />
         <label id="nameError" class="error"></label>
       </div>
     </div>
 
     <div class="input-contain">
-      <input id="emailInput" name="email" [(ngModel)]="email" type="text" value="" />
+      <input
+        id="email2Input"
+        name="email"
+        [(ngModel)]="email"
+        type="text"
+        value=""
+      />
       <label class="placeholder-text">
         <div class="text">Email</div>
       </label>
       <div class="errorContainer">
-        <img *ngIf="error == 'email'" class="errorImg" src="../../../assets/error.png" alt="">
+        <img
+          *ngIf="error == 'email'"
+          class="errorImg"
+          src="../../../assets/error.png"
+          alt=""
+        />
         <label id="emailError" class="error"></label>
       </div>
     </div>
 
     <div class="input-contain">
-      <input id="passwordInput" name="password" [(ngModel)]="password" type="password" value="" />
+      <input
+        id="password2Input"
+        name="password"
+        [(ngModel)]="password"
+        type="password"
+        value=""
+      />
       <label class="placeholder-text">
         <div class="text">Password</div>
       </label>
       <div class="errorContainer">
-        <img *ngIf="error == 'password'" class="errorImg" src="../../../assets/error.png" alt="">
+        <img
+          *ngIf="error == 'password'"
+          class="errorImg"
+          src="../../../assets/error.png"
+          alt=""
+        />
         <label id="passwordError" class="error"></label>
       </div>
     </div>
-    
+
+    <div class="input-contain">
+      <input
+        id="confirmPassInput"
+        name="confirmPass"
+        [(ngModel)]="confirmPass"
+        type="password"
+        value=""
+      />
+      <label class="placeholder-text">
+        <div class="text">Confirm Password</div>
+      </label>
+      <div class="errorContainer">
+        <img
+          *ngIf="error == 'confirmPass'"
+          class="errorImg"
+          src="../../../assets/error.png"
+          alt=""
+        />
+        <label id="confirmPassError" class="error"></label>
+      </div>
+    </div>
+
     <div class="btn-contain">
       <button id="button" type="submit" (click)="onClick()"></button>
     </div>

@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
+const { async } = require("rxjs");
 
 const router = Router();
 
@@ -24,8 +25,17 @@ router.post(
       }),
     check("password")
       .trim()
-      .isLength({ min: 7 })
-      .withMessage("Must be 7 characters long"),
+      .isLength({ min: 7, max: 16 })
+      .withMessage("Must be between 7 to 16 characters"),
+    check("confirmPass")
+      .trim()
+      .custom(async (confirmPass, { req }) => {
+        const password = req.body.password;
+
+        if (password !== confirmPass) {
+          return Promise.reject("Passwords must match");
+        }
+      }),
   ],
   async (req, res) => {
     // Create new user and store in database
@@ -44,7 +54,7 @@ router.post(
 
       const result = await User.save(userDetails);
 
-      res.status(201).send({msg: "User registered!", fromDatabase: result});
+      res.status(201).send({ msg: "User registered!", fromDatabase: result });
     } catch (error) {
       console.log("Error with registering user!");
       res.status(500).send(error);
@@ -57,7 +67,7 @@ router.post("/login", async (req, res) => {
   const result = await User.find(req.body.email);
 
   if (result.length == 0) {
-    return res.status(404).send({type: 'email'});
+    return res.status(404).send({ type: "email" });
   }
   try {
     if (await bcrypt.compare(req.body.password, result[0].password)) {
@@ -72,7 +82,7 @@ router.post("/login", async (req, res) => {
 
       res.status(200).json({ accessToken: accessToken });
     } else {
-      res.status(404).send({type: 'password'});
+      res.status(404).send({ type: "password" });
     }
   } catch (error) {
     res.status(500).send(error);

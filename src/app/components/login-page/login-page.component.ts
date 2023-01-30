@@ -58,7 +58,7 @@ export class LoginPageComponent {
     this.error = '';
     this.resetInnerText();
     this.resetInputClass();
-    
+
     this.authService
       .login(this.email, this.password)
       .then((data) => {
@@ -67,9 +67,8 @@ export class LoginPageComponent {
         this.btn!.classList.add('validate');
         this.resetInnerText();
         this.resetInputClass();
-        
-        // set jwt access token in local storage
-        
+
+        // set jwt access token in cookies
 
         setTimeout(() => {
           this.router.navigate(['/']);

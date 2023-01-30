@@ -1,5 +1,4 @@
 const mysql = require("mysql");
-const { async } = require("rxjs");
 const config = require("../config.json");
 
 const pool = mysql.createPool({

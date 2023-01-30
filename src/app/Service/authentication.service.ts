@@ -29,13 +29,14 @@ export class AuthenticationService {
     });
   }
 
-  signUp(name: string, email: string, password: string) {
+  signUp(name: string, email: string, password: string, confirmPass: string) {
     return new Promise((resolve, reject) => {
       this.http
         .post(this.ROOT_URL + '/signup', {
           name: name,
           email: email,
           password: password,
+          confirmPass: confirmPass
         })
         .subscribe({
           next: (data) => {

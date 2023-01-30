@@ -1,9 +1,19 @@
 <app-header></app-header>
 
-<img class="searchBackground" src="../../../assets/pexels-photo-2172499.jpeg" alt="">
+<img
+  class="searchBackground"
+  src="../../../assets/pexels-photo-2172499.jpeg"
+  alt=""
+/>
 
 <div class="home-page">
   <div class="searchContainer">
-    <input class="searchInput" placeholder="Search Course Name">
+    <input
+      class="searchInput"
+      [(ngModel)]="search"
+      type="text"
+      placeholder="Search Course Name"
+      (ngModelChange)="searchCourses()"
+    />
   </div>
 </div>

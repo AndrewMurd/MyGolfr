@@ -8,27 +8,49 @@
 
   <form class="login" (ngSubmit)="onSubmit()">
     <div class="input-contain">
-      <input id="emailInput" name="email" [(ngModel)]="email" type="text" value="" />
+      <input
+        id="emailInput"
+        name="email"
+        [(ngModel)]="email"
+        type="text"
+        value=""
+      />
       <label class="placeholder-text">
         <div class="text">Email</div>
       </label>
       <div class="errorContainer">
-        <img *ngIf="error == 'email'" class="errorImg" src="../../../assets/error.png" alt="">
+        <img
+          *ngIf="error == 'email'"
+          class="errorImg"
+          src="../../../assets/error.png"
+          alt=""
+        />
         <label id="emailError" class="error"></label>
       </div>
     </div>
 
     <div class="input-contain">
-      <input id="passwordInput" name="password" [(ngModel)]="password" type="password" value="" />
+      <input
+        id="passwordInput"
+        name="password"
+        [(ngModel)]="password"
+        type="password"
+        value=""
+      />
       <label class="placeholder-text">
         <div class="text">Password</div>
       </label>
       <div class="errorContainer">
-        <img *ngIf="error == 'password'" class="errorImg" src="../../../assets/error.png" alt="">
+        <img
+          *ngIf="error == 'password'"
+          class="errorImg"
+          src="../../../assets/error.png"
+          alt=""
+        />
         <label id="passwordError" class="error"></label>
       </div>
     </div>
-    
+
     <div class="btn-contain">
       <button id="button" type="submit" (click)="onClick()"></button>
     </div>

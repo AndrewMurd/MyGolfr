@@ -15,6 +15,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { LoginPageComponent } from './components/login-page/login-page.component';
 import { RegisterPageComponent } from './components/register-page/register-page.component';
+import { SearchItemComponent } from './components/search-item/search-item.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { RegisterPageComponent } from './components/register-page/register-page.
     NewGolfCourseScoreCardComponent,
     LoginPageComponent,
     RegisterPageComponent,
+    SearchItemComponent,
   ],
   imports: [
     BrowserModule,
