@@ -29,22 +29,15 @@ export class RegisterPageComponent {
   ) {}
 
   ngOnInit() {
-    this.btn = document.querySelector('#button');
+    this.btn = document.querySelector('#registerBtn');
     this.nameError = document.querySelector('#nameError');
-    this.emailError = document.querySelector('#emailError');
-    this.passwordError = document.querySelector('#passwordError');
+    this.emailError = document.querySelector('#email2Error');
+    this.passwordError = document.querySelector('#password2Error');
     this.confirmPassError = document.querySelector('#confirmPassError');
     this.nameInput = document.querySelector('#nameInput');
     this.emailInput = document.querySelector('#email2Input');
     this.passwordInput = document.querySelector('#password2Input');
     this.confirmPassInput = document.querySelector('#confirmPassInput');
-
-    console.log(
-      this.nameInput,
-      this.emailInput,
-      this.passwordInput,
-      this.confirmPassInput
-    );
 
     this.nameInput.addEventListener('keyup', () => {
       console.log('name');

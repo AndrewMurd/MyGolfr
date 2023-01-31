@@ -1,0 +1,40 @@
+@import "../../utilities/variables.scss";
+
+$itemHeight: 70px;
+
+.itemContaier {
+  display: flex;
+  height: $itemHeight;
+  width: 740px;
+  position: relative;
+  background-color: $theme;
+  border-radius: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  &:hover {
+    background-color: #3d3d3d;
+  }
+}
+
+img {
+  margin-left: 20px;
+  height: $itemHeight;
+}
+
+.desc {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  margin-left: 30px;
+}
+
+strong {
+  color: white;
+  font-size: 1.8em;
+}
+
+a {
+  margin-top: 8px;
+  color: white;
+}
+
