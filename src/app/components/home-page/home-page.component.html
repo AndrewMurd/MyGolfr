@@ -7,18 +7,5 @@
 />
 
 <div class="home-page">
-  <div class="searchContainer">
-    <input
-      class="searchInput"
-      [(ngModel)]="search"
-      type="text"
-      placeholder="Search Course Name"
-      (ngModelChange)="searchCourses()"
-    />
-    <div class="searchItemsContainer">
-      <app-search-item imgSrc=""></app-search-item>
-      <app-search-item imgSrc=""></app-search-item>
-      <app-search-item imgSrc=""></app-search-item>
-    </div>
-  </div>
+  <app-search-bar></app-search-bar>
 </div>

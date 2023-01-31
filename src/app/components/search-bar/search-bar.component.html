@@ -1,0 +1,12 @@
+<div class="searchContainer">
+  <input
+    class="searchInput"
+    [(ngModel)]="search"
+    type="text"
+    placeholder="Search Course Name"
+    (ngModelChange)="searchCourses()"
+  />
+  <div class="searchItemsContainer">
+    <app-search-item *ngFor="let course of courses" [data]="course"></app-search-item>
+  </div>
+</div>

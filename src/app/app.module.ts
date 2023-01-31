@@ -16,6 +16,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { LoginPageComponent } from './components/login-page/login-page.component';
 import { RegisterPageComponent } from './components/register-page/register-page.component';
 import { SearchItemComponent } from './components/search-item/search-item.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { CoursePageComponent } from './components/course-page/course-page.component';
+import { StartRoundPageComponent } from './components/start-round-page/start-round-page.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +32,9 @@ import { SearchItemComponent } from './components/search-item/search-item.compon
     LoginPageComponent,
     RegisterPageComponent,
     SearchItemComponent,
+    SearchBarComponent,
+    CoursePageComponent,
+    StartRoundPageComponent,
   ],
   imports: [
     BrowserModule,

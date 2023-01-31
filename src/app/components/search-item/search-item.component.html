@@ -1,7 +1,15 @@
-<div class="itemContaier">
-  <img src="{{ src }}" alt="">
+<div (click)="clickItem()" class="itemContaier">
+  <img src="{{ src }}" alt="" />
   <div class="desc">
-    <strong>Timber Pines</strong>
-    <a>Spring Hill, Florida</a>
+    <strong>{{ name }}</strong>
+    <a>{{ addressInfo }}</a>
+  </div>
+  <div (click)="startRound()" id="startBtnContainer">
+    <button class="startRoundBtn">
+      <span class="circle" aria-hidden="true">
+        <span class="icon arrow"></span>
+      </span>
+      <span class="button-text">Start Round</span>
+    </button>
   </div>
 </div>
