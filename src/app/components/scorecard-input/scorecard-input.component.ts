@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-scorecard-input',
@@ -8,16 +8,26 @@ import { Component, Input } from '@angular/core';
 
 export class ScorecardInputComponent {
   @Input() id!: string;
+  @Input() width: string = '85%';
+  @Input() placeholder!: string;
+  @Output() onSubmitInput: EventEmitter<any> = new EventEmitter;
   showField: boolean = true;
   value!: string;
   teeColor!: string;
 
   submit(): void {
-    this.showField = false;
-    let arrId = this.id.split(',').map(Number);
-
-    if (arrId = [1, 0]) {
-      console.log(this.value);
+    if (!this.value) {
+      alert('Must enter value!');
+      return;
     }
+
+    this.showField = false;
+    let arrId = this.id.split(',');
+    
+    this.onSubmitInput.emit({id: arrId, value: this.value});
+
+    // if (arrId = [1, 0]) {
+    //   console.log(this.value);
+    // }
   }
 }

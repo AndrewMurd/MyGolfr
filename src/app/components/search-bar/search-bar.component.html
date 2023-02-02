@@ -7,6 +7,10 @@
     (ngModelChange)="searchCourses()"
   />
   <div class="searchItemsContainer">
-    <app-search-item *ngFor="let course of courses" [data]="course"></app-search-item>
+    <app-search-item
+      *ngFor="let course of courses"
+      [data]="course"
+      (onClickItem)="resetSession()"
+    ></app-search-item>
   </div>
 </div>

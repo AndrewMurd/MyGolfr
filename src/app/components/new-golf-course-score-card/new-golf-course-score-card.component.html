@@ -1,41 +1,22 @@
 <div class="container">
-    <h1>Golf Scorecard</h1>
-    <div class="tableContainer">
-        <table>
-            <tr>
-                <th class="Hole">Hole</th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>7</th>
-                <th>8</th>
-                <th>9</th>
-                <th>Out</th>
-                <th>10</th>
-                <th>11</th>
-                <th>12</th>
-                <th>13</th>
-                <th>14</th>
-                <th>15</th>
-                <th>16</th>
-                <th>17</th>
-                <th>18</th>
-                <th class="larger">In</th>
-                <th class="larger">Total</th>
-                <th class="larger">Hdcp</th>
-                <th class="larger">Net</th>
-            </tr>
-            <tr>
-                <td class="Hole">
-                    <app-scorecard-input id="1,0"></app-scorecard-input>
-                </td>
-                <td *ngFor="let a of createRange(23); let index = index">
-                    <app-scorecard-input id="1,{{ index + 1 }}"></app-scorecard-input>
-                </td>
-            </tr>
-        </table>
-    </div>
+  <h1>{{ title }}</h1>
+  <div class="gridContainer">
+    <ng-container #frontNine>
+      <app-scorecard-header [isFrontNine]="true"></app-scorecard-header>
+      <!-- <app-new-scorecard-tee
+        (onSubmitofInput)="onSubmit($event)"
+        teeColor="Blue"
+        [isFrontNine]="true"
+      ></app-new-scorecard-tee> -->
+    </ng-container>
+    <ng-container #backNine>
+      <app-scorecard-header [isFrontNine]="false"></app-scorecard-header>
+      <!-- <app-new-scorecard-tee
+        (onSubmitofInput)="onSubmit($event)"
+        teeColor="Blue"
+        [isFrontNine]="false"
+      ></app-new-scorecard-tee> -->
+    </ng-container>
+  </div>
+  <button (click)="addTee()">Add Tee</button>
 </div>

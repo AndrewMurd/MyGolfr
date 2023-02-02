@@ -1,0 +1,12 @@
+<div class="grid-container">
+  <div class="header">Holes</div>
+  <div
+    class="header-holes"
+    *ngFor="let i of createRange(9) ; let index = index"
+  >
+    {{ index + (isFrontNine ? 1 : 10) }}
+  </div>
+  <div class="header-holes">{{isFrontNine? 'Out': 'In'}}</div>
+  <div class="header">Slope</div>
+  <div class="header">Rating</div>
+</div>

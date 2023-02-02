@@ -24,6 +24,10 @@ export class SearchBarComponent {
   readonly ROOT_URL = 'http://localhost:3000/';
 
   constructor(private http: HttpClient) {}
+  
+  resetSession() {
+    this.sessionToken = null;
+  }
 
   async searchCourses() {
     if (this.sessionToken == null) {

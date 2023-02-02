@@ -17,8 +17,11 @@ export class StartRoundPageComponent {
   ) {}
 
   ngOnInit() {
-    this.courseService.selectedCourse$.subscribe((value) => {
-      this.data = value;
-    });
+    // this.courseService.selectedCourse$.subscribe((value) => {
+    //   this.data = value;
+    // }).unsubscribe();
+    this.data = localStorage.getItem('selectedCourse');
+    this.data = JSON.parse(this.data);
+    console.log(this.data);
   }
 }

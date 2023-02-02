@@ -19,6 +19,8 @@ import { SearchItemComponent } from './components/search-item/search-item.compon
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { CoursePageComponent } from './components/course-page/course-page.component';
 import { StartRoundPageComponent } from './components/start-round-page/start-round-page.component';
+import { NewScorecardTeeComponent } from './components/new-scorecard-tee/new-scorecard-tee.component';
+import { ScorecardHeaderComponent } from './components/scorecard-header/scorecard-header.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { StartRoundPageComponent } from './components/start-round-page/start-rou
     SearchBarComponent,
     CoursePageComponent,
     StartRoundPageComponent,
+    NewScorecardTeeComponent,
+    ScorecardHeaderComponent,
   ],
   imports: [
     BrowserModule,

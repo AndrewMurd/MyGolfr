@@ -7,7 +7,6 @@ import { Component } from '@angular/core';
 })
 export class ScorecardComponent {
   
-
   createRange(number: number){
     // return new Array(number);
     return new Array(number).fill(0)
