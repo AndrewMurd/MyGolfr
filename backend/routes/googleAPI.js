@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const axios = require("axios");
-var fs = require('fs');
+const Course = require("../models/course");
 
 const router = Router();
 
@@ -19,8 +19,28 @@ router.get("/courses", async (req, res) => {
   };
 
   axios(config)
-    .then((response) => {
+    .then(async (response) => {
+      const courses = response.data.results;
+
       res.send(JSON.stringify(response.data));
+
+      // for (let course of courses) {
+      //   const id = course.reference;
+
+      //   const res = await Course.find(id);
+
+      //   console.log(res);
+
+      //   if (res.length == 0) {
+      //     const courseDetails = {
+      //       id: id,
+      //       course: course,
+      //       scorecard: null,
+      //     };
+
+      //     const res = await Course.save(courseDetails);
+      //   }
+      // }
     })
     .catch((error) => {
       res.status(400).send(error);
@@ -38,13 +58,13 @@ router.get("/photo", async (req, res) => {
     headers: {},
   };
 
-  axios(config, {responseType: 'arraybuffer'})
+  axios(config, { responseType: "arraybuffer" })
     .then((response) => {
       // console.log(response.data);
       // trying to convert img to base64 (not working)
-      var b64Response = Buffer.from(response.data, 'base64'); 
+      var b64Response = Buffer.from(response.data, "base64");
       // console.log(b64Response);
-      res.send({'data': b64Response});
+      res.send({ data: b64Response });
     })
     .catch((error) => {
       res.status(400).send(error);

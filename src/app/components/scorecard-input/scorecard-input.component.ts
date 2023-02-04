@@ -23,11 +23,14 @@ export class ScorecardInputComponent {
 
     this.showField = false;
     let arrId = this.id.split(',');
+
+    arrId[0] = arrId[0].trim();
+    arrId[1] = arrId[1].trim();
     
     this.onSubmitInput.emit({id: arrId, value: this.value});
+  }
 
-    // if (arrId = [1, 0]) {
-    //   console.log(this.value);
-    // }
+  showInput() {
+    this.showField = true;
   }
 }

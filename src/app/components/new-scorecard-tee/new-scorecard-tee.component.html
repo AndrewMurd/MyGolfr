@@ -21,21 +21,21 @@
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="sum"
-      id="{{ teeColor }}, SumOut"
+      id="{{ teeColor }},{{isFrontNine? 'SumOut': 'SumIn'}}"
     ></app-scorecard-input>
   </div>
   <div [ngStyle]="{ 'background-color': teeColor }">
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="Slope"
-      id="{{ teeColor }}, Slope"
+      id="{{ teeColor }},Slope"
     ></app-scorecard-input>
   </div>
   <div [ngStyle]="{ 'background-color': teeColor }">
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="Rating"
-      id="{{ teeColor }}, Rating"
+      id="{{ teeColor }},Rating"
     ></app-scorecard-input>
   </div>
   <!-- row 3 -->
@@ -52,7 +52,7 @@
       (onSubmitInput)="onSubmit($event)"
       placeholder="sum"
       class="colorInput"
-      id="{{ teeColor }}, SumOutPar"
+      id="{{ teeColor }},{{isFrontNine? 'SumOutPar': 'SumInPar'}}"
     ></app-scorecard-input>
   </div>
   <div></div>

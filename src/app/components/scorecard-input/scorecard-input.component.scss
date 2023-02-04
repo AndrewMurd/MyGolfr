@@ -1,3 +1,7 @@
+div {
+  cursor: pointer;
+}
+
 input {
   top: 0;
   position: relative;
@@ -10,4 +14,8 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+p {
+  color: white;
 }

@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const usersRoute = require("./routes/users");
 const googleRoute = require("./routes/googleAPI.js");
+const coursesRoute = require("./routes/courses");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/users", usersRoute);
-app.use("/", googleRoute);
+app.use("/courses", coursesRoute);
+app.use("/google", googleRoute);
 
 app.listen(3000);

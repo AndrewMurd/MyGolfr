@@ -1,11 +1,16 @@
-<input 
+<div (dblclick)="showInput()">
+  <input
     *ngIf="showField"
-    (keyup.enter)="submit()" 
-    id="{{ id }}" 
+    (keyup.enter)="submit()"
+    id="{{ id }}"
     type="text"
     [(ngModel)]="value"
-    [ngStyle]="{'width': width }"
+    [ngStyle]="{ width: width }"
     placeholder="{{ placeholder }}"
-    type="number" 
+    type="number"
     min="1"
->
+    oninput="validity.valid || (value='');"
+    step="0.01"
+  />
+  <p *ngIf="!showField">{{ value }}</p>
+</div>

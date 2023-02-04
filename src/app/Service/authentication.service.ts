@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, retry } from 'rxjs/operators';
 import { Observable, of, throwError } from 'rxjs';
+import { ROOT_URL } from '../utilities/enviroment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-  readonly ROOT_URL = 'http://localhost:3000/users';
 
   constructor(private http: HttpClient) {}
 
@@ -14,7 +14,7 @@ export class AuthenticationService {
 
     return new Promise((resolve, reject) => {
       this.http
-        .post(this.ROOT_URL + '/login', {
+        .post(ROOT_URL + '/login', {
           email: email,
           password: password,
         })
@@ -32,7 +32,7 @@ export class AuthenticationService {
   signUp(name: string, email: string, password: string, confirmPass: string) {
     return new Promise((resolve, reject) => {
       this.http
-        .post(this.ROOT_URL + '/signup', {
+        .post(ROOT_URL + '/signup', {
           name: name,
           email: email,
           password: password,

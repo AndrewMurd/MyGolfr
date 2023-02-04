@@ -21,6 +21,5 @@ export class CoursePageComponent {
     // }).unsubscribe();
     this.data = localStorage.getItem('selectedCourse');
     this.data = JSON.parse(this.data);
-    console.log(this.data);
   }
 }

@@ -7,6 +7,8 @@ import {
   ComponentFactoryResolver,
 } from '@angular/core';
 import { NewScorecardTeeComponent } from '../new-scorecard-tee/new-scorecard-tee.component';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { ROOT_URL } from 'src/app/utilities/enviroment';
 
 @Component({
   selector: 'app-new-golf-course-score-card',
@@ -16,19 +18,60 @@ import { NewScorecardTeeComponent } from '../new-scorecard-tee/new-scorecard-tee
 export class NewGolfCourseScoreCardComponent {
   colorSubmmited: boolean = false;
   @Input() title: string = 'New Golf Course ScoreCard';
-  arrOfTees: [] = [];
+  scoreCardData: any;
+  isDisabled: boolean = false;
+  courseId!: string;
 
   @ViewChild('frontNine', { read: ViewContainerRef })
   frontNineContainer!: ViewContainerRef;
   @ViewChild('backNine', { read: ViewContainerRef })
   backNineContainer!: ViewContainerRef;
 
-  constructor(private resolver: ComponentFactoryResolver) {}
+  constructor(
+    private resolver: ComponentFactoryResolver,
+    private http: HttpClient
+  ) {}
 
-  onSubmit(data: any) {}
+  async ngOnInit() {
+    this.courseId = JSON.parse(
+      localStorage.getItem('selectedCourse')!
+    ).reference;
+
+    const response: any = await new Promise((resolve, reject) => {
+      this.http
+        .get(ROOT_URL + 'courses/scorecard', {
+          params: new HttpParams().set('id', this.courseId),
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+
+    this.scoreCardData = response.scorecard;
+    console.log(this.scoreCardData);
+
+    //:ToDo: add the scorecard data from database to scorecard in view
+  }
+
+  onSubmit(data: any) {
+    this.http
+      .post(ROOT_URL + 'courses/set_scorecard', {
+        id: this.courseId,
+        data: data,
+      })
+      .subscribe(() => {});
+  }
 
   addTee() {
+    //:ToDo: add dynamic color change when adding new tee
     const color = 'Blue';
+
+    this.isDisabled = true;
 
     const frontNineTee = this.frontNineContainer.createComponent(
       NewScorecardTeeComponent
