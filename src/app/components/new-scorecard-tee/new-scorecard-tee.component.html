@@ -1,41 +1,88 @@
+<datalist id="presets">
+  <option value="#0000FF">Blue</option>
+  <option value="#FF0000">Red</option>
+  <option value="#daa520">Gold</option>
+  <option value="#ffffff">White</option>
+  <option value="#FFFF00">Yellow</option>
+  <option value="#000000">Black</option>
+  <option value="#C0C0C0">Silver</option>
+</datalist>
+
 <div class="grid-container">
   <!-- row 2 -->
-  <div class="header" [ngStyle]="{ 'background-color': teeColor }">
-    <!-- <app-scorecard-input
-      placeholder="Tee Color"
-    ></app-scorecard-input> -->
-    {{ teeColor }}
+  <div
+    id="colorInputsContainer"
+    class="header"
+    [ngStyle]="{ 'background-color': teeData.Color }"
+  >
+    <div *ngIf="displayInputSelector" id="inputSelector">
+      <button
+        id="openColorPicker"
+        (click)="displayColorPicker = true; displayInputSelector = false"
+      >
+        Color
+      </button>
+      <button
+        id="openColorNamer"
+        (click)="displayColorNamer = true; displayInputSelector = false"
+      >
+        Name
+      </button>
+    </div>
+    <div *ngIf="displayColorPicker">
+      <input type="color" id="colorPicker" [(ngModel)]="color" list="presets" />
+      <button id="btnSetColor" (click)="setColor()">Set</button>
+    </div>
+    <div *ngIf="displayColorNamer">
+      <input
+        id="colorNamer"
+        type="text"
+        placeholder="Enter Tee Color"
+        [(ngModel)]="nameColor"
+        (keyup.enter)="submitColorName()"
+      />
+    </div>
   </div>
   <div
-    [ngStyle]="{ 'background-color': teeColor }"
+    [ngStyle]="{ 'background-color': teeData.Color }"
     class="holes"
     *ngFor="let a of createRange(9); let index = index"
   >
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="yrds"
-      id="{{ teeColor }},H{{ index + (isFrontNine ? 1 : 10) }}"
+      id="{{ teeData.id }},H{{ index + (isFrontNine ? 1 : 10) }}"
+      [data]="teeData"
+      [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
-  <div [ngStyle]="{ 'background-color': teeColor }">
+  <div [ngStyle]="{ 'background-color': teeData.Color }">
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="sum"
-      id="{{ teeColor }},{{isFrontNine? 'SumOut': 'SumIn'}}"
+      id="{{ teeData.id }},{{ isFrontNine ? 'SumOut' : 'SumIn' }}"
+      [data]="teeData"
+      [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
-  <div [ngStyle]="{ 'background-color': teeColor }">
+  <div [ngStyle]="{ 'background-color': teeData.Color }">
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="Slope"
-      id="{{ teeColor }},Slope"
+      id="{{ teeData.id }},Slope"
+      [data]="teeData"
+      [events]="events"
+      [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
-  <div [ngStyle]="{ 'background-color': teeColor }">
+  <div [ngStyle]="{ 'background-color': teeData.Color }">
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="Rating"
-      id="{{ teeColor }},Rating"
+      id="{{ teeData.id }},Rating"
+      [data]="teeData"
+      [events]="events"
+      [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
   <!-- row 3 -->
@@ -44,7 +91,9 @@
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="strks"
-      id="{{ teeColor }},P{{ index + (isFrontNine ? 1 : 10) }}"
+      id="{{ teeData.id }},P{{ index + (isFrontNine ? 1 : 10) }}"
+      [data]="teeData"
+      [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
   <div>
@@ -52,7 +101,9 @@
       (onSubmitInput)="onSubmit($event)"
       placeholder="sum"
       class="colorInput"
-      id="{{ teeColor }},{{isFrontNine? 'SumOutPar': 'SumInPar'}}"
+      id="{{ teeData.id }},{{ isFrontNine ? 'SumOutPar' : 'SumInPar' }}"
+      [data]="teeData"
+      [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
   <div></div>
@@ -66,7 +117,9 @@
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="strks"
-      id="{{ teeColor }},SI{{ index + (isFrontNine ? 1 : 10) }}"
+      id="{{ teeData.id }},SI{{ index + (isFrontNine ? 1 : 10) }}"
+      [data]="teeData"
+      [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
   <div></div>

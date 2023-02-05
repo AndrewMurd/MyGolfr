@@ -1,14 +1,12 @@
 import {
   Component,
   Input,
-  Output,
   ViewChild,
   ViewContainerRef,
-  ComponentFactoryResolver,
 } from '@angular/core';
 import { NewScorecardTeeComponent } from '../new-scorecard-tee/new-scorecard-tee.component';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ROOT_URL } from 'src/app/utilities/enviroment';
+import { CourseDetailsService } from '../../Service/course-details.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-new-golf-course-score-card',
@@ -16,11 +14,10 @@ import { ROOT_URL } from 'src/app/utilities/enviroment';
   styleUrls: ['./new-golf-course-score-card.component.scss'],
 })
 export class NewGolfCourseScoreCardComponent {
-  colorSubmmited: boolean = false;
   @Input() title: string = 'New Golf Course ScoreCard';
-  scoreCardData: any;
   isDisabled: boolean = false;
   courseId!: string;
+  eventsSubject: Subject<any> = new Subject<any>();
 
   @ViewChild('frontNine', { read: ViewContainerRef })
   frontNineContainer!: ViewContainerRef;
@@ -28,8 +25,7 @@ export class NewGolfCourseScoreCardComponent {
   backNineContainer!: ViewContainerRef;
 
   constructor(
-    private resolver: ComponentFactoryResolver,
-    private http: HttpClient
+    private courseService: CourseDetailsService
   ) {}
 
   async ngOnInit() {
@@ -37,59 +33,50 @@ export class NewGolfCourseScoreCardComponent {
       localStorage.getItem('selectedCourse')!
     ).reference;
 
-    const response: any = await new Promise((resolve, reject) => {
-      this.http
-        .get(ROOT_URL + 'courses/scorecard', {
-          params: new HttpParams().set('id', this.courseId),
-        })
-        .subscribe({
-          next: (data) => {
-            return resolve(data);
-          },
-          error: (error) => {
-            return reject(error);
-          },
-        });
-    });
+    const response: any = await this.courseService.getScorecard(this.courseId);
 
-    this.scoreCardData = response.scorecard;
-    console.log(this.scoreCardData);
-
-    //:ToDo: add the scorecard data from database to scorecard in view
+    for (let tee of response.scorecard) {
+      this.addTee(tee);
+    }
   }
 
   onSubmit(data: any) {
-    this.http
-      .post(ROOT_URL + 'courses/set_scorecard', {
-        id: this.courseId,
-        data: data,
-      })
-      .subscribe(() => {});
+    this.eventsSubject.next(data);
   }
 
-  addTee() {
-    //:ToDo: add dynamic color change when adding new tee
-    const color = 'Blue';
-
+  addTee(teeData: any) {
     this.isDisabled = true;
 
+    this.createTeeComponents(teeData);
+  }
+
+  async addNewTee() {
+    this.isDisabled = true;
+
+    const response: any = await this.courseService.setScorecard(this.courseId, { id: 'new', value: '' });
+
+    this.createTeeComponents(response.data);
+  }
+
+  createTeeComponents(data: any) {
     const frontNineTee = this.frontNineContainer.createComponent(
       NewScorecardTeeComponent
     );
-    frontNineTee.setInput('teeColor', color);
+    frontNineTee.setInput('teeData', data);
     frontNineTee.setInput('isFrontNine', true);
     frontNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });
+    frontNineTee.instance.events = this.eventsSubject.asObservable();
 
     const backNineTee = this.backNineContainer.createComponent(
       NewScorecardTeeComponent
     );
-    backNineTee.setInput('teeColor', color);
+    backNineTee.setInput('teeData', data);
     backNineTee.setInput('isFrontNine', false);
-
     backNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });
+    backNineTee.instance.events = this.eventsSubject.asObservable();
   }
 }

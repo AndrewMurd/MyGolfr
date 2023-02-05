@@ -6,7 +6,7 @@ input {
   top: 0;
   position: relative;
   margin-top: 5px;
-  border-radius: 3px;
+  border-radius: 3px;border-radius: 3px;
   border: 1px solid;
 }
 
@@ -17,5 +17,5 @@ input::-webkit-inner-spin-button {
 }
 
 p {
-  color: white;
+  font-weight: 400;
 }

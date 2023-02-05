@@ -14,7 +14,7 @@ export class AuthenticationService {
 
     return new Promise((resolve, reject) => {
       this.http
-        .post(ROOT_URL + '/login', {
+        .post(ROOT_URL + 'users/login', {
           email: email,
           password: password,
         })
@@ -32,7 +32,7 @@ export class AuthenticationService {
   signUp(name: string, email: string, password: string, confirmPass: string) {
     return new Promise((resolve, reject) => {
       this.http
-        .post(ROOT_URL + '/signup', {
+        .post(ROOT_URL + 'users/signup', {
           name: name,
           email: email,
           password: password,

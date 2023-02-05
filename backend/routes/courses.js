@@ -4,6 +4,7 @@ const User = require("../models/user");
 const Course = require("../models/course");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
+const { v4: uuidv4 } = require("uuid");
 
 const router = Router();
 
@@ -13,10 +14,10 @@ router.get("/scorecard", async (req, res) => {
   const courses = await Course.find(id);
 
   if (courses.length == 0) {
-    res.status(404).send({error: 'Course does not exist!'});
+    res.status(404).send({ error: "Course does not exist!" });
   } else {
     let scorecard = JSON.parse(courses[0].scorecard);
-    res.status(200).send({scorecard: scorecard});
+    res.status(200).send({ scorecard: scorecard });
   }
 });
 
@@ -47,26 +48,22 @@ router.post("/set_scorecard", async (req, res) => {
   const course = await Course.find(id);
   let scorecard = JSON.parse(course[0].scorecard);
 
-  if (scorecard.length == 0) scorecard.push({color: data.id[0]});
-
-  let doesInclude = false;
-  for (let tee of scorecard) {
-    if (tee.color == data.id[0]) {
-      tee[data.id[1]] = data.value;
-      doesInclude = true;
+  let length;
+  if (data.id == "new") {
+    length = scorecard.push({ id: uuidv4() });
+  } else {
+    for (let tee of scorecard) {
+      if (tee.id == data.id[0]) {
+        tee[data.id[1]] = data.value;
+      }
     }
   }
 
-  if (!doesInclude) {
-    scorecard.push({color: data.id[0]});
-    scorecard[0][data.id[1]] = data.value;
-  }
-
   console.log(`Updating Scorecard for ${id} with data:`, data);
-  
+
   const resultAfterUpdate = await Course.update(JSON.stringify(scorecard), id);
 
-  res.send({});
+  res.send({data: scorecard[length - 1]});
 });
 
 module.exports = router;

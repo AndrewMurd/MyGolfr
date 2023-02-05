@@ -7,6 +7,43 @@
   border-bottom: 0px solid;
 }
 
+#colorPicker {
+  border-radius: 5px;
+  height: 25px;
+  width: 60px;
+  position: relative;
+  margin-left: 5px;
+}
+
+#colorNamer {
+  position: relative;
+  width: 80%;
+  border-radius: 3px;
+  margin-left: 5px;
+}
+
+#inputSelector {
+  position: relative;
+  border-bottom: 0px solid;
+}
+
+#btnSetColor {
+  position: relative;
+  height: 25px;
+  bottom: 3px;
+  border-radius: 5px;
+  border: 0px solid;
+}
+
+#openColorNamer, #openColorPicker {
+  margin-left: 5px;
+  border-radius: 5px;
+  border: 0px solid;
+  &:hover {
+    background-color: rgb(202, 202, 202);
+  }
+}
+
 .header {
   font-weight: bold;
 }

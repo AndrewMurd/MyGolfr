@@ -12,5 +12,5 @@
     oninput="validity.valid || (value='');"
     step="0.01"
   />
-  <p *ngIf="!showField">{{ value }}</p>
+  <p *ngIf="!showField" [ngStyle]="isWhite? { 'color': '#252525' } : { 'color': 'White' }">{{ value }}</p>
 </div>
