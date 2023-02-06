@@ -7,6 +7,7 @@ import {
 import { NewScorecardTeeComponent } from '../new-scorecard-tee/new-scorecard-tee.component';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Subject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-golf-course-score-card',
@@ -25,7 +26,8 @@ export class NewGolfCourseScoreCardComponent {
   backNineContainer!: ViewContainerRef;
 
   constructor(
-    private courseService: CourseDetailsService
+    private courseService: CourseDetailsService,
+    private router: Router
   ) {}
 
   async ngOnInit() {
@@ -33,47 +35,66 @@ export class NewGolfCourseScoreCardComponent {
       localStorage.getItem('selectedCourse')!
     ).reference;
 
+    this.reload();
+  }
+
+  async reload() {
+
     const response: any = await this.courseService.getScorecard(this.courseId);
 
+    let teeRenderOrder = [];
     for (let tee of response.scorecard) {
-      this.addTee(tee);
+      document.getElementById(tee.id)?.remove();
+      document.getElementById(tee.id)?.remove();
+      teeRenderOrder.push(tee);
     }
+
+    teeRenderOrder.sort((a: any, b: any): any => {
+      return a.Position - b.Position;
+    });
+
+    for (let teeToRender of teeRenderOrder) {
+      this.createTeeComponents(teeToRender, response.scorecard);
+    }
+    console.log(response.scorecard);
   }
 
   onSubmit(data: any) {
     this.eventsSubject.next(data);
   }
 
-  addTee(teeData: any) {
-    this.isDisabled = true;
-
-    this.createTeeComponents(teeData);
-  }
-
   async addNewTee() {
-    this.isDisabled = true;
-
-    const response: any = await this.courseService.setScorecard(this.courseId, { id: 'new', value: '' });
-
-    this.createTeeComponents(response.data);
+    const response: any = await this.courseService.setScorecardValue(this.courseId, { id: 'new', value: '' });
+    this.reload();
+    // this.createTeeComponents(response.data);
   }
 
-  createTeeComponents(data: any) {
+  createTeeComponents(teeData: any, scorecardData: any) {
     const frontNineTee = this.frontNineContainer.createComponent(
       NewScorecardTeeComponent
     );
-    frontNineTee.setInput('teeData', data);
+    frontNineTee.setInput('id', teeData.id);
+    frontNineTee.setInput('teeData', teeData);
+    frontNineTee.setInput('scorecard', scorecardData);
     frontNineTee.setInput('isFrontNine', true);
     frontNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
+    });
+    frontNineTee.instance.onReload.subscribe((value) => {
+      this.reload();
     });
     frontNineTee.instance.events = this.eventsSubject.asObservable();
 
     const backNineTee = this.backNineContainer.createComponent(
       NewScorecardTeeComponent
     );
-    backNineTee.setInput('teeData', data);
+    backNineTee.setInput('id', teeData.id);
+    backNineTee.setInput('teeData', teeData);
+    backNineTee.setInput('scorecard', scorecardData);
     backNineTee.setInput('isFrontNine', false);
+    backNineTee.instance.onReload.subscribe((value) => {
+      this.reload();
+    });
     backNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });

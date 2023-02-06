@@ -41,7 +41,7 @@ router.post("/add", async (req, res) => {
   res.send({});
 });
 
-router.post("/set_scorecard", async (req, res) => {
+router.post("/set_scorecard_value", async (req, res) => {
   const id = req.body.id;
   const data = req.body.data;
 
@@ -50,7 +50,7 @@ router.post("/set_scorecard", async (req, res) => {
 
   let length;
   if (data.id == "new") {
-    length = scorecard.push({ id: uuidv4() });
+    length = scorecard.push({ id: uuidv4(), Position: scorecard.length + 1 });
   } else {
     for (let tee of scorecard) {
       if (tee.id == data.id[0]) {
@@ -63,7 +63,35 @@ router.post("/set_scorecard", async (req, res) => {
 
   const resultAfterUpdate = await Course.update(JSON.stringify(scorecard), id);
 
-  res.send({data: scorecard[length - 1]});
+  res.send({ data: scorecard[length - 1] });
+});
+
+router.post("/set_scorecard", async (req, res) => {
+  const id = req.body.id;
+  const scorecard = req.body.scorecard;
+
+  console.log(`Updating Scorecard for ${id}`);
+
+  const resultAfterUpdate = await Course.update(JSON.stringify(scorecard), id);
+
+  res.send({ data: scorecard });
+});
+
+router.delete("/delete_tee", async (req, res) => {
+  const courseId = req.query.courseId;
+  const teeId = req.query.teeId;
+
+  const courses = await Course.find(courseId);
+
+  let scorecard = JSON.parse(courses[0].scorecard);
+
+  scorecard = scorecard.filter((tee) => {
+    return tee.id != teeId;
+  });
+
+  const resultAfterUpdate = await Course.update(JSON.stringify(scorecard), courseId);
+
+  res.send({});
 });
 
 module.exports = router;

@@ -18,15 +18,18 @@ export class ScorecardInputComponent {
   showField: boolean = true;
   value!: string;
   arrId: any;
-  eventsSubscription!: Subscription;
+  // eventsSubscription!: Subscription;
   isWhite: boolean = false;
+  courseId!: string;
 
   constructor(private courseService: CourseDetailsService) {}
 
   ngOnInit() {
-    // this is not working when i emit from parent component
+    this.courseId = JSON.parse(
+      localStorage.getItem('selectedCourse')!
+    ).reference;
+
     this.whiteEvent.subscribe((value: boolean) => {
-      console.log(this.isWhite);
       this.isWhite = value;
     });
 
@@ -43,8 +46,8 @@ export class ScorecardInputComponent {
     }
 
     if (this.events) {
-      this.eventsSubscription = this.events.subscribe((value) => {
-        if (this.arrId[1] == value.id[1]) {
+      this.events.subscribe((value) => {
+        if (this.data.id == value.id[0] && this.arrId[1] == value.id[1]) {
           this.showField = false;
           this.value = value.value;
         }
@@ -60,10 +63,10 @@ export class ScorecardInputComponent {
 
     this.showField = false;
 
-    this.courseService.setScorecard(
-      JSON.parse(localStorage.getItem('selectedCourse')!).reference,
-      { id: this.arrId, value: this.value }
-    );
+    this.courseService.setScorecardValue(this.courseId, {
+      id: this.arrId,
+      value: this.value,
+    });
 
     this.onSubmitInput.emit({ id: this.arrId, value: this.value });
   }

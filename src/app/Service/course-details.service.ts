@@ -9,7 +9,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 export class CourseDetailsService {
   // private course$ = new BehaviorSubject<any>({});
   // selectedCourse$ = this.course$.asObservable();
-  
+
   constructor(private http: HttpClient) {}
 
   // setCourse(course: any) {
@@ -33,21 +33,58 @@ export class CourseDetailsService {
     });
   }
 
-  async setScorecard(courseId: string, data: any) {
+  async setScorecardValue(courseId: string, data: any) {
     return await new Promise((resolve, reject) => {
       this.http
-      .post(ROOT_URL + 'courses/set_scorecard', {
-        id: courseId,
-        data: data,
-      })
-      .subscribe({
-        next: (data) => {
-          return resolve(data);
-        },
-        error: (error) => {
-          return reject(error);
-        },
-      });
+        .post(ROOT_URL + 'courses/set_scorecard_value', {
+          id: courseId,
+          data: data,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  async setScorecard(courseId: string, scorecard: any) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'courses/set_scorecard', {
+          id: courseId,
+          scorecard: scorecard,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  async deleteTee(courseId: string, teeId: any) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .delete(ROOT_URL + 'courses/delete_tee', {
+          params: new HttpParams()
+            .set('courseId', courseId)
+            .set('teeId', teeId),
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
     });
   }
 }

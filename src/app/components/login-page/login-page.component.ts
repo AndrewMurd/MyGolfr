@@ -70,6 +70,8 @@ export class LoginPageComponent {
 
         // set jwt access token in cookies
 
+        // loginToken = data in cookies
+
         setTimeout(() => {
           this.router.navigate(['/']);
         }, 1000);
