@@ -6,7 +6,7 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: 120px repeat(9, 45px) 60px 70px 70px;
+  grid-template-columns: 16.5% repeat(9, 6.2%) 8% 10% 10%;
   grid-auto-rows: 40px;
   border-bottom: 0px solid;
 }
@@ -20,6 +20,7 @@
 }
 
 #deleteBtn {
+  cursor: pointer;
   margin-left: 5px;
   margin-top: 7px;
   height: 30px;
@@ -39,6 +40,7 @@
   right: 100%;
   position: absolute;
   margin-right: 3px;
+  cursor: pointer;
 }
 
 #colorNamer {
@@ -83,13 +85,10 @@
   box-sizing: border-box;
   color: black;
   cursor: pointer;
-  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont,
-    sans-serif;
   font-size: 10px;
   font-weight: bold;
   outline: none;
   outline: 0;
-  // padding: 10px 25px;
   text-align: center;
   transform: translateY(0);
   transition: transform 150ms, box-shadow 150ms;
@@ -119,4 +118,94 @@ div {
   font-size: 1.2rem;
   line-height: 40px;
   border-bottom: 1px solid rgb(88, 88, 88);
+}
+
+@media (max-width: 830px) {
+  #selectPosition {
+    height: 18px;
+    width: 5%;
+    border-radius: 5px;
+    left: 94%;
+    margin-top: 20px;
+    font-size: 0.6rem;
+    cursor: pointer;
+  }
+
+  select::-ms-expand {
+    display: none;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: 10% repeat(9, 6.7%) 10% 10% 10%;
+    grid-auto-rows: 20px;
+    border-bottom: 0px solid;
+  }
+
+  div {
+    font-size: 0.6rem;
+    line-height: 20px;
+    border-bottom: 1px solid rgb(88, 88, 88);
+  }
+
+  #copyPar,
+  #copySI {
+    margin-left: 2px;
+    height: 17px;
+    font-size: 75%;
+    width: 46px;
+    margin-top: 5px;
+  }
+
+  #deleteBtn {
+    margin-top: 41px;
+    left: 93%;
+    height: 18px;
+  }
+
+  #colorPicker {
+    border-radius: 5px;
+    height: 25px;
+    width: 60px;
+    position: relative;
+  }
+
+  #btnSetColor {
+    position: relative;
+    height: 25px;
+    bottom: 3px;
+    border-radius: 5px;
+    border: 0px solid;
+  }
+
+  #colorNamer {
+    position: relative;
+    width: 80%;
+    border-radius: 3px;
+    font-size: 80%;
+    margin-left: 0px;
+  }
+
+  #inputSelector {
+    position: relative;
+    border-bottom: 0px solid;
+  }
+
+  #openColorNamer,
+  #openColorPicker {
+    border-radius: 5px;
+    border: 0px solid;
+    height: 100%;
+    width: 90%;
+    font-size: 100%;
+    margin-left: 0px;
+  }
+
+  #siHeader span {
+    display: none;
+  }
+
+  #siHeader::after {
+    content: "S.I.";
+  }
 }

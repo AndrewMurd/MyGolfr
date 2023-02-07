@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Observable, Subject, timeout } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CourseDetailsService } from '../../Service/course-details.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class NewScorecardTeeComponent {
   showCopySI!: boolean;
   showCopyPar!: boolean;
   courseId!: string;
-  color: string = '#0000FF';
+  color!: string;
   nameColor!: string;
   displayColorPicker: boolean = false;
   displayColorNamer: boolean = false;
@@ -30,7 +30,6 @@ export class NewScorecardTeeComponent {
   copyEventsSubject: Subject<any> = new Subject<any>();
   factor: number = 170;
   requestSendRate: number = 1000;
-  numberOftees!: number;
 
   constructor(private courseService: CourseDetailsService) {}
 
@@ -42,16 +41,15 @@ export class NewScorecardTeeComponent {
     this.color = this.teeData.Color;
     this.nameColor = this.teeData.ColorName;
 
-    this.numberOftees = this.scorecard.length;
-
+    // this dosent work properly
     let key, value: any;
     let countPar = 0,
       countSI = 0;
     if (this.isFrontNine) {
       for ([key, value] of Object.entries(this.teeData)) {
-        if (key.charAt(0) == 'P' && Number(key.charAt(1)) <= 9) {
+        if (key.charAt(0) == 'P' && Number(key.charAt(1)) <= 9 && !Number(key.slice(-2))) {
           countPar++;
-        } else if (key.charAt(0) == 'S' && Number(key.charAt(2)) <= 9) {
+        } else if (key.charAt(0) == 'S' && Number(key.charAt(2)) <= 9 && !Number(key.slice(-2))) {
           countSI++;
         }
       }
@@ -140,8 +138,13 @@ export class NewScorecardTeeComponent {
     return { r: r, g: g, b: b };
   }
 
-  changePosition(event: any) {
+  async changePosition(event: any) {
     const newPos = event.target.value;
+
+    const response_scorecard: any = await this.courseService.getScorecard(
+      this.courseId
+    );
+    this.scorecard = response_scorecard.scorecard;
 
     for (let tee of this.scorecard) {
       if (tee.Position == newPos) {
@@ -258,22 +261,31 @@ export class NewScorecardTeeComponent {
   }
 
   deleteTee() {
-    document.getElementById(this.teeData.id)?.remove();
-    document.getElementById(this.teeData.id)?.remove();
+    const confirmRes = window.confirm(
+      'Are you sure you want to delete this tee. (Cannot be undone)'
+    );
 
-    for (let i = 0; i < this.scorecard.length; i++) {
-      if (this.scorecard[i].id == this.teeData.id) {
-        this.scorecard.splice(i, 1);
+    if (confirmRes) {
+      document.getElementById(this.teeData.id)?.remove();
+      document.getElementById(this.teeData.id)?.remove();
+
+      for (let i = 0; i < this.scorecard.length; i++) {
+        if (this.scorecard[i].id == this.teeData.id) {
+          this.scorecard.splice(i, 1);
+        }
       }
-    }
 
-    for (let tee of this.scorecard) {
-      if (tee.Position > this.teeData.Position) tee.Position = tee.Position - 1;
-    }
+      for (let tee of this.scorecard) {
+        if (tee.Position > this.teeData.Position)
+          tee.Position = tee.Position - 1;
+      }
 
-    this.courseService.setScorecard(this.courseId, this.scorecard).then(() => {
-      this.onReload.emit();
-    });
+      this.courseService
+        .setScorecard(this.courseId, this.scorecard)
+        .then(() => {
+          this.onReload.emit();
+        });
+    }
   }
 
   onSubmit(data: any) {
@@ -281,19 +293,25 @@ export class NewScorecardTeeComponent {
   }
 
   submitColorName() {
-    this.displayColorNamer = false;
-    this.displayInputSelector = false;
-    this.displayColorName = true;
-    // todo
-    this.courseService.setScorecardValue(
-      JSON.parse(localStorage.getItem('selectedCourse')!).reference,
-      { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
-    );
+    if (!this.nameColor) {
+      alert('Must enter name!');
+      this.displayColorNamer = false;
+      this.displayInputSelector = true;
+    } else {
+      this.displayColorNamer = false;
+      this.displayInputSelector = false;
+      this.displayColorName = true;
 
-    this.onSubmitofInput.emit({
-      id: [this.teeData.id, 'ColorName'],
-      value: this.nameColor,
-    });
+      this.courseService.setScorecardValue(
+        JSON.parse(localStorage.getItem('selectedCourse')!).reference,
+        { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
+      );
+  
+      this.onSubmitofInput.emit({
+        id: [this.teeData.id, 'ColorName'],
+        value: this.nameColor,
+      });
+    }
   }
 
   setColor() {
@@ -303,6 +321,10 @@ export class NewScorecardTeeComponent {
       this.displayColorName = true;
     } else {
       this.displayInputSelector = true;
+    }
+
+    if (!this.color) {
+      this.color = '#000000';
     }
 
     // set Color in database

@@ -1,9 +1,4 @@
-import {
-  Component,
-  Input,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { NewScorecardTeeComponent } from '../new-scorecard-tee/new-scorecard-tee.component';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Subject } from 'rxjs';
@@ -39,7 +34,6 @@ export class NewGolfCourseScoreCardComponent {
   }
 
   async reload() {
-
     const response: any = await this.courseService.getScorecard(this.courseId);
 
     let teeRenderOrder = [];
@@ -64,9 +58,11 @@ export class NewGolfCourseScoreCardComponent {
   }
 
   async addNewTee() {
-    const response: any = await this.courseService.setScorecardValue(this.courseId, { id: 'new', value: '' });
+    const response: any = await this.courseService.setScorecardValue(
+      this.courseId,
+      { id: 'new', value: '' }
+    );
     this.reload();
-    // this.createTeeComponents(response.data);
   }
 
   createTeeComponents(teeData: any, scorecardData: any) {

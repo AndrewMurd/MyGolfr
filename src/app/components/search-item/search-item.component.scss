@@ -11,8 +11,7 @@ $itemHeight: 70px;
   border-radius: 10px;
   padding-top: 10px;
   padding-bottom: 10px;
-  width: 100%;
-  max-width: 740px;
+  max-width: 741px;
   &:hover {
     background-color: #3d3d3d;
   }
@@ -25,8 +24,8 @@ $itemHeight: 70px;
 
 img {
   width: 100px;
-  margin-left: 20px;
   height: $itemHeight;
+  border-radius: 1px;
 }
 
 .desc {
@@ -152,7 +151,7 @@ button {
   width: 12rem;
 }
 
-@media (max-width: 885px) {
+@media (max-width: 840px) {
   $phoneHeight: 50px;
   .itemContaier {
     height: $phoneHeight;
@@ -166,14 +165,13 @@ button {
     color: white;
   }
   img {
-    margin-left: 10px;
-    height: $phoneHeight;
+    display: none;
   }
   .desc {
     display: flex;
     flex-direction: column;
     margin-top: 3px;
-    margin-left: 5px;
+    margin-left: 0px;
   }
   .button-text {
     display: none;
@@ -182,6 +180,6 @@ button {
     width: 1rem;
   }
   .startRoundBtn {
-    width: 4rem;
+    width: 2rem;
   }
 }

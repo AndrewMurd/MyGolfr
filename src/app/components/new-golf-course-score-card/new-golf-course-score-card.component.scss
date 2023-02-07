@@ -4,20 +4,18 @@
   margin-left: auto;
   margin-right: auto;
   position: absolute;
-  top: 15%;
+  top: 5%;
   left: 0;
   right: 0;
   margin-top: 5vh;
-  max-width: 738px;
-  min-width: 700px;
+  width: 738px;
 }
 
 .scorecardContainer {
-  max-width: 738px;
+  width: 738px;
   height: auto;
   border: 1px solid;
   border-radius: 2px;
-  min-width: 700px;
   background-color: grey;
 }
 
@@ -40,16 +38,14 @@ h1 {
   background-color: $green;
   border: 1px solid #13aa52;
   border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
   box-sizing: border-box;
   color: black;
   cursor: pointer;
-  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;
   font-weight: 400;
   outline: none;
   outline: 0;
-  padding: 10px 25px;
   text-align: center;
   transform: translateY(0);
   transition: transform 150ms, box-shadow 150ms;
@@ -57,17 +53,41 @@ h1 {
   -webkit-user-select: none;
   touch-action: manipulation;
   &:hover {
-    box-shadow: rgba(0, 0, 0, .15) 0 3px 9px 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
     transform: translateY(-2px);
   }
 }
 
-@media (min-width: 768px) {
-  .button-37 {
-    padding: 10px 30px;
-  }
-}
+@media (max-width: 830px) {
+  .container {
+    position: absolute;
+    top: 5%;
+    left: 0;
+    right: 0;
+    margin-top: 5vh;
+    width: 100%;
+  }  
 
-@media (max-width: 740px) {
+  .gridContainer {
+    margin: 0px 0px;
+  }
+
+  .scorecardContainer {
+    width: 100%;
+    height: auto;
+    border: 1px solid;
+    border-radius: 2px;
+    background-color: grey
+  }  
   
+  #addBtn {
+    font-size: 70%;
+    height: 25px;
+    width: 60px;
+    left: 73%;
+  }
+
+  h1 {
+    font-size: 100%;
+  }
 }

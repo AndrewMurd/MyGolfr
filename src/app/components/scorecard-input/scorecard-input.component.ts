@@ -9,7 +9,6 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class ScorecardInputComponent {
   @Input() id!: string;
-  @Input() width: string = '85%';
   @Input() placeholder!: string;
   @Input() data: any;
   @Input() events!: Observable<any>;

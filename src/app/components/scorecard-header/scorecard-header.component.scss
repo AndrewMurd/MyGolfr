@@ -2,7 +2,7 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: 120px repeat(9, 45px) 60px 70px 70px;
+  grid-template-columns: 16.5% repeat(9, 6.2%) 8% 10% 10%;
   grid-auto-rows: 40px;
   border-bottom: 0px solid;
 }
@@ -11,7 +11,8 @@
   font-weight: bold;
 }
 
-.header, .header-holes {
+.header,
+.header-holes {
   background-color: rgb(48, 48, 48);
 }
 
@@ -19,4 +20,18 @@ div {
   font-size: 1.2rem;
   line-height: 40px;
   border-bottom: 1px solid rgb(88, 88, 88);
+}
+
+@media (max-width: 830px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: 10% repeat(9, 6.7%) 10% 10% 10%;
+    grid-auto-rows: 20px;
+    border-bottom: 0px solid;
+  }  
+  div {
+    font-size: 85%;
+    line-height: 20px;
+    border-bottom: 1px solid rgb(88, 88, 88);
+  }
 }

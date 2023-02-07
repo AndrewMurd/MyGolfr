@@ -16,6 +16,7 @@ export class SearchItemComponent {
   name!: string;
   addressInfo!: string;
   disable: boolean = false;
+  isPhone: boolean = false;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -23,16 +24,22 @@ export class SearchItemComponent {
   ) {}
 
   ngOnInit() {
-    // this.src = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${this.data.photos[0].photo_reference}&key=${apiKey}`;
+    if (this.data.photos) {
+      this.src = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${this.data.photos[0].photo_reference}&key=${apiKey}`;
+    }
     this.name = this.data.name;
-    this.addressInfo = this.data.formatted_address;
+    
+    let stringArray = this.data.plus_code.compound_code.split(/(\s+)/);
+    this.addressInfo = '';
+
+    for (let i = 1; i < stringArray.length; i++) {
+      this.addressInfo += stringArray[i];
+    }
   }
 
   clickItem() {
     if (this.disable) return;
     this.onClickItem.emit();
-    // store data for selected course in course service so other components can access it
-    // this.courseService.setCourse(this.data);
     localStorage.setItem('selectedCourse', JSON.stringify(this.data));
     this.router.navigate(['/course']);
   }
@@ -40,11 +47,7 @@ export class SearchItemComponent {
   startRound() {
     this.disable = true;
     this.onClickItem.emit();
-    // store data for selected course in course service so other components can access it
-    // this.courseService.setCourse(this.data);
+    localStorage.setItem('selectedCourse', JSON.stringify(this.data));
     this.router.navigate(['/start_round']); // not implemented yet
-    // setTimeout(() => {
-    //   this.disable = false;
-    // }, 100);
   }
 }

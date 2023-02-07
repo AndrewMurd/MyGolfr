@@ -139,7 +139,7 @@ button {
     letter-spacing: 2px;
   }
   &:after {
-    content:"LOGIN";
+    content: "LOGIN";
   }
 }
 .onclic {
@@ -166,7 +166,7 @@ button {
   color: white;
   background: $green;
   &:after {
-    content: url('../../../assets/check.png');
+    content: url("../../../assets/check.png");
   }
   &:hover {
     color: $green;

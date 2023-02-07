@@ -8,10 +8,27 @@
   <option value="#C0C0C0">Silver</option>
 </datalist>
 
-<img *ngIf="isFrontNine" id="deleteBtn" (click)="deleteTee()" src="../../../assets/error.png" alt="">
+<img
+  *ngIf="isFrontNine"
+  id="deleteBtn"
+  (click)="deleteTee()"
+  src="../../../assets/error.png"
+  alt=""
+/>
 
-<select *ngIf="isFrontNine" id="selectPosition" (change)="changePosition($event)">
-  <option id="posOptions" [selected]="teeData.Position == pos && 'selected'" *ngFor="let pos of createRange(numberOftees)" [value]="pos">{{ pos }}</option>
+<select
+  *ngIf="isFrontNine"
+  id="selectPosition"
+  (change)="changePosition($event)"
+>
+  <option
+    id="posOptions"
+    [selected]="teeData.Position == pos && 'selected'"
+    *ngFor="let pos of createRange(scorecard.length)"
+    [value]="pos"
+  >
+    {{ pos }}
+  </option>
 </select>
 
 <div class="grid-container">
@@ -21,9 +38,9 @@
     [ngStyle]="{ 'background-color': teeData.Color }"
   >
     <p
-      [ngStyle]="isWhite? { 'color': '#252525' } : { 'color': 'White' }"
+      [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
       *ngIf="displayColorName"
-      (dblclick)="displayColorName = false; displayInputSelector = true"
+      (click)="displayColorName = false; displayInputSelector = true"
     >
       {{ teeData.ColorName }}
     </p>
@@ -98,7 +115,7 @@
     ></app-scorecard-input>
   </div>
   <!-- row 3 -->
-  <div [ngStyle]="{ 'background-color': 'grey' }" class="header">Par</div>
+  <div [ngStyle]="{ 'background-color': 'grey' }" id="parHeader" class="header">Par</div>
   <div class="holes" *ngFor="let a of createRange(9); let index = index">
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
@@ -119,13 +136,15 @@
     ></app-scorecard-input>
   </div>
   <div>
-    <button *ngIf="showCopyPar" (click)="copyParData()" id="copyPar">Copy Par</button>
+    <button *ngIf="showCopyPar" (click)="copyParData()" id="copyPar">
+      Copy Par
+    </button>
   </div>
   <div></div>
 
   <!-- row 4 -->
-  <div [ngStyle]="{ 'background-color': 'grey' }" class="header">
-    Stroke Index
+  <div [ngStyle]="{ 'background-color': 'grey' }" id="siHeader" class="header">
+    <span>Stroke Index</span>
   </div>
   <div class="holes" *ngFor="let a of createRange(9); let index = index">
     <app-scorecard-input
@@ -137,7 +156,9 @@
     ></app-scorecard-input>
   </div>
   <div>
-    <button *ngIf="showCopySI" (click)="copySIData()" id="copyPar">Copy SI</button>
+    <button *ngIf="showCopySI" (click)="copySIData()" id="copyPar">
+      Copy SI
+    </button>
   </div>
   <div></div>
   <div></div>

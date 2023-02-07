@@ -6,7 +6,6 @@ import { ROOT_URL } from '../utilities/enviroment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string) {
@@ -36,7 +35,7 @@ export class AuthenticationService {
           name: name,
           email: email,
           password: password,
-          confirmPass: confirmPass
+          confirmPass: confirmPass,
         })
         .subscribe({
           next: (data) => {

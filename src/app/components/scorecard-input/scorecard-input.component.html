@@ -1,16 +1,20 @@
-<div (dblclick)="showInput()">
+<div (click)="showInput()" [ngClass]="showField ? 'nohoverDiv' : 'hoverDiv'">
   <input
     *ngIf="showField"
     (keyup.enter)="submit()"
     id="{{ id }}"
     type="text"
     [(ngModel)]="value"
-    [ngStyle]="{ width: width }"
     placeholder="{{ placeholder }}"
     type="number"
     min="1"
     oninput="validity.valid || (value='');"
     step="0.01"
   />
-  <p *ngIf="!showField" [ngStyle]="isWhite? { 'color': '#252525' } : { 'color': 'White' }">{{ value }}</p>
+  <p
+    *ngIf="!showField"
+    [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
+  >
+    {{ value }}
+  </p>
 </div>

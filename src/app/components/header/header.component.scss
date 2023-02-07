@@ -4,43 +4,54 @@ $color1: #2caf04;
 $color2: #1d7702;
 $color3: #0f3f00;
 
+* {
+  user-select: none;
+}
+
 .header {
-    height: 60px;
-    display: flex;
-    align-items: center;
-    background-color: $theme;
-    position: sticky;
-    z-index: 2;
-    box-shadow: 0.5px 0.5px 0.5px 0.5px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background-color: $theme;
+  position: sticky;
+  z-index: 2;
+  box-shadow: 0.5px 0.5px 0.5px 0.5px;
 }
 
 .logo {
-    height: 45px;
-    width: 50px;
-    position: absolute;
-    left: 20%;
-    cursor: pointer;
+  height: 45px;
+  width: 50px;
+  position: absolute;
+  left: 20%;
+  cursor: pointer;
 }
 
 a {
-    text-decoration: none;
-    font-size: 18px;
+  text-decoration: none;
+  font-size: 18px;
 }
 
 .loginLink {
-    right: 20%;
-    position: absolute;
-    color: white;
+  right: 20%;
+  position: absolute;
+  color: white;
 }
 
 .login {
-    right: 20%;
+  right: 20%;
 }
 
 .signUp {
-    right: 25%;
+  right: 25%;
 }
 
-.login:active, .signUp:active {
-    border-bottom-width: 2px;
+.login:active,
+.signUp:active {
+  border-bottom-width: 2px;
+}
+
+@media (max-width: 830px) {
+  .header {
+    width: 100%;
+  }
 }

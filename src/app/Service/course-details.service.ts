@@ -69,6 +69,7 @@ export class CourseDetailsService {
     });
   }
 
+  // not going to use but its there :| use setScorecard instead
   async deleteTee(courseId: string, teeId: any) {
     return await new Promise((resolve, reject) => {
       this.http
