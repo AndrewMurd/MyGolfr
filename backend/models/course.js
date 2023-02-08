@@ -1,29 +1,31 @@
-const executeQuery = require('../util/database');
+const executeQuery = require("../util/database");
 
 module.exports = class Course {
-    constructor(id, course, scorecard) {
-        this.id = id;
-        this.course = course;
-        this.scorecard = scorecard;
-    }
+  constructor(id, course, scorecard) {
+    this.id = id;
+    this.course = course;
+    this.scorecard = scorecard;
+  }
 
-    static find(courseId) {
-        return executeQuery(
-            'SELECT * FROM courses WHERE id = ?', [courseId]
-        );
-    }
+  static search(searchQuery) {
+    return executeQuery(`SELECT * FROM courses WHERE name Like "%${searchQuery}%"`);
+  }
 
-    static save(course) {
-        return executeQuery(
-            'INSERT INTO courses (id, course, scorecard) VALUES (?, ?, ?)',
-            [course.id, course.course, course.scorecard]
-        );
-    }
+  static find(courseId) {
+    return executeQuery("SELECT * FROM courses WHERE id = ?", [courseId]);
+  }
 
-    static update(scorecard, id) {
-        return executeQuery(
-            'UPDATE courses SET scorecard = ? WHERE id = ?',
-            [scorecard, id]
-        );
-    }
-}
+  static save(course) {
+    return executeQuery(
+      "INSERT INTO courses (id, name, course, scorecard) VALUES (?, ?, ?, ?)",
+      [course.id, course.name, course.course, course.scorecard]
+    );
+  }
+
+  static update(scorecard, id) {
+    return executeQuery("UPDATE courses SET scorecard = ? WHERE id = ?", [
+      scorecard,
+      id,
+    ]);
+  }
+};

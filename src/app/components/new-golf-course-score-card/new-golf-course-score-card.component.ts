@@ -50,7 +50,6 @@ export class NewGolfCourseScoreCardComponent {
     for (let teeToRender of teeRenderOrder) {
       this.createTeeComponents(teeToRender, response.scorecard);
     }
-    console.log(response.scorecard);
   }
 
   onSubmit(data: any) {

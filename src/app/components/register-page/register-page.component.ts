@@ -40,19 +40,15 @@ export class RegisterPageComponent {
     this.confirmPassInput = document.querySelector('#confirmPassInput');
 
     this.nameInput.addEventListener('keyup', () => {
-      console.log('name');
       this.nameInput.setAttribute('value', this.nameInput.value);
     });
     this.emailInput.addEventListener('keyup', () => {
-      console.log('email');
       this.emailInput.setAttribute('value', this.emailInput.value);
     });
     this.passwordInput.addEventListener('keyup', () => {
-      console.log('pass');
       this.passwordInput.setAttribute('value', this.passwordInput.value);
     });
     this.confirmPassInput.addEventListener('keyup', () => {
-      console.log('conf');
       this.confirmPassInput.setAttribute('value', this.confirmPassInput.value);
     });
   }
@@ -98,7 +94,6 @@ export class RegisterPageComponent {
           this.nameInput.classList.add('inputError');
           this.nameError.innerText = error.error.errors[0].msg;
         } else if (this.error == 'email') {
-          console.log('email errror');
           this.emailInput.classList.add('inputError');
           this.emailError.innerText = error.error.errors[0].msg;
         } else if (this.error == 'password') {

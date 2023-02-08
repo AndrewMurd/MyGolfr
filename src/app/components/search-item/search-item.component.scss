@@ -4,14 +4,13 @@
 $itemHeight: 70px;
 
 .itemContaier {
+  user-select: none;
   display: flex;
   height: $itemHeight;
   position: relative;
   background-color: $theme;
-  border-radius: 10px;
   padding-top: 10px;
   padding-bottom: 10px;
-  max-width: 741px;
   &:hover {
     background-color: #3d3d3d;
   }
@@ -26,6 +25,7 @@ img {
   width: 100px;
   height: $itemHeight;
   border-radius: 1px;
+  margin-left: 20px;
 }
 
 .desc {
@@ -171,7 +171,7 @@ button {
     display: flex;
     flex-direction: column;
     margin-top: 3px;
-    margin-left: 0px;
+    margin-left: 10px;
   }
   .button-text {
     display: none;
@@ -180,6 +180,6 @@ button {
     width: 1rem;
   }
   .startRoundBtn {
-    width: 2rem;
+    width: 3rem;
   }
 }

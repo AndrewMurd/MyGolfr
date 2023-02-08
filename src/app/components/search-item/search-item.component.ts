@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Router } from '@angular/router';
-import { apiKey } from '../../utilities/enviroment';
 
 @Component({
   selector: 'app-search-item',
@@ -25,7 +24,7 @@ export class SearchItemComponent {
 
   ngOnInit() {
     if (this.data.photos) {
-      this.src = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${this.data.photos[0].photo_reference}&key=${apiKey}`;
+      // this.src = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${this.data.photos[0].photo_reference}&key=${apiKey}`;
     }
     this.name = this.data.name;
     

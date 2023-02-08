@@ -1,16 +1,30 @@
 <div class="searchContainer">
   <input
     class="searchInput"
+    id="homepageSearch"
     [(ngModel)]="search"
     type="text"
     placeholder="Search Course Name"
     (ngModelChange)="searchCourses()"
   />
   <div class="searchItemsContainer">
+    <div *ngIf="isLoading" id="loadingContainer">
+      <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
     <app-search-item
-      *ngFor="let course of courses"
+      *ngFor="let course of courses.slice(0, amountToDisplay)"
       [data]="course"
       (onClickItem)="resetSession()"
     ></app-search-item>
+    <div *ngIf="this.courses.length > 0" (click)="showMore()" id="showMore">
+      <i class="arrowDown"></i>
+      <span>Show More</span>
+    </div>
   </div>
 </div>

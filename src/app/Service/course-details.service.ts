@@ -16,6 +16,23 @@ export class CourseDetailsService {
   //   this.course$.next(course);
   // }
 
+  async searchCourses(searchString: string) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .get(ROOT_URL + 'courses/search_courses', {
+          params: new HttpParams().set('searchQuery', searchString),
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
   async getScorecard(id: string) {
     return await new Promise((resolve, reject) => {
       this.http

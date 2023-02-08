@@ -8,6 +8,18 @@ const { v4: uuidv4 } = require("uuid");
 
 const router = Router();
 
+router.get("/search_courses", async (req, res) => {
+  const searchQuery = req.query.searchQuery;
+
+  const coursesRes = await Course.search(searchQuery);
+
+  let courses = [];
+  for (let course of coursesRes) {
+    courses.push(JSON.parse(course.course));
+  }
+  res.status(200).send({ courses: courses });
+});
+
 router.get("/scorecard", async (req, res) => {
   const id = req.query.id;
 
@@ -28,6 +40,7 @@ router.post("/add", async (req, res) => {
     if (res.length == 0) {
       const courseDetails = {
         id: course.reference,
+        name: course.name,
         course: JSON.stringify(course),
         scorecard: JSON.stringify([]),
       };
@@ -89,7 +102,10 @@ router.delete("/delete_tee", async (req, res) => {
     return tee.id != teeId;
   });
 
-  const resultAfterUpdate = await Course.update(JSON.stringify(scorecard), courseId);
+  const resultAfterUpdate = await Course.update(
+    JSON.stringify(scorecard),
+    courseId
+  );
 
   res.send({});
 });

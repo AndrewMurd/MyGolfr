@@ -12,10 +12,11 @@ $color3: #0f3f00;
   height: 60px;
   display: flex;
   align-items: center;
-  background-color: $theme;
-  position: sticky;
+  background-color: #303030;
+  position: fixed;
   z-index: 2;
-  box-shadow: 0.5px 0.5px 0.5px 0.5px;
+  width: 105%;
+  top: 0px;
 }
 
 .logo {
@@ -48,10 +49,4 @@ a {
 .login:active,
 .signUp:active {
   border-bottom-width: 2px;
-}
-
-@media (max-width: 830px) {
-  .header {
-    width: 100%;
-  }
 }
