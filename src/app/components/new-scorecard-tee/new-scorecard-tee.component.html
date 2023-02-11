@@ -65,6 +65,7 @@
     <div *ngIf="displayColorNamer">
       <input
         id="colorNamer"
+        onkeydown="return /[a-z]/i.test(event.key)"
         type="text"
         placeholder="Enter Tee Color"
         [(ngModel)]="nameColor"

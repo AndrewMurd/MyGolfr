@@ -29,7 +29,6 @@ export class NewScorecardTeeComponent {
   colorEventsSubject: Subject<boolean> = new Subject<boolean>();
   copyEventsSubject: Subject<any> = new Subject<any>();
   factor: number = 170;
-  requestSendRate: number = 1000;
 
   constructor(private courseService: CourseDetailsService) {}
 
@@ -141,10 +140,10 @@ export class NewScorecardTeeComponent {
   async changePosition(event: any) {
     const newPos = event.target.value;
 
-    const response_scorecard: any = await this.courseService.getScorecard(
+    const response_scorecard: any = await this.courseService.get(
       this.courseId
     );
-    this.scorecard = response_scorecard.scorecard;
+    this.scorecard = response_scorecard.course.scorecard;
 
     for (let tee of this.scorecard) {
       if (tee.Position == newPos) {
@@ -158,7 +157,7 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    this.courseService.setScorecard(this.courseId, this.scorecard).then(() => {
+    this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
       this.onReload.emit();
     });
   }
@@ -166,10 +165,10 @@ export class NewScorecardTeeComponent {
   async copyParData() {
     this.showCopyPar = false;
 
-    const response_scorecard: any = await this.courseService.getScorecard(
+    const response_scorecard: any = await this.courseService.get(
       this.courseId
     );
-    this.scorecard = response_scorecard.scorecard;
+    this.scorecard = response_scorecard.course.scorecard;
 
     const list: any[] = [];
 
@@ -203,13 +202,12 @@ export class NewScorecardTeeComponent {
       if (tee.id == this.teeData.id) {
         let key, value: any;
         for ([key, value] of Object.entries(largest)) {
-          console.log(key, value);
           tee[key] = value;
         }
       }
     }
 
-    this.courseService.setScorecard(this.courseId, this.scorecard).then(() => {
+    this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
       this.onReload.emit();
     });
   }
@@ -217,10 +215,10 @@ export class NewScorecardTeeComponent {
   async copySIData() {
     this.showCopySI = false;
 
-    const response_scorecard: any = await this.courseService.getScorecard(
+    const response_scorecard: any = await this.courseService.get(
       this.courseId
     );
-    this.scorecard = response_scorecard.scorecard;
+    this.scorecard = response_scorecard.course.scorecard;
 
     const list: any[] = [];
 
@@ -255,7 +253,7 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    this.courseService.setScorecard(this.courseId, this.scorecard).then(() => {
+    this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
       this.onReload.emit();
     });
   }
@@ -281,7 +279,7 @@ export class NewScorecardTeeComponent {
       }
 
       this.courseService
-        .setScorecard(this.courseId, this.scorecard)
+        .update(this.courseId, this.scorecard, 'scorecard')
         .then(() => {
           this.onReload.emit();
         });
@@ -301,6 +299,8 @@ export class NewScorecardTeeComponent {
       this.displayColorNamer = false;
       this.displayInputSelector = false;
       this.displayColorName = true;
+
+      this.nameColor = this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
 
       this.courseService.setScorecardValue(
         JSON.parse(localStorage.getItem('selectedCourse')!).reference,

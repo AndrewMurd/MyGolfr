@@ -4,12 +4,11 @@
   margin-left: auto;
   margin-right: auto;
   position: absolute;
-  top: 5%;
   left: 0;
   right: 0;
   width: 738px;
   padding-bottom: 10vh;
-  margin-top: 5vh;
+  margin-top: 40px;
 }
 
 .scorecardContainer {
@@ -32,9 +31,11 @@ h1 {
 }
 
 /* CSS */
-#addBtn {
-  top: 5px;
-  left: 85%;
+#addBtn, #doneBtn, #removebacknineBtn {
+  top: 8px;
+  left: 70%;
+  height: 30px;
+  width: 100px;
   position: relative;
   background-color: $green;
   border: 1px solid #13aa52;
@@ -55,8 +56,17 @@ h1 {
   touch-action: manipulation;
   &:hover {
     box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
-    transform: translateY(-2px);
+    transform: scale(1.1) translateY(-2px);
   }
+}
+
+#doneBtn {
+  left: 73%;
+}
+
+#removebacknineBtn {
+  width: 170px;
+  left: -27%;
 }
 
 @media (max-width: 830px) {
@@ -65,7 +75,6 @@ h1 {
     top: 5%;
     left: 0;
     right: 0;
-    margin-top: 5vh;
     width: 100%;
   }  
 
@@ -85,7 +94,29 @@ h1 {
     font-size: 70%;
     height: 25px;
     width: 60px;
-    left: 73%;
+    left: 60%;
+    &:hover {
+      transform: scale(1) translateY(0px);
+    }
+  }
+
+  #doneBtn {
+    font-size: 65%;
+    height: 25px;
+    width: 60px;
+    left: 69%;
+    &:hover {
+      transform: scale(1) translateY(0px);
+    }
+  }
+
+  #removebacknineBtn {
+    width: 110px;
+    font-size: 65%;
+    left: -27%;
+    &:hover {
+      transform: scale(1) translateY(0px);
+    }
   }
 
   h1 {

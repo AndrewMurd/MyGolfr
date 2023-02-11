@@ -1,6 +1,25 @@
 <app-header></app-header>
 
-<app-new-golf-course-score-card
-  [title]="data.name"
-></app-new-golf-course-score-card>
+<div id="map"></div>
 
+<div id="selectionboxContainer">
+  <button id="courseBtn" class="mapselectionBtn">Course</button>
+  <div
+    [ngClass]="{
+      selectionboxPhone: isPhone && !isNineHole,
+      selectionbox: !isPhone && !isNineHole,
+      selectionboxPhone9: isPhone && isNineHole,
+      selectionbox9: !isPhone && isNineHole
+    }"
+    id="selectionbox"
+  >
+    <button
+      *ngFor="let a of createRange(isNineHole ? 9 : 18); let index = index"
+      class="mapselectionBtn"
+    >
+      {{ a }}
+    </button>
+  </div>
+</div>
+
+<app-scorecard (rBackNine)="isNineHole = !isNineHole"></app-scorecard>

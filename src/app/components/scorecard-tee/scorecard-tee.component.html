@@ -1,0 +1,80 @@
+<div class="grid-container">
+  <!-- row 2 -->
+  <div
+    id="colorInputsContainer"
+    [ngStyle]="{ 'background-color': teeData.Color }"
+  >
+    <p [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }">
+      {{ teeData.ColorName }}
+    </p>
+  </div>
+  <div
+    [ngStyle]="
+      isWhite
+        ? { 'background-color': teeData.Color, color: '#252525' }
+        : { 'background-color': teeData.Color, color: 'White' }
+    "
+    class="holes"
+    *ngFor="let a of createRange(9)"
+  >
+    {{ isFrontNine ? teeData["H" + a] : teeData["H" + (a + 9)] }}
+  </div>
+  <div
+    [ngStyle]="
+      isWhite
+        ? { 'background-color': teeData.Color, color: '#252525' }
+        : { 'background-color': teeData.Color, color: 'White' }
+    "
+  >
+    {{ teeData.SumOut }}
+  </div>
+  <div
+    [ngStyle]="
+      isWhite
+        ? { 'background-color': teeData.Color, color: '#252525' }
+        : { 'background-color': teeData.Color, color: 'White' }
+    "
+  >
+    {{ teeData.Slope }}
+  </div>
+  <div
+    [ngStyle]="
+      isWhite
+        ? { 'background-color': teeData.Color, color: '#252525' }
+        : { 'background-color': teeData.Color, color: 'White' }
+    "
+  >
+    {{ teeData.Rating }}
+  </div>
+  <!-- row 3 -->
+  <div [ngStyle]="{ 'background-color': 'grey' }" id="parHeader" class="header">
+    Par
+  </div>
+  <div
+    [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
+    class="holes"
+    *ngFor="let a of createRange(9); let index = index"
+  >
+    {{ isFrontNine ? teeData["P" + a] : teeData["P" + (a + 9)] }}
+  </div>
+  <div [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }">
+    {{ teeData.SumOutPar }}
+  </div>
+  <div></div>
+  <div></div>
+
+  <!-- row 4 -->
+  <div [ngStyle]="{ 'background-color': 'grey' }" id="siHeader" class="header">
+    <span>Stroke Index</span>
+  </div>
+  <div
+    [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
+    class="holes"
+    *ngFor="let a of createRange(9); let index = index"
+  >
+    {{ isFrontNine ? teeData["SI" + a] : teeData["SI" + (a + 9)] }}
+  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>

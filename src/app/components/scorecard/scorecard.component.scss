@@ -1,0 +1,74 @@
+@import "../../utilities/variables.scss";
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 738px;
+  padding-bottom: 10vh;
+}
+
+.scorecardContainer {
+  width: 738px;
+  height: auto;
+  border: 1px solid;
+  border-radius: 2px;
+  background-color: grey;
+}
+
+.gridContainer {
+  margin: 5px 6px;
+}
+
+h1 {
+  margin: 5px 6px;
+  text-align: center;
+  border: 1px solid;
+  border-radius: 2px 2px 0px 0px;
+}
+
+#editBtn {
+  left: 101%;
+  top: 40px;
+  height: 30px;
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+  transition: transform 150ms;
+  &:hover {
+    transform: scale(1.2) translateY(-3px);
+  }
+}
+
+@media (max-width: 830px) {
+  #editBtn {
+    height: 25px;
+    left: 90%;
+  }
+
+  .container {
+    position: absolute;
+    top: 5%;
+    left: 0;
+    right: 0;
+    width: 100%;
+  }  
+
+  .gridContainer {
+    margin: 0px 0px;
+  }
+
+  .scorecardContainer {
+    width: 100%;
+    height: auto;
+    border: 1px solid;
+    border-radius: 2px;
+    background-color: grey
+  }  
+
+  h1 {
+    font-size: 100%;
+  }
+}

@@ -38,14 +38,14 @@ export class SearchItemComponent {
 
   clickItem() {
     if (this.disable) return;
-    this.onClickItem.emit();
+    this.onClickItem.emit(this.data);
     localStorage.setItem('selectedCourse', JSON.stringify(this.data));
     this.router.navigate(['/course']);
   }
 
   startRound() {
     this.disable = true;
-    this.onClickItem.emit();
+    this.onClickItem.emit(this.data);
     localStorage.setItem('selectedCourse', JSON.stringify(this.data));
     this.router.navigate(['/start_round']); // not implemented yet
   }

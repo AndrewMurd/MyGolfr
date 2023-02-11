@@ -1,10 +1,4 @@
-<div *ngIf="!editing" class="container">
-  <img
-    id="editBtn"
-    (click)="editing = true"
-    src="../../../assets/edit.png"
-    alt=""
-  />
+<div class="container">
   <div class="scorecardContainer">
     <h1>{{ title }}</h1>
     <div class="gridContainer">
@@ -16,10 +10,7 @@
       </ng-container>
     </div>
   </div>
+  <button *ngIf="!isLoading" id="addBtn" (click)="addNewTee()">Add Tee</button>
+  <button *ngIf="!isLoading" id="doneBtn" (click)="finishEdit()">Done</button>
+  <button *ngIf="!isLoading" id="removebacknineBtn" (click)="removebacknine()">{{ removedBackNine? 'Add Back Nine' : 'Remove Back Nine'}}</button>
 </div>
-
-<edit-score-card
-  *ngIf="editing"
-  (onFinishEdit)="finishEdit()"
-  (rBackNine)="rBackNine.emit()"
-></edit-score-card>

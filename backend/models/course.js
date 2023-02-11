@@ -17,14 +17,18 @@ module.exports = class Course {
 
   static save(course) {
     return executeQuery(
-      "INSERT INTO courses (id, name, course, scorecard) VALUES (?, ?, ?, ?)",
-      [course.id, course.name, course.course, course.scorecard]
+      "INSERT INTO courses (id, name, googleDetails, courseDetails, clicks, scorecard) VALUES (?, ?, ?, ?, ?, ?)",
+      [course.id, course.name, course.googleDetails, course.courseDetails, course.clicks, course.scorecard]
     );
   }
 
-  static update(scorecard, id) {
-    return executeQuery("UPDATE courses SET scorecard = ? WHERE id = ?", [
-      scorecard,
+  static update(data, type, id) {
+    return executeQuery(`UPDATE courses SET ${type} = '${data}' WHERE id = '${id}'`);
+  }
+
+  static addClick(clicks, id) {
+    return executeQuery("UPDATE courses SET clicks = ? WHERE id = ?", [
+      clicks,
       id,
     ]);
   }

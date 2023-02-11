@@ -5,3 +5,4 @@ backend/config.json
 backend/.env
 .angular
 src/app/utilities/enviroment.ts
+src/index.html

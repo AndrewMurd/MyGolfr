@@ -1,1 +1,88 @@
 @import "../../utilities/variables.scss";
+
+#map {
+  margin-top: 60px;
+  height: 400px;
+  width: 100vw;
+}
+
+#selectionboxContainer {
+  display: flex;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  top: 405px;
+  width: fit-content;
+}
+
+.selectionbox {
+  display: grid;
+  grid-template-columns: repeat(18, 30px);
+  height: 30px;
+}
+
+.selectionboxPhone {
+  display: grid;
+  grid-template-columns: repeat(9, 20px);
+  grid-template-rows: 1fr 1fr;
+}
+
+.selectionboxPhone9 {
+  display: grid;
+  grid-template-columns: repeat(9, 20px);
+  grid-template-rows: 1fr 1fr;
+}
+
+.selectionbox9 {
+  display: grid;
+  grid-template-columns: repeat(9, 30px);
+}
+
+#courseBtn {
+  width: 70px;
+}
+
+.mapselectionBtn {
+  cursor: pointer;
+  background-color: lightgray;
+  border: 0px solid;
+  border-right: 1px solid grey;
+  &:hover {
+    background-color: $green;
+  }
+  &:focus {
+    font-size: larger;
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 830px) {
+  #selectionboxContainer {
+    top: 395px;
+  }
+
+  .mapselectionBtn {
+    font-size: 10px;
+    min-width: 5px;
+    height: 20px;
+    border-top: 1px solid grey;
+    &:hover {
+      background-color: lightgray;
+    }
+    &:focus {
+      font-size: larger;
+      text-decoration: underline;
+    }
+  }
+}
+
+app-scorecard {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}

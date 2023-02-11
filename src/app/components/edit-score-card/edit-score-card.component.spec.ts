@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewGolfCourseScoreCardComponent } from './new-golf-course-score-card.component';
+import { NewGolfCourseScoreCardComponent } from './edit-score-card.component';
 
 describe('NewGolfCourseScoreCardComponent', () => {
   let component: NewGolfCourseScoreCardComponent;

@@ -33,10 +33,29 @@ export class CourseDetailsService {
     });
   }
 
-  async getScorecard(id: string) {
+  async update(courseId: string, data: any, type: string) {
     return await new Promise((resolve, reject) => {
       this.http
-        .get(ROOT_URL + 'courses/scorecard', {
+        .post(ROOT_URL + 'courses/update', {
+          id: courseId,
+          data: data,
+          type: type,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  async get(id: string) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .get(ROOT_URL + 'courses/course', {
           params: new HttpParams().set('id', id),
         })
         .subscribe({
@@ -68,12 +87,11 @@ export class CourseDetailsService {
     });
   }
 
-  async setScorecard(courseId: string, scorecard: any) {
+  async addClick(courseId: string) {
     return await new Promise((resolve, reject) => {
       this.http
-        .post(ROOT_URL + 'courses/set_scorecard', {
+        .post(ROOT_URL + 'courses/add_click', {
           id: courseId,
-          scorecard: scorecard,
         })
         .subscribe({
           next: (data) => {
