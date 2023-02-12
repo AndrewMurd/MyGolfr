@@ -6,11 +6,24 @@
         <app-scorecard-header [isFrontNine]="true"></app-scorecard-header>
       </ng-container>
       <ng-container #backNine>
-        <app-scorecard-header *ngIf="!removedBackNine" [isFrontNine]="false"></app-scorecard-header>
+        <app-scorecard-header
+          *ngIf="!removedBackNine"
+          [isFrontNine]="false"
+        ></app-scorecard-header>
       </ng-container>
     </div>
   </div>
-  <button *ngIf="!isLoading" id="addBtn" (click)="addNewTee()">Add Tee</button>
-  <button *ngIf="!isLoading" id="doneBtn" (click)="finishEdit()">Done</button>
-  <button *ngIf="!isLoading" id="removebacknineBtn" (click)="removebacknine()">{{ removedBackNine? 'Add Back Nine' : 'Remove Back Nine'}}</button>
+  <div id="containerBtn">
+    <button *ngIf="!isLoading" id="addBtn" (click)="addNewTee()">
+      Add Tee
+    </button>
+    <button *ngIf="!isLoading" id="doneBtn" (click)="finishEdit()">Done</button>
+    <button
+      *ngIf="!isLoading"
+      id="removebacknineBtn"
+      (click)="removebacknine()"
+    >
+      {{ removedBackNine ? "Add Back Nine" : "Remove Back Nine" }}
+    </button>
+  </div>
 </div>

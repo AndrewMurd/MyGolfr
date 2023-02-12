@@ -31,6 +31,7 @@ router.get("/course", async (req, res) => {
     courses[0].googleDetails = JSON.parse(courses[0].googleDetails);
     courses[0].courseDetails = JSON.parse(courses[0].courseDetails);
     courses[0].scorecard = JSON.parse(courses[0].scorecard);
+    courses[0].mapLayout = JSON.parse(courses[0].mapLayout);
     let newDict = {};
     for (let [key, value] of Object.entries(courses[0])) {
       newDict[key] = value;
@@ -44,6 +45,16 @@ router.post("/add", async (req, res) => {
     const res = await Course.find(course.reference);
 
     if (res.length == 0 && course.plus_code.compound_code) {
+      let initialLayout = {};
+      for (let i = 0; i < 18; i++) {
+        initialLayout[i + 1] = {
+          location: {lat: course.geometry.location.lat, lng: course.geometry.location.lng},
+          zoom: 16,
+          teeLocations: [],
+          flagLocations: [],
+        };
+      }
+
       const courseDetails = {
         id: course.reference,
         name: course.name,
@@ -53,6 +64,7 @@ router.post("/add", async (req, res) => {
         }),
         clicks: 0,
         scorecard: JSON.stringify([]),
+        mapLayout: JSON.stringify(initialLayout),
       };
 
       try {

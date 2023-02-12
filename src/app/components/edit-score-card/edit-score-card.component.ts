@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ViewContainerRef } from '@angular/core';
 import { NewScorecardTeeComponent } from '../new-scorecard-tee/new-scorecard-tee.component';
 import { CourseDetailsService } from '../../Service/course-details.service';
-import { Subject } from 'rxjs';
+import { map, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -80,11 +80,35 @@ export class EditScoreCardComponent {
   }
 
   async addNewTee() {
-    const response: any = await this.courseService.setScorecardValue(
+    await this.courseService.setScorecardValue(
       this.courseId,
       { id: 'new', value: '' }
     );
-    this.reload();
+
+    const courseDataRes: any = await this.courseService.get(this.courseId);
+
+    let mapLayout = courseDataRes.course.mapLayout;
+
+    let scorecard = courseDataRes.course.scorecard;
+
+    for (let [key, value] of Object.entries(courseDataRes.course.mapLayout)) {
+      mapLayout[key].teeLocations.push({
+        id: scorecard[scorecard.length - 1].id,
+        lat: mapLayout[key].location.lat,
+        lng: mapLayout[key].location.lng,
+      });
+      // mapLayout[key].flagLocations.push({
+      //   id: scorecard[scorecard.length - 1].id,
+      //   lat: mapLayout[key].location.lat,
+      //   lng: mapLayout[key].location.lng,
+      // });
+    }
+
+    console.log(mapLayout);
+
+    this.courseService.update(this.courseId, mapLayout, 'mapLayout').then(() => {
+      this.reload();
+    });
   }
 
   createTeeComponents(teeData: any, scorecardData: any) {

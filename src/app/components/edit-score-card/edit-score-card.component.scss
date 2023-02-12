@@ -30,13 +30,20 @@ h1 {
   border-radius: 2px 2px 0px 0px;
 }
 
+#containerBtn {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+
 /* CSS */
-#addBtn, #doneBtn, #removebacknineBtn {
+#addBtn,
+#doneBtn,
+#removebacknineBtn {
   top: 8px;
-  left: 70%;
   height: 30px;
   width: 100px;
-  position: relative;
+  position: absolute;
   background-color: $green;
   border: 1px solid #13aa52;
   border-radius: 4px;
@@ -60,13 +67,17 @@ h1 {
   }
 }
 
+#addBtn {
+  right: 15%;
+}
+
 #doneBtn {
-  left: 73%;
+  right: 0;
 }
 
 #removebacknineBtn {
   width: 170px;
-  left: -27%;
+  left: 0;
 }
 
 @media (max-width: 830px) {
@@ -76,7 +87,7 @@ h1 {
     left: 0;
     right: 0;
     width: 100%;
-  }  
+  }
 
   .gridContainer {
     margin: 0px 0px;
@@ -87,14 +98,14 @@ h1 {
     height: auto;
     border: 1px solid;
     border-radius: 2px;
-    background-color: grey
-  }  
-  
+    background-color: grey;
+  }
+
   #addBtn {
     font-size: 70%;
     height: 25px;
     width: 60px;
-    left: 60%;
+    margin-right: 30px;
     &:hover {
       transform: scale(1) translateY(0px);
     }
@@ -104,16 +115,16 @@ h1 {
     font-size: 65%;
     height: 25px;
     width: 60px;
-    left: 69%;
+    right: 10px;
     &:hover {
       transform: scale(1) translateY(0px);
     }
   }
 
   #removebacknineBtn {
-    width: 110px;
+    width: 95px;
     font-size: 65%;
-    left: -27%;
+    height: 25px;
     &:hover {
       transform: scale(1) translateY(0px);
     }

@@ -17,8 +17,8 @@ module.exports = class Course {
 
   static save(course) {
     return executeQuery(
-      "INSERT INTO courses (id, name, googleDetails, courseDetails, clicks, scorecard) VALUES (?, ?, ?, ?, ?, ?)",
-      [course.id, course.name, course.googleDetails, course.courseDetails, course.clicks, course.scorecard]
+      "INSERT INTO courses (id, name, googleDetails, courseDetails, clicks, scorecard, mapLayout) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [course.id, course.name, course.googleDetails, course.courseDetails, course.clicks, course.scorecard, course.mapLayout]
     );
   }
 

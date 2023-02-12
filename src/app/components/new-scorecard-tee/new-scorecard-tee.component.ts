@@ -258,7 +258,7 @@ export class NewScorecardTeeComponent {
     });
   }
 
-  deleteTee() {
+  async deleteTee() {
     const confirmRes = window.confirm(
       'Are you sure you want to delete this tee. (Cannot be undone)'
     );
@@ -284,6 +284,27 @@ export class NewScorecardTeeComponent {
           this.onReload.emit();
         });
     }
+
+    const courseDataRes: any = await this.courseService.get(this.courseId);
+
+    let mapLayout = courseDataRes.course.mapLayout;
+
+    for (let [key, value] of Object.entries(courseDataRes.course.mapLayout)) {
+      for (let i = 0; i < mapLayout[key].teeLocations.length; i++) {
+        if (mapLayout[key].teeLocations[i].id == this.teeData.id) {
+          mapLayout[key].teeLocations.splice(i, 1);
+        }
+      }
+      // for (let i = 0; i < mapLayout[key].flagLocations.length; i++) {
+      //   if (mapLayout[key].flagLocations[i].id == this.teeData.id) {
+      //     mapLayout[key].flagLocations.splice(i, 1);
+      //   }
+      // }
+    }
+
+    this.courseService.update(this.courseId, mapLayout, 'mapLayout').then(() => {
+      this.onReload.emit();
+    });
   }
 
   onSubmit(data: any) {
