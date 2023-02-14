@@ -4,7 +4,10 @@ const Course = require("../models/course");
 
 const router = Router();
 
-router.get("/courses", async (req, res) => {
+// @desc Text Search with googleAPI
+// @route GET /google/search
+// @access Private
+router.get("/search", async (req, res) => {
   // Get places
   const search = req.query.search;
   const sessiontoken = req.query.sessiontoken;
@@ -20,27 +23,7 @@ router.get("/courses", async (req, res) => {
 
   axios(config)
     .then(async (response) => {
-      const courses = response.data.results;
-
       res.send(JSON.stringify(response.data));
-
-      // for (let course of courses) {
-      //   const id = course.reference;
-
-      //   const res = await Course.find(id);
-
-      //   console.log(res);
-
-      //   if (res.length == 0) {
-      //     const courseDetails = {
-      //       id: id,
-      //       course: course,
-      //       scorecard: null,
-      //     };
-
-      //     const res = await Course.save(courseDetails);
-      //   }
-      // }
     })
     .catch((error) => {
       res.status(400).send(error);

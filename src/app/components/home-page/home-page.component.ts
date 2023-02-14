@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthenticationService } from '../../Service/authentication.service';
 
 @Component({
   selector: 'app-home-page',
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./home-page.component.scss'],
 })
 export class HomePageComponent {
+  constructor(private authService: AuthenticationService) {}
 
+  // ngOnInit() {
+  //   setTimeout(() => {
+  //     this.authService.token.asObservable().subscribe((value) => {
+  //       console.log(value);
+  //     });
+  //   }, 10000)
+  // }
 }

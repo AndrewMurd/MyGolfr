@@ -62,15 +62,10 @@ export class LoginPageComponent {
     this.authService
       .login(this.email, this.password)
       .then((data) => {
-        console.log(data);
         this.btn!.classList.remove('onclic');
         this.btn!.classList.add('validate');
         this.resetInnerText();
         this.resetInputClass();
-
-        // set jwt access token in cookies
-
-        // loginToken = data in cookies
 
         setTimeout(() => {
           this.router.navigate(['/']);

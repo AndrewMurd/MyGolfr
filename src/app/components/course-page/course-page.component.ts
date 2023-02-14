@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Router } from '@angular/router';
 import { faMapPin, faFlag } from '@fortawesome/free-solid-svg-icons';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-course-page',
@@ -20,8 +21,11 @@ export class CoursePageComponent {
   selectedMapView: string = 'course';
   map!: google.maps.Map;
   markers: any = [];
-  editOn: any;
+  editOn: boolean = false;
   offsetFactor = 0.0006;
+  layoutData: any;
+  scorecard: any;
+  googleDetails: any;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -31,18 +35,10 @@ export class CoursePageComponent {
   async ngOnInit() {
     this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
 
-    const response: any = await this.courseService.get(
-      this.selectedCourse.reference
-    );
+    this.reload();
+  }
 
-    if (window.innerWidth < 830) {
-      this.isPhone = true;
-    } else {
-      this.isPhone = false;
-    }
-
-    this.isNineHole = response.course.courseDetails.nineHoleGolfCourse;
-
+  async reload() {
     this.center.lat = this.selectedCourse.geometry.location.lat;
     this.center.lng = this.selectedCourse.geometry.location.lng;
 
@@ -53,15 +49,26 @@ export class CoursePageComponent {
         center: this.center,
         mapTypeId: 'hybrid',
         minZoom: 15,
-        tilt: 45,
-        mapTypeControl: false,
-        streetViewControl: false,
-        zoomControl: false,
-        fullscreenControl: false,
-        rotateControl: true,
-        // disableDefaultUI: true,
+        disableDefaultUI: true,
       } as google.maps.MapOptions
     );
+
+    const response: any = await this.courseService.get(
+      this.selectedCourse.reference
+    );
+
+    this.isNineHole = response.course.courseDetails.nineHoleGolfCourse;
+    this.layoutData = response.course.mapLayout;
+    this.scorecard = response.course.scorecard;
+    this.googleDetails = response.course.googleDetails;
+
+    this.setMapView(this.selectedMapView);
+
+    if (window.innerWidth < 830) {
+      this.isPhone = true;
+    } else {
+      this.isPhone = false;
+    }
   }
 
   clearOverlays() {
@@ -71,7 +78,27 @@ export class CoursePageComponent {
     this.markers.length = 0;
   }
 
+  disableDrag(value: boolean) {
+    if (value) {
+      for (const marker of this.markers) {
+        console.log(marker);
+        marker.setDraggable(true);
+      }
+    }
+  }
+
   async setMapView(a: any) {
+    if (this.editOn) {
+      const response: any = await this.courseService.get(
+        this.selectedCourse.reference
+      );
+
+      this.isNineHole = response.course.courseDetails.nineHoleGolfCourse;
+      this.layoutData = response.course.mapLayout;
+      this.scorecard = response.course.scorecard;
+      this.googleDetails = response.course.googleDetails;
+    }
+
     this.selectedMapView = `${a}`;
     let map = this.map;
 
@@ -84,19 +111,17 @@ export class CoursePageComponent {
       this.clearOverlays();
     }
 
-    const response: any = await this.courseService.get(
-      this.selectedCourse.reference
-    );
+    const holeLayout = this.layoutData[a];
 
-    const layoutData = response.course.mapLayout[a];
+    console.log(holeLayout);
 
-    this.map.setCenter(layoutData.location);
-    this.map.setZoom(layoutData.zoom);
+    this.map.setCenter(holeLayout.location);
+    this.map.setZoom(holeLayout.zoom);
 
     let offsetTee = this.offsetFactor;
-    for (let teeLoc of layoutData.teeLocations) {
+    for (let teeLoc of holeLayout.teeLocations) {
       let color;
-      for (let tee of response.course.scorecard) {
+      for (let tee of this.scorecard) {
         if (tee.id == teeLoc.id) {
           if (!tee.Color) {
             color = '';
@@ -107,9 +132,9 @@ export class CoursePageComponent {
       }
 
       if (
-        teeLoc.lat == response.course.googleDetails.geometry.location.lat &&
-        teeLoc.lng == response.course.googleDetails.geometry.location.lng
-      ) {        
+        teeLoc.lat == this.googleDetails.geometry.location.lat &&
+        teeLoc.lng == this.googleDetails.geometry.location.lng
+      ) {
         teeLoc.lng = teeLoc.lng + offsetTee;
         offsetTee += this.offsetFactor;
       }
@@ -134,18 +159,18 @@ export class CoursePageComponent {
             strokeColor: '#ffffff',
             scale: 0.06,
           },
-          draggable: true,
+          draggable: this.editOn,
           title: `${teeLoc.id}`,
         })
       );
     }
 
     let offsetFlag = this.offsetFactor;
-    for (let flagLoc of layoutData.flagLocations) {
+    for (let flagLoc of holeLayout.flagLocations) {
       if (
-        flagLoc.lat == response.course.googleDetails.geometry.location.lat &&
-        flagLoc.lng == response.course.googleDetails.geometry.location.lng
-      ) {        
+        flagLoc.lat == this.googleDetails.geometry.location.lat &&
+        flagLoc.lng == this.googleDetails.geometry.location.lng
+      ) {
         flagLoc.lat = flagLoc.lat - offsetFlag;
         offsetFlag += this.offsetFactor;
       }
@@ -170,7 +195,7 @@ export class CoursePageComponent {
             strokeColor: '#ffffff',
             scale: 0.04,
           },
-          draggable: true,
+          draggable: this.editOn,
         })
       );
     }
@@ -185,12 +210,20 @@ export class CoursePageComponent {
       return;
     }
 
-    response.course.mapLayout[this.selectedMapView].location.lat = this.map.getCenter()!.lat();
-    response.course.mapLayout[this.selectedMapView].location.lng = this.map.getCenter()!.lng();
+    response.course.mapLayout[this.selectedMapView].location.lat = this.map
+      .getCenter()!
+      .lat();
+    response.course.mapLayout[this.selectedMapView].location.lng = this.map
+      .getCenter()!
+      .lng();
 
     response.course.mapLayout[this.selectedMapView].zoom = this.map.getZoom();
 
-    await this.courseService.update(this.selectedCourse.reference, response.course.mapLayout, 'mapLayout');
+    await this.courseService.update(
+      this.selectedCourse.reference,
+      response.course.mapLayout,
+      'mapLayout'
+    );
   }
 
   async setMarkerLocations() {
@@ -211,15 +244,17 @@ export class CoursePageComponent {
         }
       }
     }
-    
-    await this.courseService.update(this.selectedCourse.reference, response.course.mapLayout, 'mapLayout');
+
+    await this.courseService.update(
+      this.selectedCourse.reference,
+      response.course.mapLayout,
+      'mapLayout'
+    );
   }
 
-  addFlag() {
-  }
+  addFlag() {}
 
-  removeFlag() {
-  }
+  removeFlag() {}
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {

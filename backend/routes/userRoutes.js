@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
-const { async } = require("rxjs");
 
 const router = Router();
 
@@ -61,32 +60,5 @@ router.post(
     }
   }
 );
-
-router.post("/login", async (req, res) => {
-  // Authenticate existing user
-  const result = await User.find(req.body.email);
-
-  if (result.length == 0) {
-    return res.status(404).send({ type: "email" });
-  }
-  try {
-    if (await bcrypt.compare(req.body.password, result[0].password)) {
-      const user = {
-        id: result[0].id,
-        name: result[0].name,
-        email: result[0].email,
-        password: result[0].password,
-      };
-
-      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-
-      res.status(200).json({ accessToken: accessToken });
-    } else {
-      res.status(404).send({ type: "password" });
-    }
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
 
 module.exports = router;

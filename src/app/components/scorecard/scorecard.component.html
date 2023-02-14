@@ -20,6 +20,7 @@
 
 <edit-score-card
   *ngIf="editing"
+  (edited)="editedScorecard.emit()"
   (onFinishEdit)="finishEdit()"
   (rBackNine)="rBackNine.emit()"
 ></edit-score-card>

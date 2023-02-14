@@ -7,14 +7,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
   providedIn: 'root',
 })
 export class CourseDetailsService {
-  // private course$ = new BehaviorSubject<any>({});
-  // selectedCourse$ = this.course$.asObservable();
 
   constructor(private http: HttpClient) {}
-
-  // setCourse(course: any) {
-  //   this.course$.next(course);
-  // }
 
   async searchCourses(searchString: string) {
     return await new Promise((resolve, reject) => {

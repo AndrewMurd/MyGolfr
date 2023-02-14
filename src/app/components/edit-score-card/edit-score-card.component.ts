@@ -14,6 +14,7 @@ export class EditScoreCardComponent {
   courseId!: string;
   eventsSubject: Subject<any> = new Subject<any>();
   @Output() onFinishEdit: EventEmitter<any> = new EventEmitter();
+  @Output() edited: EventEmitter<any> = new EventEmitter();
   @Output() rBackNine: EventEmitter<any> = new EventEmitter();
   removedBackNine!: boolean;
   isLoading: boolean = false;
@@ -57,11 +58,17 @@ export class EditScoreCardComponent {
     for (let teeToRender of teeRenderOrder) {
       this.createTeeComponents(teeToRender, response.course.scorecard);
     }
-    this.isLoading = false;
+
+    this.edited.emit();
+
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 500);
   }
 
   onSubmit(data: any) {
     this.eventsSubject.next(data);
+    this.edited.emit();
   }
 
   finishEdit() {
@@ -88,10 +95,9 @@ export class EditScoreCardComponent {
     const courseDataRes: any = await this.courseService.get(this.courseId);
 
     let mapLayout = courseDataRes.course.mapLayout;
-
     let scorecard = courseDataRes.course.scorecard;
 
-    for (let [key, value] of Object.entries(courseDataRes.course.mapLayout)) {
+    for (let [key, value] of Object.entries(mapLayout)) {
       mapLayout[key].teeLocations.push({
         id: scorecard[scorecard.length - 1].id,
         lat: mapLayout[key].location.lat,
@@ -103,8 +109,6 @@ export class EditScoreCardComponent {
       //   lng: mapLayout[key].location.lng,
       // });
     }
-
-    console.log(mapLayout);
 
     this.courseService.update(this.courseId, mapLayout, 'mapLayout').then(() => {
       this.reload();

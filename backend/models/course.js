@@ -1,12 +1,6 @@
 const executeQuery = require("../util/database");
 
 module.exports = class Course {
-  constructor(id, course, scorecard) {
-    this.id = id;
-    this.course = course;
-    this.scorecard = scorecard;
-  }
-
   static search(searchQuery) {
     return executeQuery(`SELECT * FROM courses WHERE name Like "%${searchQuery}%"`);
   }

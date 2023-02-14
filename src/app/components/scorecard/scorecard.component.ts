@@ -24,6 +24,7 @@ export class ScorecardComponent {
   editing: boolean = false;
   removedBackNine: boolean = false;
   @Output() rBackNine: EventEmitter<any> = new EventEmitter();
+  @Output() editedScorecard: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('frontNine', { read: ViewContainerRef })
   frontNineContainer!: ViewContainerRef;

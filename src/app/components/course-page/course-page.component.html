@@ -41,7 +41,7 @@
   <button *ngIf="editOn" id="setLocationBtn" (click)="setLocation()">Set View</button>
   <button *ngIf="editOn" id="setMarkerLocationsBtn" (click)="setMarkerLocations()">Set Markers</button>
   <label id="editMapBtn" class="switch">
-    <input type="checkbox" [(ngModel)]="editOn">
+    <input type="checkbox" [(ngModel)]="editOn" (click)="disableDrag(!editOn)">
     <span class="slider round"></span>
   </label>
 </div>
@@ -53,4 +53,4 @@
   <button id="removeFlagBtn" (click)="removeFlag()"></button>
 </div> -->
 
-<app-scorecard (rBackNine)="isNineHole = !isNineHole"></app-scorecard>
+<app-scorecard (editedScorecard)="this.reload()" (rBackNine)="isNineHole = !isNineHole"></app-scorecard>

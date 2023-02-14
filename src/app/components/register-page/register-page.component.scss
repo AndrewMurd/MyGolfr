@@ -102,6 +102,10 @@ input:focus + .placeholder-text .text,
   height: 140px;
   width: 150px;
   cursor: pointer;
+  transition: transform 0.3s;
+  &:hover {
+    transform: scale(1.2);
+  }
 }
 
 .btn-contain {

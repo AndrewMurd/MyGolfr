@@ -1,4 +1,5 @@
 <div class="header">
     <img routerLink="/" src="../../../assets/Golf-ball-isolated-on-transparent-background-PNG.png" alt="" class="logo">
-    <a routerLink="/login" class="loginLink">Login</a>
+    <a *ngIf="!signedIn" routerLink="/login" id="loginLink" class="headerLink">Login</a>
+    <a *ngIf="signedIn" (click)="signOut()" id="loginLink" class="headerLink">Logout</a>
 </div>

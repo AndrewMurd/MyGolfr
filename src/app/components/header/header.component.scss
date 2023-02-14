@@ -20,33 +20,64 @@ $color3: #0f3f00;
 }
 
 .logo {
-  height: 45px;
-  width: 50px;
+  height: 50px;
+  width: 55px;
   position: absolute;
   left: 20%;
   cursor: pointer;
+  transition: transform 0.3s;
+  &:hover {
+    transform: scale(1.2);
+  }
 }
 
 a {
-  text-decoration: none;
-  font-size: 18px;
+  position: relative;
+  font-size: 22px;
+  font-weight: 500;
+  background-image: linear-gradient(
+    to right,
+    $green,
+    $green 50%,
+    white 50%
+  );
+  background-size: 200% 100%;
+  background-position: -100%;
+  display: inline-block;
+  padding: 5px 0;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.3s ease-in-out;
 }
 
-.loginLink {
-  right: 20%;
+a:before {
+  content: '';
+  background: $green;
+  display: block;
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 0;
+  height: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+a:hover {
+  background-position: 0;
+}
+
+a:hover::before{
+  width: 100%;
+}
+
+.headerLink {
   position: absolute;
   color: white;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-.login {
-  right: 20%;
-}
-
-.signUp {
+#loginLink {
+  position: absolute;
   right: 25%;
-}
-
-.login:active,
-.signUp:active {
-  border-bottom-width: 2px;
 }

@@ -146,7 +146,7 @@ export class SearchBarComponent {
   getCourses() {
     return new Promise((resolve, reject) => {
       this.http
-        .get(ROOT_URL + 'google/courses', {
+        .get(ROOT_URL + 'google/search', {
           params: new HttpParams()
             .set('search', this.search)
             .set('sessionToken', this.sessionToken),
