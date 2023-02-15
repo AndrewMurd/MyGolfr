@@ -3,8 +3,11 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const loginLimiter = require("../middleware/loginLimiter");
+const cookieParser = require("cookie-parser");
 
 const router = Router();
+
+router.use(cookieParser());
 
 // @desc Login
 // @route POST /auth/login
@@ -26,8 +29,8 @@ router.post("/login", loginLimiter, async (req, res) => {
         expiresIn: "1d",
       });
 
-      const refreshToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1d",
+      const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: "7d",
       });
 
       res.cookie("jwt", refreshToken, {
@@ -58,25 +61,28 @@ router.get("/refresh", async (req, res) => {
   jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET,
-    asyncHandler(async (err, decoded) => {
+    async (err, decoded) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
+      try {
+        const result = await User.find(decoded.email);
+        if (result.length == 0)
+          return res.status(401).json({ message: "Unauthorized" });
 
-      const result = await User.find(decoded.id.email);
-      if (result.length == 0)
-        return res.status(401).json({ message: "Unauthorized" });
+        const user = {
+          id: decoded.id,
+          name: decoded.name,
+          email: decoded.email,
+        };
 
-      const user = {
-        id: decoded.id,
-        name: decoded.name,
-        email: decoded.email,
-      };
+        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+          expiresIn: "1d",
+        });
 
-      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1d",
-      });
-
-      res.json({ accessToken });
-    })
+        res.json({ accessToken });
+      } catch (error) {
+        res.status(404).json({ message: "User Not Found" });
+      }
+    }
   );
 });
 

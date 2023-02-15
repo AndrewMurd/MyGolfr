@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { CourseDetailsService } from 'src/app/Service/course-details.service';
 import { ScorecardTeeComponent } from '../scorecard-tee/scorecard-tee.component';
 
@@ -17,6 +18,7 @@ import { ScorecardTeeComponent } from '../scorecard-tee/scorecard-tee.component'
   styleUrls: ['./scorecard.component.scss'],
 })
 export class ScorecardComponent {
+  signedIn: boolean = false;
   title: string = 'New Golf Course ScoreCard';
   courseId!: string;
   eventsSubject: Subject<any> = new Subject<any>();
@@ -33,12 +35,21 @@ export class ScorecardComponent {
 
   constructor(
     private courseService: CourseDetailsService,
+    private authService: AuthenticationService,
     private router: Router
   ) {}
 
   async ngOnInit() {
     this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
     this.courseId = this.selectedCourse.reference;
+
+    this.authService.token.asObservable().subscribe((value) => {
+      if (value) {
+        this.signedIn = true;
+      } else {
+        this.signedIn = false;
+      }
+    });
 
     this.reload();
   }
@@ -68,6 +79,14 @@ export class ScorecardComponent {
   finishEdit() {
     this.reload();
     this.editing = false;
+  }
+
+  edit() {
+    if (!this.signedIn) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.editing = true; 
   }
 
   createTeeComponents(teeData: any, scorecardData: any) {

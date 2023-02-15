@@ -32,6 +32,7 @@ $color3: #0f3f00;
 }
 
 a {
+  cursor: pointer;
   position: relative;
   font-size: 22px;
   font-weight: 500;
@@ -47,7 +48,7 @@ a {
   padding: 5px 0;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s;
 }
 
 a:before {
@@ -59,7 +60,7 @@ a:before {
   left: 0;
   width: 0;
   height: 5px;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s;
 }
 
 a:hover {

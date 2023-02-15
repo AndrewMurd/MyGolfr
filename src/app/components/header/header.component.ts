@@ -13,12 +13,11 @@ export class HeaderComponent {
   constructor(private authService: AuthenticationService) {}
 
   ngOnInit() {
-    console.log(this.authService.token.getValue());
-
     this.authService.token.asObservable().subscribe((value) => {
-      console.log(value);
       if (value) {
         this.signedIn = true;
+      } else {
+        this.signedIn = false;
       }
     });
   }

@@ -3,6 +3,7 @@ import { CourseDetailsService } from '../../Service/course-details.service';
 import { Router } from '@angular/router';
 import { faMapPin, faFlag } from '@fortawesome/free-solid-svg-icons';
 import { Subject } from 'rxjs';
+import { AuthenticationService } from 'src/app/Service/authentication.service';
 
 @Component({
   selector: 'app-course-page',
@@ -10,6 +11,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./course-page.component.scss'],
 })
 export class CoursePageComponent {
+  signedIn: boolean = false;
   selectedCourse: any;
   display: any;
   center: google.maps.LatLngLiteral = {
@@ -29,11 +31,20 @@ export class CoursePageComponent {
 
   constructor(
     private courseService: CourseDetailsService,
+    private authService: AuthenticationService,
     private router: Router
   ) {}
 
   async ngOnInit() {
     this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
+
+    this.authService.token.asObservable().subscribe((value) => {
+      if (value) {
+        this.signedIn = true;
+      } else {
+        this.signedIn = false;
+      }
+    });
 
     this.reload();
   }
@@ -79,9 +90,12 @@ export class CoursePageComponent {
   }
 
   disableDrag(value: boolean) {
+    if (!this.signedIn) {
+      this.router.navigate(['/login']);
+      return;
+    }
     if (value) {
       for (const marker of this.markers) {
-        console.log(marker);
         marker.setDraggable(true);
       }
     }
@@ -112,8 +126,6 @@ export class CoursePageComponent {
     }
 
     const holeLayout = this.layoutData[a];
-
-    console.log(holeLayout);
 
     this.map.setCenter(holeLayout.location);
     this.map.setZoom(holeLayout.zoom);

@@ -84,6 +84,8 @@ export class RegisterPageComponent {
         this.resetInnerText();
         this.resetInputClass();
 
+        this.authService.login(this.email, this.password);
+
         setTimeout(() => {
           this.router.navigate(['/']);
         }, 1000);

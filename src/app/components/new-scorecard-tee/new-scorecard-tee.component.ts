@@ -40,7 +40,6 @@ export class NewScorecardTeeComponent {
     this.color = this.teeData.Color;
     this.nameColor = this.teeData.ColorName;
 
-    // this dosent work properly
     let key, value: any;
     let countPar = 0,
       countSI = 0;
@@ -157,7 +156,7 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
+    await this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
       this.onReload.emit();
     });
   }
@@ -207,7 +206,7 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
+    await this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
       this.onReload.emit();
     });
   }
@@ -253,7 +252,7 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
+    await this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
       this.onReload.emit();
     });
   }
@@ -278,7 +277,7 @@ export class NewScorecardTeeComponent {
           tee.Position = tee.Position - 1;
       }
 
-      this.courseService
+      await this.courseService
         .update(this.courseId, this.scorecard, 'scorecard')
         .then(() => {
           this.onReload.emit();
@@ -302,7 +301,7 @@ export class NewScorecardTeeComponent {
       // }
     }
 
-    this.courseService.update(this.courseId, mapLayout, 'mapLayout').then(() => {
+    await this.courseService.update(this.courseId, mapLayout, 'mapLayout').then(() => {
       this.onReload.emit();
     });
   }
@@ -311,7 +310,7 @@ export class NewScorecardTeeComponent {
     this.onSubmitofInput.emit(data);
   }
 
-  submitColorName() {
+  async submitColorName() {
     if (!this.nameColor) {
       alert('Must enter name!');
       this.displayColorNamer = false;
@@ -323,7 +322,7 @@ export class NewScorecardTeeComponent {
 
       this.nameColor = this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
 
-      this.courseService.setScorecardValue(
+      await this.courseService.setScorecardValue(
         JSON.parse(localStorage.getItem('selectedCourse')!).reference,
         { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
       );
@@ -335,7 +334,7 @@ export class NewScorecardTeeComponent {
     }
   }
 
-  setColor() {
+  async setColor() {
     this.displayColorPicker = false;
     if (this.teeData.ColorName) {
       this.displayInputSelector = false;
@@ -349,7 +348,7 @@ export class NewScorecardTeeComponent {
     }
 
     // set Color in database
-    this.courseService.setScorecardValue(
+    await this.courseService.setScorecardValue(
       JSON.parse(localStorage.getItem('selectedCourse')!).reference,
       { id: [this.teeData.id, 'Color'], value: this.color }
     );

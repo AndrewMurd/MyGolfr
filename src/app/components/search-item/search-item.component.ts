@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/Service/authentication.service';
 
 @Component({
   selector: 'app-search-item',
@@ -8,8 +9,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./search-item.component.scss'],
 })
 export class SearchItemComponent {
+  signedIn: boolean = false;
   @Input() data!: any;
-  @Output() onClickItem: EventEmitter<any> = new EventEmitter;
+  @Output() onClickItem: EventEmitter<any> = new EventEmitter();
   src: string =
     '../../../assets/Golf-ball-isolated-on-transparent-background-PNG.png';
   name!: string;
@@ -19,6 +21,7 @@ export class SearchItemComponent {
 
   constructor(
     private courseService: CourseDetailsService,
+    private authService: AuthenticationService,
     private router: Router
   ) {}
 
@@ -27,7 +30,15 @@ export class SearchItemComponent {
       // this.src = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${this.data.photos[0].photo_reference}&key=${apiKey}`;
     }
     this.name = this.data.name;
-    
+
+    this.authService.token.asObservable().subscribe((value) => {
+      if (value) {
+        this.signedIn = true;
+      } else {
+        this.signedIn = false;
+      }
+    });
+
     let stringArray = this.data.plus_code.compound_code.split(/(\s+)/);
     this.addressInfo = '';
 
@@ -44,6 +55,10 @@ export class SearchItemComponent {
   }
 
   startRound() {
+    if (!this.signedIn) {
+      this.router.navigate(['/login']);
+      return;
+    }
     this.disable = true;
     this.onClickItem.emit(this.data);
     localStorage.setItem('selectedCourse', JSON.stringify(this.data));

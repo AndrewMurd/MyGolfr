@@ -68,7 +68,7 @@ export class EditScoreCardComponent {
 
   onSubmit(data: any) {
     this.eventsSubject.next(data);
-    this.edited.emit();
+    if (data.id[1] == 'Color') this.edited.emit();
   }
 
   finishEdit() {
