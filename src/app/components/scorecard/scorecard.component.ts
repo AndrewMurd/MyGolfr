@@ -7,7 +7,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, take } from 'rxjs';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { CourseDetailsService } from 'src/app/Service/course-details.service';
 import { ScorecardTeeComponent } from '../scorecard-tee/scorecard-tee.component';
@@ -18,6 +18,7 @@ import { ScorecardTeeComponent } from '../scorecard-tee/scorecard-tee.component'
   styleUrls: ['./scorecard.component.scss'],
 })
 export class ScorecardComponent {
+  courseData: any;
   signedIn: boolean = false;
   title: string = 'New Golf Course ScoreCard';
   courseId!: string;
@@ -25,6 +26,7 @@ export class ScorecardComponent {
   selectedCourse: any;
   editing: boolean = false;
   removedBackNine: boolean = false;
+  @Input() editable: boolean = true;
   @Output() rBackNine: EventEmitter<any> = new EventEmitter();
   @Output() editedScorecard: EventEmitter<any> = new EventEmitter();
 
@@ -51,17 +53,23 @@ export class ScorecardComponent {
       }
     });
 
-    this.reload();
+    this.courseService.courseData.asObservable().pipe(take(1)).subscribe((value) => {
+      this.courseData = value;
+      this.reload(true);
+    });
   }
 
-  async reload() {
-    const response: any = await this.courseService.get(this.courseId);
+  async reload(isInit: boolean) {
+    if (!isInit) {
+      const response: any = await this.courseService.get(this.courseId);
+      this.courseData = response.course;
+    }
 
-    this.title = response.course.name;
-    this.removedBackNine = response.course.courseDetails.nineHoleGolfCourse;
+    this.title = this.courseData.name;
+    this.removedBackNine = this.courseData.courseDetails.nineHoleGolfCourse;
 
     let teeRenderOrder = [];
-    for (let tee of response.course.scorecard) {
+    for (let tee of this.courseData.scorecard) {
       document.getElementById(tee.id)?.remove();
       document.getElementById(tee.id)?.remove();
       teeRenderOrder.push(tee);
@@ -72,12 +80,13 @@ export class ScorecardComponent {
     });
 
     for (let teeToRender of teeRenderOrder) {
-      this.createTeeComponents(teeToRender, response.scorecard);
+      this.createTeeComponents(teeToRender, this.courseData.scorecard);
     }
   }
 
   finishEdit() {
-    this.reload();
+    this.reload(false);
+    this.editedScorecard.emit();
     this.editing = false;
   }
 

@@ -1,5 +1,29 @@
 <app-header></app-header>
 
-<div id="startRoundContainer">
-  <p>{{ data.name }}</p>
+<div *ngIf="loading" id="loadingContainer">
+  <app-loading-animation></app-loading-animation>
+</div>
+
+
+<app-course-map
+  [changeView]="changeView"
+  [editedScorecard]="editedScorecard"
+  [rBackNine]="rBackNine"
+></app-course-map>
+
+<div id="bodyContainer">
+  <app-scorecard
+    (editedScorecard)="editedScorecard.next('')"
+    (rBackNine)="rBackNine.next('')"
+  ></app-scorecard>
+  <div id="scoreInput">
+    <div *ngIf="!selectedTee" class="dropdown">
+      <button id="selectTeeBtn" class="dropbtn">Select Tee</button>
+      <div id="selectTeeContent" class="dropdown-content">
+        <a (click)="selectTee(tee)" id="{{ tee.id }}" *ngFor="let tee of courseData?.scorecard">{{
+          tee.ColorName
+        }}</a>
+      </div>
+    </div>
+  </div>
 </div>

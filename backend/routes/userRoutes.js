@@ -6,6 +6,9 @@ const { check, validationResult } = require("express-validator");
 
 const router = Router();
 
+// @desc Register user
+// @route GET /users/signup
+// @access Public
 router.post(
   "/signup",
   [

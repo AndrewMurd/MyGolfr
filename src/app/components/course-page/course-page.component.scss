@@ -1,231 +1,26 @@
-@import "../../utilities/variables.scss";
-
-#map {
-  margin-top: 60px;
-  height: 400px;
-  width: 100vw;
-}
-
-#selectionboxContainer {
-  display: flex;
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  top: 405px;
-  width: fit-content;
-}
-
-.selectionbox {
-  display: grid;
-  grid-template-columns: repeat(18, 30px);
-  height: 30px;
-}
-
-.selectionboxPhone {
-  display: grid;
-  grid-template-columns: repeat(9, 20px);
-  grid-template-rows: 1fr 1fr;
-}
-
-.selectionboxPhone9 {
-  display: grid;
-  grid-template-columns: repeat(9, 20px);
-  grid-template-rows: 1fr 1fr;
-}
-
-.selectionbox9 {
-  display: grid;
-  grid-template-columns: repeat(9, 30px);
-  height: 30px;
-}
-
-#courseBtn {
-  width: 70px;
-}
-
-#setBtnContainer {
-  display: flex;
-  position: absolute;
-  right: 0px;
-  width: 275px;
-  top: 65px;
-}
-
-#setLocationBtn,
-#setMarkerLocationsBtn {
-  cursor: pointer;
-  position: relative;
-  z-index: 1;
-  height: 30px;
-  background-color: lightgrey;
-  border: 0px solid;
-  border-radius: 2px;
-  &:hover {
-    background-color: $green;
-  }
-  &:active {
-    background-color: green;
-  }
-}
-
-#setLocationBtn {
-  margin-right: 20px;
-}
-
-#flagBtnContainer {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: 96%;
-  width: 50%;
-  top: 110px;
-}
-
-#addFlagBtn, #removeFlagBtn {
-  position: relative;
-  z-index: 1;
-  height: 30px;
-  background-color: lightgrey;
-  border: 0px solid;
-  border-radius: 2px;
-  width: 30px;
-  &:hover {
-    background-color: $green;
-  }
-  &:active {
-    background-color: green;
-  }
-}
-
-#addFlagBtn {
-  // background-image: url('../../../assets/rotate-right.png');
-}
-
-#removeFlagBtn {
-  margin-top: 20px;
-  // background-image: url('../../../assets/rotate-left.png');
-}
-
-.mapselectionBtn {
-  cursor: pointer;
-  background-color: lightgray;
-  border: 0px solid;
-  border-right: 1px solid grey;
-  &:hover {
-    background-color: $green;
-  }
-}
-
-.mapselectionBtnSelected {
-  cursor: pointer;
-  background-color: lightgray;
-  border: 0px solid;
-  border-right: 1px solid grey;
-  font-size: larger;
-  // text-decoration: underline;
-}
-
-/* The switch - the box around the slider */
-#editMapBtn {
-  position: absolute;
-  left: 200px
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 30px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 22px;
-  width: 24px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: $green;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px $green;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-@media (max-width: 830px) {
-  #selectionboxContainer {
-    top: 395px;
-  }
-
-  .mapselectionBtn {
-    font-size: 10px;
-    min-width: 5px;
-    height: 20px;
-    border-top: 1px solid grey;
-    &:hover {
-      background-color: lightgray;
-    }
-  }
-
-  .mapselectionBtnSelected {
-    font-size: 10px;
-    min-width: 5px;
-    height: 20px;
-    border-top: 1px solid grey;
-    font-size: 15px;
-    &:hover {
-      background-color: lightgray;
-    }
-  }
-}
-
 app-scorecard {
+  margin-top: 40px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10vh;
+}
+
+app-loading-animation {
   position: absolute;
+  z-index: 10;
+  transform: scale(3);
   left: 0;
   right: 0;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
+  margin-top: 25%;
+}
+
+#loadingContainer {
+  height: 100vw;
+  width: 100vw;
+  z-index: 1000;
+  background-color: black;
+  opacity: 0.9;
+  position: absolute;
 }

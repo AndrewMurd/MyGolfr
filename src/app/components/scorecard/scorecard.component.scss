@@ -1,13 +1,8 @@
 @import "../../utilities/variables.scss";
 
 .container {
-  margin-left: auto;
-  margin-right: auto;
-  position: absolute;
-  left: 0;
-  right: 0;
+  position: relative;
   width: 738px;
-  padding-bottom: 10vh;
 }
 
 .scorecardContainer {
@@ -31,9 +26,8 @@ h1 {
 
 #editBtn {
   left: 101%;
-  top: 40px;
   height: 30px;
-  position: relative;
+  position: absolute;
   z-index: 1;
   cursor: pointer;
   transition: transform 150ms;
@@ -46,14 +40,11 @@ h1 {
   #editBtn {
     height: 25px;
     left: 90%;
+    margin-top: 8px;
   }
 
   .container {
-    position: absolute;
-    top: 5%;
-    left: 0;
-    right: 0;
-    width: 100%;
+    width: 100vw;
   }  
 
   .gridContainer {

@@ -1,14 +1,8 @@
 @import "../../utilities/variables.scss";
 
 .container {
-  margin-left: auto;
-  margin-right: auto;
-  position: absolute;
-  left: 0;
-  right: 0;
+  position: relative;
   width: 738px;
-  padding-bottom: 10vh;
-  margin-top: 40px;
 }
 
 .scorecardContainer {
@@ -82,7 +76,6 @@ h1 {
 
 @media (max-width: 830px) {
   .container {
-    position: absolute;
     top: 5%;
     left: 0;
     right: 0;

@@ -62,6 +62,6 @@ export class SearchItemComponent {
     this.disable = true;
     this.onClickItem.emit(this.data);
     localStorage.setItem('selectedCourse', JSON.stringify(this.data));
-    this.router.navigate(['/start_round']); // not implemented yet
+    this.router.navigate(['/start_round']);
   }
 }

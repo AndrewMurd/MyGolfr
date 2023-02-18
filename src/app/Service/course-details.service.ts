@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { ROOT_URL } from '../utilities/enviroment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { response } from 'express';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CourseDetailsService {
+  courseData = new Subject<any>();
 
   constructor(private http: HttpClient) {}
 
@@ -53,7 +55,7 @@ export class CourseDetailsService {
           params: new HttpParams().set('id', id),
         })
         .subscribe({
-          next: (data) => {
+          next: (data: any) => {
             return resolve(data);
           },
           error: (error) => {

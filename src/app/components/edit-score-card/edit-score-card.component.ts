@@ -40,6 +40,7 @@ export class EditScoreCardComponent {
   async reload() {
     this.isLoading = true;
     const response: any = await this.courseService.get(this.courseId);
+    this.courseService.courseData.next(response.course);
 
     this.title = response.course.name;
     this.removedBackNine = response.course.courseDetails.nineHoleGolfCourse;
@@ -68,7 +69,7 @@ export class EditScoreCardComponent {
 
   onSubmit(data: any) {
     this.eventsSubject.next(data);
-    if (data.id[1] == 'Color') this.edited.emit();
+    if (data.id[1] == 'Color' || data.id[1] == 'ColorName') this.edited.emit();
   }
 
   finishEdit() {

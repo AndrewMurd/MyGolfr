@@ -1,6 +1,97 @@
 @import "../../utilities/variables.scss";
 
+app-loading-animation {
+  position: absolute;
+  z-index: 10;
+  transform: scale(3);
+  left: 0;
+  right: 0;
+  margin: auto;
+  margin-top: 25%;
+}
 
-#startRoundContainer {
-  margin-top: 10vh;
+#loadingContainer {
+  height: 100vw;
+  width: 100vw;
+  z-index: 1000;
+  background-color: black;
+  opacity: 0.9;
+  position: absolute;
+}
+
+app-scorecard {
+  margin-top: 40px;
+  margin-left: 40px;
+  position: relative;
+  padding-bottom: 10vh;
+}
+
+#bodyContainer {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  width: 70%;
+}
+
+#scoreInput {
+  margin-top: 40px;
+  margin-left: 100px;
+  position: relative;
+  align-self: self-start;
+}
+
+#selectTeeBtn, #selectTeeContent {
+  width: 200px;
+}
+
+/* Dropdown Button */
+.dropbtn {
+  background-color: $green;
+  color: black;
+  padding: 16px;
+  font-size: 20px;
+  border: none;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+@media (max-width: 1100px) {
+  #bodyContainer {
+    width: 100%;
+  }
+}
+ 
+@media (max-width: 830px) {
+  app-scorecard {
+    margin-left: 0;
+  }
 }

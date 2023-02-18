@@ -1,5 +1,6 @@
 <div *ngIf="!editing" class="container">
   <img
+    *ngIf="editable"
     id="editBtn"
     (click)="edit()"
     src="../../../assets/edit.png"

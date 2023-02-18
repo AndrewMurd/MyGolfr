@@ -23,6 +23,8 @@ import { StartRoundPageComponent } from './components/start-round-page/start-rou
 import { NewScorecardTeeComponent } from './components/new-scorecard-tee/new-scorecard-tee.component';
 import { ScorecardHeaderComponent } from './components/scorecard-header/scorecard-header.component';
 import { ScorecardTeeComponent } from './components/scorecard-tee/scorecard-tee.component';
+import { CourseMapComponent } from './components/course-map/course-map.component';
+import { LoadingAnimationComponent } from './components/loading-animation/loading-animation.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { ScorecardTeeComponent } from './components/scorecard-tee/scorecard-tee.
     NewScorecardTeeComponent,
     ScorecardHeaderComponent,
     ScorecardTeeComponent,
+    CourseMapComponent,
+    LoadingAnimationComponent,
   ],
   imports: [
     BrowserModule,

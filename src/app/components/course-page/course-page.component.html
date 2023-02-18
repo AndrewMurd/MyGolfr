@@ -1,56 +1,15 @@
 <app-header></app-header>
 
-<div id="map"></div>
-
-<div id="selectionboxContainer">
-  <button
-    (click)="setMapView('course')"
-    id="courseBtn"
-    [ngClass]="
-      selectedMapView == 'course'
-        ? 'mapselectionBtnSelected'
-        : 'mapselectionBtn'
-    "
-  >
-    Course
-  </button>
-  <div
-    [ngClass]="{
-      selectionboxPhone: isPhone && !isNineHole,
-      selectionbox: !isPhone && !isNineHole,
-      selectionboxPhone9: isPhone && isNineHole,
-      selectionbox9: !isPhone && isNineHole
-    }"
-    id="selectionbox"
-  >
-    <button
-      *ngFor="let a of createRange(isNineHole ? 9 : 18); let index = index"
-      [ngClass]="
-        selectedMapView == '' + a
-          ? 'mapselectionBtnSelected'
-          : 'mapselectionBtn'
-      "
-      (click)="setMapView(a)"
-    >
-      {{ a }}
-    </button>
-  </div>
+<div *ngIf="loading" id="loadingContainer">
+  <app-loading-animation></app-loading-animation>
 </div>
 
-<div id="setBtnContainer">
-  <button *ngIf="editOn" id="setLocationBtn" (click)="setLocation()">Set View</button>
-  <button *ngIf="editOn" id="setMarkerLocationsBtn" (click)="setMarkerLocations()">Set Markers</button>
-  <label id="editMapBtn" class="switch">
-    <input type="checkbox" [(ngModel)]="editOn" (click)="disableDrag(!editOn)">
-    <span class="slider round"></span>
-  </label>
-</div>
+<app-course-map
+  [editedScorecard]="editedScorecard"
+  [rBackNine]="rBackNine"
+></app-course-map>
 
-
-<!-- NOT IMPLEMENTED YET... STILL DECIDING IF NEEDED -->
-<!-- <div id="flagBtnContainer">
-  <button id="addFlagBtn" (click)="addFlag()"></button>
-  <button id="removeFlagBtn" (click)="removeFlag()"></button>
-</div> -->
-
-<app-scorecard (editedScorecard)="reload()" (rBackNine)="isNineHole = !isNineHole"></app-scorecard>
+<app-scorecard
+  (editedScorecard)="editedScorecard.next('')"
+  (rBackNine)="rBackNine.next('')"
+></app-scorecard>

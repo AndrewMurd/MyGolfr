@@ -82,3 +82,13 @@ a:hover::before{
   position: absolute;
   right: 25%;
 }
+
+@media (max-width: 830px) {
+  .logo {
+    left: 5%;
+  }
+
+  #loginLink {
+    right: 10%;
+  }
+}

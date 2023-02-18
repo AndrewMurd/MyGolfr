@@ -45,9 +45,17 @@ export class NewScorecardTeeComponent {
       countSI = 0;
     if (this.isFrontNine) {
       for ([key, value] of Object.entries(this.teeData)) {
-        if (key.charAt(0) == 'P' && Number(key.charAt(1)) <= 9 && !Number(key.slice(-2))) {
+        if (
+          key.charAt(0) == 'P' &&
+          Number(key.charAt(1)) <= 9 &&
+          !Number(key.slice(-2))
+        ) {
           countPar++;
-        } else if (key.charAt(0) == 'S' && Number(key.charAt(2)) <= 9 && !Number(key.slice(-2))) {
+        } else if (
+          key.charAt(0) == 'S' &&
+          Number(key.charAt(2)) <= 9 &&
+          !Number(key.slice(-2))
+        ) {
           countSI++;
         }
       }
@@ -139,9 +147,7 @@ export class NewScorecardTeeComponent {
   async changePosition(event: any) {
     const newPos = event.target.value;
 
-    const response_scorecard: any = await this.courseService.get(
-      this.courseId
-    );
+    const response_scorecard: any = await this.courseService.get(this.courseId);
     this.scorecard = response_scorecard.course.scorecard;
 
     for (let tee of this.scorecard) {
@@ -156,17 +162,17 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
-      this.onReload.emit();
-    });
+    await this.courseService
+      .update(this.courseId, this.scorecard, 'scorecard')
+      .then(() => {
+        this.onReload.emit();
+      });
   }
 
   async copyParData() {
     this.showCopyPar = false;
 
-    const response_scorecard: any = await this.courseService.get(
-      this.courseId
-    );
+    const response_scorecard: any = await this.courseService.get(this.courseId);
     this.scorecard = response_scorecard.course.scorecard;
 
     const list: any[] = [];
@@ -206,17 +212,17 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
-      this.onReload.emit();
-    });
+    await this.courseService
+      .update(this.courseId, this.scorecard, 'scorecard')
+      .then(() => {
+        this.onReload.emit();
+      });
   }
 
   async copySIData() {
     this.showCopySI = false;
 
-    const response_scorecard: any = await this.courseService.get(
-      this.courseId
-    );
+    const response_scorecard: any = await this.courseService.get(this.courseId);
     this.scorecard = response_scorecard.course.scorecard;
 
     const list: any[] = [];
@@ -252,9 +258,11 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService.update(this.courseId, this.scorecard, 'scorecard').then(() => {
-      this.onReload.emit();
-    });
+    await this.courseService
+      .update(this.courseId, this.scorecard, 'scorecard')
+      .then(() => {
+        this.onReload.emit();
+      });
   }
 
   async deleteTee() {
@@ -282,28 +290,30 @@ export class NewScorecardTeeComponent {
         .then(() => {
           this.onReload.emit();
         });
-    }
 
-    const courseDataRes: any = await this.courseService.get(this.courseId);
+      const courseDataRes: any = await this.courseService.get(this.courseId);
 
-    let mapLayout = courseDataRes.course.mapLayout;
+      let mapLayout = courseDataRes.course.mapLayout;
 
-    for (let [key, value] of Object.entries(courseDataRes.course.mapLayout)) {
-      for (let i = 0; i < mapLayout[key].teeLocations.length; i++) {
-        if (mapLayout[key].teeLocations[i].id == this.teeData.id) {
-          mapLayout[key].teeLocations.splice(i, 1);
+      for (let [key, value] of Object.entries(courseDataRes.course.mapLayout)) {
+        for (let i = 0; i < mapLayout[key].teeLocations.length; i++) {
+          if (mapLayout[key].teeLocations[i].id == this.teeData.id) {
+            mapLayout[key].teeLocations.splice(i, 1);
+          }
         }
+        // for (let i = 0; i < mapLayout[key].flagLocations.length; i++) {
+        //   if (mapLayout[key].flagLocations[i].id == this.teeData.id) {
+        //     mapLayout[key].flagLocations.splice(i, 1);
+        //   }
+        // }
       }
-      // for (let i = 0; i < mapLayout[key].flagLocations.length; i++) {
-      //   if (mapLayout[key].flagLocations[i].id == this.teeData.id) {
-      //     mapLayout[key].flagLocations.splice(i, 1);
-      //   }
-      // }
-    }
 
-    await this.courseService.update(this.courseId, mapLayout, 'mapLayout').then(() => {
-      this.onReload.emit();
-    });
+      await this.courseService
+        .update(this.courseId, mapLayout, 'mapLayout')
+        .then(() => {
+          this.onReload.emit();
+        });
+    }
   }
 
   onSubmit(data: any) {
@@ -320,13 +330,14 @@ export class NewScorecardTeeComponent {
       this.displayInputSelector = false;
       this.displayColorName = true;
 
-      this.nameColor = this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
+      this.nameColor =
+        this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
 
       await this.courseService.setScorecardValue(
         JSON.parse(localStorage.getItem('selectedCourse')!).reference,
         { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
       );
-  
+
       this.onSubmitofInput.emit({
         id: [this.teeData.id, 'ColorName'],
         value: this.nameColor,
