@@ -1,14 +1,19 @@
 import { Component, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { faFlag, faMapPin } from '@fortawesome/free-solid-svg-icons';
+import {
+  faFlag,
+  faMapPin,
+  faCircleDot,
+} from '@fortawesome/free-solid-svg-icons';
 import { Observable, take } from 'rxjs';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { CourseDetailsService } from 'src/app/Service/course-details.service';
+import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 
 @Component({
   selector: 'app-course-map',
   templateUrl: './course-map.component.html',
-  styleUrls: ['./course-map.component.scss']
+  styleUrls: ['./course-map.component.scss'],
 })
 export class CourseMapComponent {
   @Input() editedScorecard!: Observable<any>;
@@ -27,11 +32,19 @@ export class CourseMapComponent {
   selectedMapView: string = 'course';
   map!: google.maps.Map;
   markers: any = [];
+  flagMarker: any = [];
+  distanceMarker: any = [];
+  lines: any = [];
+  mapLabels: any = [];
   editOn: boolean = false;
   offsetFactor = 0.0006;
   layoutData: any;
   scorecard: any;
   googleDetails: any;
+  createRange: Function = createRange;
+  getColorWhite: Function = getColorWhite;
+  getRGB: Function = getRGB;
+  roundInProgress: boolean = false;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -67,14 +80,19 @@ export class CourseMapComponent {
     }
     if (this.changeView) {
       this.changeView.subscribe((value) => {
-        this.setMapView(value);
+        this.scorecard = value.scorecard;
+        this.roundInProgress = value.roundInProgress;
+        this.setMapView(value.view);
       });
     }
 
-    this.courseService.courseData.asObservable().pipe(take(1)).subscribe((value) => {
-      this.courseData = value;
-      this.reload();
-    });
+    this.courseService.courseData
+      .asObservable()
+      .pipe(take(1))
+      .subscribe((value) => {
+        this.courseData = value;
+        this.reload();
+      });
   }
 
   async reload() {
@@ -111,6 +129,10 @@ export class CourseMapComponent {
       this.markers[i].setMap(null);
     }
     this.markers.length = 0;
+    this.flagMarker[0]?.setMap(null);
+    this.flagMarker.length = 0;
+    this.distanceMarker[0]?.setMap(null);
+    this.distanceMarker.length = 0;
   }
 
   disableDrag(value: boolean) {
@@ -155,6 +177,10 @@ export class CourseMapComponent {
 
     const holeLayout = this.layoutData[a];
 
+    while (holeLayout.teeLocations.length > this.scorecard.length) {
+      holeLayout.teeLocations.pop();
+    }
+
     this.map.setCenter(holeLayout.location);
     if (this.isPhone) {
       this.map.setZoom(holeLayout.zoom - 1);
@@ -183,13 +209,19 @@ export class CourseMapComponent {
         offsetTee += this.offsetFactor;
       }
 
-      // tee marker
+      if (this.roundInProgress) {
+        this.lines.push(
+          new google.maps.Polyline({
+            path: [teeLoc, holeLayout.location],
+            map: map,
+          })
+        );
+      }
+
+      // tee markers
       this.markers.push(
         new google.maps.Marker({
-          position: {
-            lat: teeLoc.lat,
-            lng: teeLoc.lng,
-          },
+          position: teeLoc,
           map,
           icon: {
             path: faMapPin.icon[4] as string,
@@ -209,40 +241,108 @@ export class CourseMapComponent {
       );
     }
 
-    let offsetFlag = this.offsetFactor;
-    for (let flagLoc of holeLayout.flagLocations) {
-      if (
-        flagLoc.lat == this.googleDetails.geometry.location.lat &&
-        flagLoc.lng == this.googleDetails.geometry.location.lng
-      ) {
-        flagLoc.lat = flagLoc.lat - offsetFlag;
-        offsetFlag += this.offsetFactor;
-      }
+    // flag marker
+    const flagLoc = holeLayout.flagLocation;
+    if (
+      flagLoc.lat == this.googleDetails.geometry.location.lat &&
+      flagLoc.lng == this.googleDetails.geometry.location.lng
+    ) {
+      flagLoc.lat = flagLoc.lat - this.offsetFactor;
+      flagLoc.lng = flagLoc.lng + this.offsetFactor;
+    }
+    this.flagMarker.push(
+      new google.maps.Marker({
+        position: flagLoc,
+        map,
+        icon: {
+          path: faFlag.icon[4] as string,
+          fillColor: 'black',
+          fillOpacity: 1,
+          anchor: new google.maps.Point(
+            faFlag.icon[0] / 4.2, // width
+            faFlag.icon[1] // height
+          ),
+          strokeWeight: 1,
+          strokeColor: '#ffffff',
+          scale: 0.04,
+        },
+        draggable: true,
+      })
+    );
 
-      // flag marker
-      this.markers.push(
+    if (this.roundInProgress) {
+      // distance marker
+      this.distanceMarker.push(
         new google.maps.Marker({
-          position: {
-            lat: flagLoc.lat,
-            lng: flagLoc.lng,
-          },
+          position: holeLayout.location,
           map,
           icon: {
-            path: faFlag.icon[4] as string,
+            path: faCircleDot.icon[4] as string,
             fillColor: 'black',
             fillOpacity: 1,
             anchor: new google.maps.Point(
-              faFlag.icon[0] / 4.2, // width
-              faFlag.icon[1] // height
+              faCircleDot.icon[0] / 4.2, // width
+              faCircleDot.icon[1] // height
             ),
             strokeWeight: 1,
             strokeColor: '#ffffff',
             scale: 0.04,
           },
-          draggable: this.editOn,
+          draggable: true,
         })
       );
+
+      this.lines.push(
+        new google.maps.Polyline({
+          path: [flagLoc, holeLayout.location],
+          map: map,
+        })
+      );
+
+      google.maps.event.addListener(this.distanceMarker[0], 'drag', () => {
+        let disMarkerpos = { lat: 0, lng: 0 };
+        disMarkerpos.lat = this.distanceMarker[0].getPosition().lat();
+        disMarkerpos.lng = this.distanceMarker[0].getPosition().lng();
+        for (let line of this.lines) {
+          let path = line.getPath().getArray();
+          let markerPos = { lat: 0, lng: 0 };
+          markerPos.lat = path[0].lat();
+          markerPos.lng = path[0].lng();
+          line.setPath([markerPos, disMarkerpos]);
+          let inBetween = google.maps.geometry.spherical.interpolate(
+            markerPos,
+            disMarkerpos,
+            0.5
+          );
+          console.log(inBetween);
+
+          // document.getElementById('yrdsLine1')?.style.left = x;
+          // document.getElementById('yrdsLine1')?.style.top ;
+        }
+      });
     }
+  }
+
+  haversine_distance(mk1: any, mk2: any) {
+    var R = 3958.8; // Radius of the Earth in miles
+    var rlat1 = mk1.position.lat() * (Math.PI / 180); // Convert degrees to radians
+    var rlat2 = mk2.position.lat() * (Math.PI / 180); // Convert degrees to radians
+    var difflat = rlat2 - rlat1; // Radian difference (latitudes)
+    var difflon = (mk2.position.lng() - mk1.position.lng()) * (Math.PI / 180); // Radian difference (longitudes)
+
+    var d =
+      2 *
+      R *
+      Math.asin(
+        Math.sqrt(
+          Math.sin(difflat / 2) * Math.sin(difflat / 2) +
+            Math.cos(rlat1) *
+              Math.cos(rlat2) *
+              Math.sin(difflon / 2) *
+              Math.sin(difflon / 2)
+        )
+      );
+    return d;
   }
 
   async setLocation() {
@@ -292,6 +392,9 @@ export class CourseMapComponent {
       }
     }
 
+    layoutData.flagLocation.lat = this.flagMarker[0].getPosition()?.lat();
+    layoutData.flagLocation.lng = this.flagMarker[0].getPosition()?.lng();
+
     await this.courseService.update(
       this.selectedCourse.reference,
       response.course.mapLayout,
@@ -302,10 +405,6 @@ export class CourseMapComponent {
     this.setMapView(this.selectedMapView);
   }
 
-  addFlag() {}
-
-  removeFlag() {}
-
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     if (window.innerWidth < 830) {
@@ -313,10 +412,5 @@ export class CourseMapComponent {
     } else {
       this.isPhone = false;
     }
-  }
-
-  createRange(number: number) {
-    // return new Array(number);
-    return new Array(number).fill('').map((n, index) => index + 1);
   }
 }

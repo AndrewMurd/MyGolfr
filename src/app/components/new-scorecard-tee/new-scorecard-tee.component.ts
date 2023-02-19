@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { CourseDetailsService } from '../../Service/course-details.service';
+import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 
 @Component({
   selector: 'app-new-scorecard-tee',
@@ -29,6 +30,9 @@ export class NewScorecardTeeComponent {
   colorEventsSubject: Subject<boolean> = new Subject<boolean>();
   copyEventsSubject: Subject<any> = new Subject<any>();
   factor: number = 170;
+  createRange: Function = createRange;
+  getRGB: Function = getRGB;
+  getColorWhite: Function = getColorWhite;
 
   constructor(private courseService: CourseDetailsService) {}
 
@@ -97,18 +101,12 @@ export class NewScorecardTeeComponent {
           this.displayInputSelector = false;
           this.displayColorName = true;
         }
-        const rgb = this.getRGB(this.teeData.Color);
 
-        if (
-          (rgb.r > this.factor && rgb.g > this.factor) ||
-          (rgb.r > this.factor && rgb.b > this.factor) ||
-          (rgb.g > this.factor && rgb.b > this.factor)
-        ) {
+        this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
+        if (this.isWhite) {
           this.colorEventsSubject.next(true);
-          this.isWhite = true;
         } else {
           this.colorEventsSubject.next(false);
-          this.isWhite = false;
         }
       } else if (this.teeData.id == value.id[0] && 'ColorName' == value.id[1]) {
         this.teeData.ColorName = value.value;
@@ -120,28 +118,12 @@ export class NewScorecardTeeComponent {
 
   ngAfterViewInit() {
     if (!this.teeData.Color) return;
-    const rgb = this.getRGB(this.teeData.Color);
-
-    if (
-      (rgb.r > this.factor && rgb.g > this.factor) ||
-      (rgb.r > this.factor && rgb.b > this.factor) ||
-      (rgb.g > this.factor && rgb.b > this.factor)
-    ) {
+    this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
+    if (this.isWhite) {
       this.colorEventsSubject.next(true);
-      this.isWhite = true;
     } else {
       this.colorEventsSubject.next(false);
-      this.isWhite = false;
     }
-  }
-
-  getRGB(ev: string) {
-    const color = ev;
-    const r = parseInt(color.substr(1, 2), 16);
-    const g = parseInt(color.substr(3, 2), 16);
-    const b = parseInt(color.substr(5, 2), 16);
-    // console.log(`red: ${r}, green: ${g}, blue: ${b}`)
-    return { r: r, g: g, b: b };
   }
 
   async changePosition(event: any) {
@@ -368,10 +350,5 @@ export class NewScorecardTeeComponent {
       id: [this.teeData.id, 'Color'],
       value: this.color,
     });
-  }
-
-  createRange(number: number) {
-    // return new Array(number);
-    return new Array(number).fill(0).map((n, index) => index + 1);
   }
 }

@@ -1,4 +1,4 @@
-<div (click)="showInput()" [ngClass]="showField ? 'nohoverDiv' : 'hoverDiv'">
+<div (click)="showField = true" [ngClass]="showField ? 'nohoverDiv' : 'hoverDiv'">
   <input
     *ngIf="showField"
     (keyup.enter)="submit()"

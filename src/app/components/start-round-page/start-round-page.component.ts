@@ -17,8 +17,13 @@ export class StartRoundPageComponent {
   editedScorecard: Subject<any> = new Subject<any>();
   changeView: Subject<any> = new Subject<any>();
   courseData: any;
-  selectedTee: any;
+  scoreData: any;
+  roundInProgress: any;
   loading: boolean = true;
+  selectedScore: any = 'Strokes';
+  show10Input: boolean = false;
+  strokesInputValue: number = 10;
+  currentHole!: number;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -52,28 +57,39 @@ export class StartRoundPageComponent {
   async reload() {
     try {
       const response: any = await this.scoreService.getStatus(false);
-      console.log(response.scores);
-      if (response.scores) {
-        this.selectedTee = response.scores;
-      }
+      if (response.score) this.roundInProgress = true;
+      this.scoreData = response.score;
+      this.currentHole = this.getCurrentHoleInProgress(this.scoreData.score);
+      this.changeView.next({scorecard: this.courseData.scorecard, view: this.currentHole, roundInProgress: this.roundInProgress});
+    } catch (error) {}
+  }
+
+  async startRound(tee: any) {
+    try {
+      const userData: any = jwt_decode(this.authService.token.getValue());
+      await this.scoreService.newScore(
+        userData.id,
+        this.courseData.id,
+        this.courseData,
+        tee
+      );
+      this.roundInProgress = true;
+      this.reload();
     } catch (error) {
       console.log(error);
     }
   }
 
-  selectTee(tee: any) {
-    this.selectedTee = tee;
-    try {
-      const userData: any = jwt_decode(this.authService.token.getValue());
-      this.scoreService.newScore(
-        userData.id,
-        this.courseData.id,
-        this.courseData
-      );
-    } catch (error) {
-      console.log(error);
-    }
-    this.changeView.next(1);
+  submitHole() {
+    console.log(this.selectedScore);
+    this.scoreData.score[this.currentHole] = this.selectedScore;
+    console.log(this.scoreData);
+  }
+
+  getCurrentHoleInProgress(score: any) {
+    const ln = Object.keys(score).length;
+    if (ln < 1) return 1;
+    return ln;
   }
 
   checkCompleteTees() {

@@ -69,8 +69,4 @@ export class ScorecardInputComponent {
 
     this.onSubmitInput.emit({ id: this.arrId, value: this.value });
   }
-
-  showInput() {
-    this.showField = true;
-  }
 }

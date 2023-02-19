@@ -16,11 +16,8 @@ router.get("/score", async (req, res) => {
       res.status(404).send({ error: "Score does not exist!" });
     } else {
       scores[0].courseData = JSON.parse(scores[0].courseData);
-      let newDict = {};
-      for (let [key, value] of Object.entries(scores[0])) {
-        newDict[key] = value;
-      }
-      res.status(200).send({ course: newDict });
+      scores[0].score = JSON.parse(scores[0].score);
+      res.status(200).send({ score: scores[0] });
     }
   } catch (error) {
     console.log(error);
@@ -41,11 +38,9 @@ router.get("/score_status", async (req, res) => {
       res.status(404).send({ error: "Score does not exist!" });
     } else {
       scores[0].courseData = JSON.parse(scores[0].courseData);
-      let newDict = {};
-      for (let [key, value] of Object.entries(scores[0])) {
-        newDict[key] = value;
-      }
-      res.status(200).send({ scores: newDict });
+      scores[0].score = JSON.parse(scores[0].score);
+      scores[0].teeData = JSON.parse(scores[0].teeData);
+      res.status(200).send({ score: scores[0] });
     }
   } catch (error) {
     console.log(error);
@@ -54,10 +49,10 @@ router.get("/score_status", async (req, res) => {
 });
 
 router.post("/add", async (req, res) => {
-  const { userId, courseId, courseData } = req.body;
+  const { userId, courseId, courseData, teeData } = req.body;
 
   try {
-    await Score.save(userId, courseId, JSON.stringify(courseData), JSON.stringify({}));
+    await Score.save(userId, courseId, JSON.stringify(courseData), JSON.stringify({}), JSON.stringify(teeData));
     console.log(`Added new score for user ${userId}`);
   } catch (error) {
     console.log(error);

@@ -1,8 +1,25 @@
 <div id="map"></div>
 
+<label id="yrdsLine1">test line 1</label>
+<label id="yrdsLine2">test line 2</label>
+
+<div *ngIf="selectedMapView != 'course'" id="infoDisplay">
+  <div
+    id="yards"
+    [ngStyle]="
+      getColorWhite(getRGB(tee.Color))
+        ? { 'background-color': tee.Color, color: 'black' }
+        : { 'background-color': tee.Color, color: 'white' }
+    "
+    *ngFor="let tee of scorecard; let index = index"
+  >
+    {{ tee["H" + selectedMapView] }}
+  </div>
+</div>
+
 <div id="selectionboxContainer">
   <button
-    (click)="setMapView('course')"
+    (click)="setMapView('course'); "
     id="courseBtn"
     [ngClass]="
       selectedMapView == 'course'
@@ -36,14 +53,25 @@
 </div>
 
 <div id="setBtnContainer">
-  <button *ngIf="editOn" id="setLocationBtn" (click)="setLocation()">Set View</button>
-  <button *ngIf="editOn" id="setMarkerLocationsBtn" (click)="setMarkerLocations()">Set Markers</button>
+  <button *ngIf="editOn" id="setLocationBtn" (click)="setLocation()">
+    Set View
+  </button>
+  <button
+    *ngIf="editOn"
+    id="setMarkerLocationsBtn"
+    (click)="setMarkerLocations()"
+  >
+    Set Markers
+  </button>
   <label id="editMapBtn" class="switch">
-    <input type="checkbox" [(ngModel)]="editOn" (click)="disableDrag(!editOn)">
+    <input
+      type="checkbox"
+      [(ngModel)]="editOn"
+      (click)="disableDrag(!editOn)"
+    />
     <span class="slider round"></span>
   </label>
 </div>
-
 
 <!-- NOT IMPLEMENTED YET... STILL DECIDING IF NEEDED -->
 <!-- <div id="flagBtnContainer">

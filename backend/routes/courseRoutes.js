@@ -42,11 +42,7 @@ router.get("/course", async (req, res) => {
       courses[0].courseDetails = JSON.parse(courses[0].courseDetails);
       courses[0].scorecard = JSON.parse(courses[0].scorecard);
       courses[0].mapLayout = JSON.parse(courses[0].mapLayout);
-      let newDict = {};
-      for (let [key, value] of Object.entries(courses[0])) {
-        newDict[key] = value;
-      }
-      res.status(200).send({ course: newDict });
+      res.status(200).send({ course: courses[0] });
     }
   } catch (error) {
     console.log(error);
@@ -71,7 +67,10 @@ router.post("/add", async (req, res) => {
           },
           zoom: 16,
           teeLocations: [],
-          flagLocations: [],
+          flagLocation: {
+            lat: course.geometry.location.lat,
+            lng: course.geometry.location.lng,
+          },
         };
       }
 

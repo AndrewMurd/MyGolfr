@@ -42,13 +42,14 @@ export class ScoreService {
     });
   }
 
-  async newScore(userId: string, courseId: string, courseData: any) {
+  async newScore(userId: string, courseId: string, courseData: any, teeData: any) {
     return await new Promise((resolve, reject) => {
       this.http
         .post(ROOT_URL + 'scores/add', {
           userId: userId,
           courseId: courseId,
           courseData: courseData,
+          teeData: teeData
         })
         .subscribe({
           next: (data) => {

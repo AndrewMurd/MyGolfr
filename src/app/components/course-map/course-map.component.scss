@@ -6,6 +6,28 @@
   width: 100vw;
 }
 
+#yrdsLine2 {
+  position: absolute;
+  
+}
+
+#infoDisplay {
+  position: absolute;
+  display: flex;
+  height: 30px;
+  width: auto;
+  left: 10px;
+  top: 65px;
+  font-size: larger;
+  background-color: lightgray;
+}
+
+#yards {
+  text-align: center;
+  line-height: 28px;
+  width: 50px;
+}
+
 #selectionboxContainer {
   display: flex;
   position: absolute;
@@ -219,5 +241,15 @@ input:checked + .slider:before {
     &:hover {
       background-color: lightgray;
     }
+  }
+
+  #infoDisplay {
+    font-size: normal;
+    height: 25px;
+  }
+  
+  #yards {
+    line-height: 28px;
+    width: 35px;
   }
 }

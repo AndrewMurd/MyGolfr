@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Component, Input } from '@angular/core';
+import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 
 @Component({
   selector: 'app-scorecard-tee',
@@ -17,6 +17,9 @@ export class ScorecardTeeComponent {
   yardages: any = [];
   pars: any = [];
   strokeIndexes: any = [];
+  getRGB: Function = getRGB;
+  createRange: Function = createRange;
+  getColorWhite: Function = getColorWhite;
 
   constructor() {}
 
@@ -28,30 +31,6 @@ export class ScorecardTeeComponent {
 
   ngAfterViewInit() {
     if (!this.teeData.Color) return;
-    const rgb = this.getRGB(this.teeData.Color);
-
-    if (
-      (rgb.r > this.factor && rgb.g > this.factor) ||
-      (rgb.r > this.factor && rgb.b > this.factor) ||
-      (rgb.g > this.factor && rgb.b > this.factor)
-    ) {
-      this.isWhite = true;
-    } else {
-      this.isWhite = false;
-    }
-  }
-
-  getRGB(ev: string) {
-    const color = ev;
-    const r = parseInt(color.substr(1, 2), 16);
-    const g = parseInt(color.substr(3, 2), 16);
-    const b = parseInt(color.substr(5, 2), 16);
-    // console.log(`red: ${r}, green: ${g}, blue: ${b}`)
-    return { r: r, g: g, b: b };
-  }
-
-  createRange(number: number) {
-    // return new Array(number);
-    return new Array(number).fill('').map((n, index) => index + 1);
+    this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
   }
 }

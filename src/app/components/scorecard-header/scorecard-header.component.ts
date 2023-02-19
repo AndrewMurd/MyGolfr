@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { createRange } from '../../utilities/functions';
 
 @Component({
   selector: 'app-scorecard-header',
@@ -7,9 +8,5 @@ import { Component, Input } from '@angular/core';
 })
 export class ScorecardHeaderComponent {
   @Input() isFrontNine!: boolean;
-
-  createRange(number: number) {
-    // return new Array(number);
-    return new Array(number).fill(0).map((n, index) => index + 1);
-  }
+  createRange: Function = createRange;
 }

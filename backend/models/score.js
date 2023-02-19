@@ -9,10 +9,10 @@ module.exports = class Score {
     return executeQuery("SELECT * FROM scores WHERE statusComplete = ?", [status]);
   }
 
-  static save(userId, courseId, courseData, score) {
+  static save(userId, courseId, courseData, score, teeData) {
     return executeQuery(
-      "INSERT INTO scores (userId, courseId, courseData, score, statusComplete) VALUES (?, ?, ?, ?, ?)",
-      [userId, courseId, courseData, score, false]
+      "INSERT INTO scores (userId, courseId, courseData, teeData, score, statusComplete) VALUES (?, ?, ?, ?, ?, ?)",
+      [userId, courseId, courseData, teeData, score, false]
     );
   }
 
