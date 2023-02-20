@@ -1,80 +1,99 @@
-<div id="map"></div>
-
-<label id="yrdsLine1">test line 1</label>
-<label id="yrdsLine2">test line 2</label>
-
-<div *ngIf="selectedMapView != 'course'" id="infoDisplay">
-  <div
-    id="yards"
-    [ngStyle]="
-      getColorWhite(getRGB(tee.Color))
-        ? { 'background-color': tee.Color, color: 'black' }
-        : { 'background-color': tee.Color, color: 'white' }
-    "
-    *ngFor="let tee of scorecard; let index = index"
-  >
-    {{ tee["H" + selectedMapView] }}
+<div id="courseMapContainer" [ngStyle]="{ height: mapHeight }">
+  <div id="map"></div>
+  <div *ngIf="selectedMapView != 'course'" id="infoDisplay">
+    <div id="teeColorsDisplay">
+      <div
+        id="yards"
+        [ngStyle]="
+          getColorWhite(getRGB(tee.Color))
+            ? { 'background-color': tee.Color, color: 'black' }
+            : { 'background-color': tee.Color, color: 'white' }
+        "
+        *ngFor="let tee of scorecard; let index = index"
+        (click)="selectTeeView(tee)"
+      >
+        {{ tee["H" + selectedMapView] }}
+      </div>
+    </div>
+    <div *ngIf="selectedTeeView" id="otherInfoDisplay">
+      <div
+        class="parSIDisplay"
+        [ngStyle]="
+          getColorWhite(getRGB(selectedTeeView.Color))
+            ? { 'background-color': selectedTeeView.Color, color: 'black' }
+            : { 'background-color': selectedTeeView.Color, color: 'white' }
+        "
+      >
+        <p class="lineOne">Par</p>
+        <p class="lineTwo">{{ selectedTeeView["P" + selectedMapView] }}</p>
+      </div>
+      <div
+        class="parSIDisplay"
+        [ngStyle]="
+          getColorWhite(getRGB(selectedTeeView.Color))
+            ? { 'background-color': selectedTeeView.Color, color: 'black' }
+            : { 'background-color': selectedTeeView.Color, color: 'white' }
+        "
+      >
+        <p class="lineOne">SI</p>
+        <p class="lineTwo">{{ selectedTeeView["SI" + selectedMapView] }}</p>
+      </div>
+    </div>
   </div>
-</div>
 
-<div id="selectionboxContainer">
-  <button
-    (click)="setMapView('course'); "
-    id="courseBtn"
-    [ngClass]="
-      selectedMapView == 'course'
-        ? 'mapselectionBtnSelected'
-        : 'mapselectionBtn'
-    "
-  >
-    Course
-  </button>
-  <div
-    [ngClass]="{
-      selectionboxPhone: isPhone && !isNineHole,
-      selectionbox: !isPhone && !isNineHole,
-      selectionboxPhone9: isPhone && isNineHole,
-      selectionbox9: !isPhone && isNineHole
-    }"
-    id="selectionbox"
-  >
+  <div id="selectionboxContainer">
     <button
-      *ngFor="let a of createRange(isNineHole ? 9 : 18); let index = index"
+      (click)="setMapView('course')"
+      id="courseBtn"
       [ngClass]="
-        selectedMapView == '' + a
+        selectedMapView == 'course'
           ? 'mapselectionBtnSelected'
           : 'mapselectionBtn'
       "
-      (click)="setMapView(a)"
     >
-      {{ a }}
+      Course
     </button>
+    <div
+      [ngClass]="{
+        selectionboxPhone: isPhone && !isNineHole,
+        selectionbox: !isPhone && !isNineHole,
+        selectionboxPhone9: isPhone && isNineHole,
+        selectionbox9: !isPhone && isNineHole
+      }"
+      id="selectionbox"
+    >
+      <button
+        *ngFor="let a of createRange(isNineHole ? 9 : 18); let index = index"
+        [ngClass]="
+          selectedMapView == '' + a
+            ? 'mapselectionBtnSelected'
+            : 'mapselectionBtn'
+        "
+        (click)="setMapView(a)"
+      >
+        {{ a }}
+      </button>
+    </div>
+  </div>
+
+  <div id="setBtnContainer">
+    <button *ngIf="editOn" id="setLocationBtn" (click)="setLocation()">
+      Set View
+    </button>
+    <button
+      *ngIf="editOn"
+      id="setMarkerLocationsBtn"
+      (click)="setMarkerLocations()"
+    >
+      Set Markers
+    </button>
+    <label id="editMapBtn" class="switch">
+      <input
+        type="checkbox"
+        [(ngModel)]="editOn"
+        (click)="disableDrag(!editOn)"
+      />
+      <span class="slider round"></span>
+    </label>
   </div>
 </div>
-
-<div id="setBtnContainer">
-  <button *ngIf="editOn" id="setLocationBtn" (click)="setLocation()">
-    Set View
-  </button>
-  <button
-    *ngIf="editOn"
-    id="setMarkerLocationsBtn"
-    (click)="setMarkerLocations()"
-  >
-    Set Markers
-  </button>
-  <label id="editMapBtn" class="switch">
-    <input
-      type="checkbox"
-      [(ngModel)]="editOn"
-      (click)="disableDrag(!editOn)"
-    />
-    <span class="slider round"></span>
-  </label>
-</div>
-
-<!-- NOT IMPLEMENTED YET... STILL DECIDING IF NEEDED -->
-<!-- <div id="flagBtnContainer">
-  <button id="addFlagBtn" (click)="addFlag()"></button>
-  <button id="removeFlagBtn" (click)="removeFlag()"></button>
-</div> -->

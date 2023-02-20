@@ -1,17 +1,30 @@
 @import "../../utilities/variables.scss";
 
-#map {
-  margin-top: 60px;
-  height: 400px;
+#courseMapContainer {
+  position: relative;
   width: 100vw;
 }
 
-#yrdsLine2 {
-  position: absolute;
-  
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.marker {
+  color: white;
+  background-color: black;
+  border: solid 1px black;
+  font-weight: 900;
+  padding: 4px;
+  top: -8px;
 }
 
 #infoDisplay {
+  display: flex;
+  flex-direction: column;
+}
+
+#teeColorsDisplay {
   position: absolute;
   display: flex;
   height: 30px;
@@ -19,13 +32,49 @@
   left: 10px;
   top: 65px;
   font-size: larger;
+  font-weight: bold;
   background-color: lightgray;
+}
+
+#otherInfoDisplay {
+  position: absolute;
+  display: flex;
+  width: auto;
+  left: 10px;
+  top: 100px;
+}
+
+.parSIDisplay {
+  display: flex;
+  flex-direction: column;
+  width: 50px;
+  text-align: center;
+  height: 40px;
+}
+
+.lineOne {
+  position: relative;
+  font-size: 11px;
+  height: 5px;
+}
+
+.lineTwo {
+  position: relative;
+  margin-top: 0px;
+  height: 30px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 #yards {
   text-align: center;
   line-height: 28px;
   width: 50px;
+  cursor: pointer;
+  transition: transform 0.1s;
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 #selectionboxContainer {
@@ -36,7 +85,7 @@
   left: 0;
   right: 0;
   z-index: 1;
-  top: 405px;
+  bottom: 30px;
   width: fit-content;
 }
 
@@ -218,10 +267,6 @@ input:checked + .slider:before {
 }
 
 @media (max-width: 830px) {
-  #selectionboxContainer {
-    top: 395px;
-  }
-
   .mapselectionBtn {
     font-size: 10px;
     min-width: 5px;
@@ -243,13 +288,21 @@ input:checked + .slider:before {
     }
   }
 
-  #infoDisplay {
+  #teeColorsDisplay {
+    font-size: normal;
+    height: 25px;
+  }
+  
+  #otherInfoDisplay {
     font-size: normal;
     height: 25px;
   }
   
   #yards {
-    line-height: 28px;
+    width: 35px;
+  }
+
+  .parSIDisplay {
     width: 35px;
   }
 }

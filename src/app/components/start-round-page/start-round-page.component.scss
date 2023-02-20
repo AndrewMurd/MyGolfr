@@ -20,10 +20,21 @@ app-loading-animation {
 }
 
 app-scorecard {
-  margin-top: 40px;
-  margin-left: 40px;
-  position: relative;
-  padding-bottom: 10vh;
+  top: 85px;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  width: 738px;
+}
+
+#openScorecard {
+  position: absolute;
+  bottom: 30px;
+  height: 30px;
+  margin-left: 10px;
 }
 
 #bodyContainer {
@@ -126,7 +137,9 @@ app-scorecard {
 
 @media (max-width: 830px) {
   app-scorecard {
+    top: 160px;
     margin-left: 0;
+    width: 100%;
   }
 
   app-loading-animation {

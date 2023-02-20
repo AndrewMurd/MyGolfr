@@ -1,10 +1,6 @@
 import { Component, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  faFlag,
-  faMapPin,
-  faCircleDot,
-} from '@fortawesome/free-solid-svg-icons';
+import { faFlag, faMapPin, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { Observable, take } from 'rxjs';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { CourseDetailsService } from 'src/app/Service/course-details.service';
@@ -19,6 +15,7 @@ export class CourseMapComponent {
   @Input() editedScorecard!: Observable<any>;
   @Input() rBackNine!: Observable<any>;
   @Input() changeView!: Observable<any>;
+  @Input() mapHeight: string = '400px';
   courseData: any;
   signedIn: boolean = false;
   selectedCourse: any;
@@ -45,6 +42,7 @@ export class CourseMapComponent {
   getColorWhite: Function = getColorWhite;
   getRGB: Function = getRGB;
   roundInProgress: boolean = false;
+  selectedTeeView: any;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -82,6 +80,7 @@ export class CourseMapComponent {
       this.changeView.subscribe((value) => {
         this.scorecard = value.scorecard;
         this.roundInProgress = value.roundInProgress;
+        this.selectedTeeView = this.scorecard[0];
         this.setMapView(value.view);
       });
     }
@@ -124,13 +123,29 @@ export class CourseMapComponent {
     }
   }
 
+  selectTeeView(tee: any) {
+    this.selectedTeeView = tee;
+  }
+
   clearOverlays() {
     for (var i = 0; i < this.markers.length; i++) {
       this.markers[i].setMap(null);
     }
     this.markers.length = 0;
+
+    for (var i = 0; i < this.lines.length; i++) {
+      this.lines[i].setMap(null);
+    }
+    this.lines.length = 0;
+
+    for (var i = 0; i < this.mapLabels.length; i++) {
+      this.mapLabels[i].setMap(null);
+    }
+    this.mapLabels.length = 0;
+
     this.flagMarker[0]?.setMap(null);
     this.flagMarker.length = 0;
+
     this.distanceMarker[0]?.setMap(null);
     this.distanceMarker.length = 0;
   }
@@ -214,6 +229,26 @@ export class CourseMapComponent {
           new google.maps.Polyline({
             path: [teeLoc, holeLayout.location],
             map: map,
+            strokeWeight: 2,
+          })
+        );
+        const inBetween = google.maps.geometry.spherical.interpolate(
+          teeLoc,
+          holeLayout.location,
+          0.5
+        );
+        this.mapLabels.push(
+          new google.maps.Marker({
+            position: {
+              lat: inBetween.lat() + 0.00006,
+              lng: inBetween.lng() + 0.00012,
+            },
+            label: '',
+            map: map,
+            icon: {
+              path: faFlag.icon[4] as string,
+              scale: 0.0,
+            },
           })
         );
       }
@@ -228,7 +263,7 @@ export class CourseMapComponent {
             fillColor: color,
             fillOpacity: 1,
             anchor: new google.maps.Point(
-              faMapPin.icon[0] / 2, // width
+              faMapPin.icon[0] / 1.8, // width
               faMapPin.icon[1] // height
             ),
             strokeWeight: 1,
@@ -259,7 +294,7 @@ export class CourseMapComponent {
           fillColor: 'black',
           fillOpacity: 1,
           anchor: new google.maps.Point(
-            faFlag.icon[0] / 4.2, // width
+            faFlag.icon[0] / 10, // width
             faFlag.icon[1] // height
           ),
           strokeWeight: 1,
@@ -277,16 +312,16 @@ export class CourseMapComponent {
           position: holeLayout.location,
           map,
           icon: {
-            path: faCircleDot.icon[4] as string,
+            path: faCircle.icon[4] as string,
             fillColor: 'black',
             fillOpacity: 1,
             anchor: new google.maps.Point(
-              faCircleDot.icon[0] / 4.2, // width
-              faCircleDot.icon[1] // height
+              faCircle.icon[0] / 2, // width
+              faCircle.icon[1] / 2 // height
             ),
             strokeWeight: 1,
             strokeColor: '#ffffff',
-            scale: 0.04,
+            scale: 0.03,
           },
           draggable: true,
         })
@@ -296,41 +331,135 @@ export class CourseMapComponent {
         new google.maps.Polyline({
           path: [flagLoc, holeLayout.location],
           map: map,
+          strokeWeight: 2,
         })
       );
+      const inBetween = google.maps.geometry.spherical.interpolate(
+        flagLoc,
+        holeLayout.location,
+        0.5
+      );
+      this.mapLabels.push(
+        new google.maps.Marker({
+          position: {
+            lat: inBetween.lat() + 0.00006,
+            lng: inBetween.lng() + 0.00012,
+          },
+          label: '',
+          map: map,
+          icon: {
+            path: faFlag.icon[4] as string,
+            scale: 0.0,
+          },
+        })
+      );
+
+      this.mapLabels[0].setLabel({
+        text:
+          Math.round(
+            this.haversine_distance(this.distanceMarker[0], this.markers[0]) *
+              1760
+          ) + '',
+        color: 'white',
+      });
+      this.mapLabels[1].setLabel({
+        text:
+          Math.round(
+            this.haversine_distance(
+              this.distanceMarker[0],
+              this.flagMarker[0]
+            ) * 1760
+          ) + '',
+        color: 'white',
+      });
 
       google.maps.event.addListener(this.distanceMarker[0], 'drag', () => {
         let disMarkerpos = { lat: 0, lng: 0 };
         disMarkerpos.lat = this.distanceMarker[0].getPosition().lat();
         disMarkerpos.lng = this.distanceMarker[0].getPosition().lng();
-        for (let line of this.lines) {
-          let path = line.getPath().getArray();
+        for (let i = 0; i < this.lines.length; i++) {
+          let path = this.lines[i].getPath().getArray();
           let markerPos = { lat: 0, lng: 0 };
           markerPos.lat = path[0].lat();
           markerPos.lng = path[0].lng();
-          line.setPath([markerPos, disMarkerpos]);
+          this.lines[i].setPath([markerPos, disMarkerpos]);
           let inBetween = google.maps.geometry.spherical.interpolate(
             markerPos,
             disMarkerpos,
             0.5
           );
-          console.log(inBetween);
-
-          // document.getElementById('yrdsLine1')?.style.left = x;
-          // document.getElementById('yrdsLine1')?.style.top ;
+          this.mapLabels[i].setPosition({
+            lat: inBetween.lat() + 0.00006,
+            lng: inBetween.lng(),
+          });
+          if (i == 0) {
+            this.mapLabels[0].setLabel({
+              text:
+                Math.round(
+                  this.haversine_distance(
+                    this.distanceMarker[0],
+                    this.markers[0]
+                  ) * 1760
+                ) + '',
+              color: 'white',
+            });
+          } else {
+            this.mapLabels[1].setLabel({
+              text:
+                Math.round(
+                  this.haversine_distance(
+                    this.distanceMarker[0],
+                    this.flagMarker[0]
+                  ) * 1760
+                ) + '',
+              color: 'white',
+            });
+          }
         }
+      });
+
+      google.maps.event.addListener(this.flagMarker[0], 'drag', () => {
+        let flagMarkerpos = { lat: 0, lng: 0 };
+        flagMarkerpos.lat = this.flagMarker[0].getPosition().lat();
+        flagMarkerpos.lng = this.flagMarker[0].getPosition().lng();
+
+        let path = this.lines[1].getPath().getArray();
+        let distMarkerPos = { lat: 0, lng: 0 };
+        distMarkerPos.lat = path[1].lat();
+        distMarkerPos.lng = path[1].lng();
+        this.lines[1].setPath([flagMarkerpos, distMarkerPos]);
+        let inBetween = google.maps.geometry.spherical.interpolate(
+          flagMarkerpos,
+          distMarkerPos,
+          0.5
+        );
+        this.mapLabels[1].setPosition({
+          lat: inBetween.lat() + 0.00006,
+          lng: inBetween.lng(),
+        });
+
+        this.mapLabels[1].setLabel({
+          text:
+            Math.round(
+              this.haversine_distance(
+                this.distanceMarker[0],
+                this.flagMarker[0]
+              ) * 1760
+            ) + '',
+          color: 'white',
+        });
       });
     }
   }
 
   haversine_distance(mk1: any, mk2: any) {
-    var R = 3958.8; // Radius of the Earth in miles
-    var rlat1 = mk1.position.lat() * (Math.PI / 180); // Convert degrees to radians
-    var rlat2 = mk2.position.lat() * (Math.PI / 180); // Convert degrees to radians
-    var difflat = rlat2 - rlat1; // Radian difference (latitudes)
-    var difflon = (mk2.position.lng() - mk1.position.lng()) * (Math.PI / 180); // Radian difference (longitudes)
+    const R = 3958.8; // Radius of the Earth in miles
+    const rlat1 = mk1.position.lat() * (Math.PI / 180); // Convert degrees to radians
+    const rlat2 = mk2.position.lat() * (Math.PI / 180); // Convert degrees to radians
+    const difflat = rlat2 - rlat1; // Radian difference (latitudes)
+    const difflon = (mk2.position.lng() - mk1.position.lng()) * (Math.PI / 180); // Radian difference (longitudes)
 
-    var d =
+    const d =
       2 *
       R *
       Math.asin(

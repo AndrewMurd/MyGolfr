@@ -24,6 +24,7 @@ export class StartRoundPageComponent {
   show10Input: boolean = false;
   strokesInputValue: number = 10;
   currentHole!: number;
+  showScorecard: boolean = false;
 
   constructor(
     private courseService: CourseDetailsService,

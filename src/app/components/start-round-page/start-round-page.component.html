@@ -5,13 +5,25 @@
 </div>
 
 <app-course-map
+  [mapHeight]="'100vh'"
   [changeView]="changeView"
   [editedScorecard]="editedScorecard"
   [rBackNine]="rBackNine"
 ></app-course-map>
 
-<div id="bodyContainer">
+<button id="openScorecard" (click)="showScorecard = !showScorecard">
+  Open Scorecard
+</button>
+
+<app-scorecard
+  [ngStyle]="showScorecard ? { display: '' } : { display: 'none' }"
+  (editedScorecard)="editedScorecard.next('')"
+  (rBackNine)="rBackNine.next('')"
+></app-scorecard>
+
+<!-- <div id="bodyContainer">
   <app-scorecard
+    *ngIf="showScorecard"
     (editedScorecard)="editedScorecard.next('')"
     (rBackNine)="rBackNine.next('')"
   ></app-scorecard>
@@ -51,4 +63,4 @@
     />
   </div>
   <button id="submitHole" (click)="submitHole()">Next Hole</button>
-</div>
+</div> -->
