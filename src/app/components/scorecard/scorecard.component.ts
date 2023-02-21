@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { Subject, take } from 'rxjs';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { CourseDetailsService } from 'src/app/Service/course-details.service';
+import { ScoreService } from 'src/app/Service/score.service';
 import { ScorecardTeeComponent } from '../scorecard-tee/scorecard-tee.component';
 
 @Component({
@@ -26,6 +27,7 @@ export class ScorecardComponent {
   selectedCourse: any;
   editing: boolean = false;
   removedBackNine: boolean = false;
+  roundInProgress: boolean = false;
   @Input() editable: boolean = true;
   @Output() rBackNine: EventEmitter<any> = new EventEmitter();
   @Output() editedScorecard: EventEmitter<any> = new EventEmitter();
@@ -38,6 +40,7 @@ export class ScorecardComponent {
   constructor(
     private courseService: CourseDetailsService,
     private authService: AuthenticationService,
+    private scoreService: ScoreService,
     private router: Router
   ) {}
 
@@ -53,9 +56,18 @@ export class ScorecardComponent {
       }
     });
 
-    this.courseService.courseData.asObservable().pipe(take(1)).subscribe((value) => {
-      this.courseData = value;
-      this.reload(true);
+    this.courseService.courseData.asObservable().subscribe((value) => {
+      if (value && !this.editing) {
+        this.courseData = value;
+        this.reload(true);
+      }
+    });
+
+    this.scoreService.scoreData.asObservable().subscribe((value) => {
+      if (value) {
+        this.courseData = value;
+        this.roundInProgress = true;
+      }
     });
   }
 

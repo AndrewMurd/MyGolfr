@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { ROOT_URL } from '../utilities/enviroment';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { response } from 'express';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CourseDetailsService {
-  courseData = new Subject<any>();
+  courseData = new BehaviorSubject<any>(null);
 
   constructor(private http: HttpClient) {}
 

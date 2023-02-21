@@ -15,8 +15,8 @@ router.get("/score", async (req, res) => {
     if (scores.length == 0) {
       res.status(404).send({ error: "Score does not exist!" });
     } else {
-      scores[0].courseData = JSON.parse(scores[0].courseData);
       scores[0].score = JSON.parse(scores[0].score);
+      scores[0].teeData = JSON.parse(scores[0].teeData);
       res.status(200).send({ score: scores[0] });
     }
   } catch (error) {
@@ -37,7 +37,6 @@ router.get("/score_status", async (req, res) => {
     if (scores.length == 0) {
       res.status(404).send({ error: "Score does not exist!" });
     } else {
-      scores[0].courseData = JSON.parse(scores[0].courseData);
       scores[0].score = JSON.parse(scores[0].score);
       scores[0].teeData = JSON.parse(scores[0].teeData);
       res.status(200).send({ score: scores[0] });
@@ -49,10 +48,10 @@ router.get("/score_status", async (req, res) => {
 });
 
 router.post("/add", async (req, res) => {
-  const { userId, courseId, courseData, teeData } = req.body;
+  const { userId, courseId, teeData, dateTime } = req.body;
 
   try {
-    await Score.save(userId, courseId, JSON.stringify(courseData), JSON.stringify({}), JSON.stringify(teeData));
+    await Score.save(userId, courseId, JSON.stringify(teeData), dateTime);
     console.log(`Added new score for user ${userId}`);
   } catch (error) {
     console.log(error);

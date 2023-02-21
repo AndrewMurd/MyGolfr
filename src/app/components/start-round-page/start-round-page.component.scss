@@ -48,10 +48,9 @@ app-scorecard {
 }
 
 #scoreInput {
-  margin-top: 40px;
-  margin-left: 100px;
-  position: relative;
-  align-self: self-start;
+  position: absolute;
+  top: 65px;
+  left: 200px;
 }
 
 #submitHole {

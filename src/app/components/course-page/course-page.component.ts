@@ -1,9 +1,6 @@
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
-import { Router } from '@angular/router';
-import { faMapPin, faFlag } from '@fortawesome/free-solid-svg-icons';
 import { Subject } from 'rxjs';
-import { AuthenticationService } from 'src/app/Service/authentication.service';
 
 @Component({
   selector: 'app-course-page',

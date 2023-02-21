@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { ScoreService } from 'src/app/Service/score.service';
 import jwt_decode from 'jwt-decode';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
+import { createRange } from '../../utilities/functions';
 
 @Component({
   selector: 'app-start-round-page',
@@ -25,6 +26,7 @@ export class StartRoundPageComponent {
   strokesInputValue: number = 10;
   currentHole!: number;
   showScorecard: boolean = false;
+  createRange: Function = createRange;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -49,6 +51,15 @@ export class StartRoundPageComponent {
       );
       this.courseData = response.course;
       this.checkCompleteTees();
+      if (this.roundInProgress) {
+        // update teeData for score in database
+        await this.scoreService.update(
+          this.scoreData.id,
+          this.courseData.scorecard[0],
+          'teeData'
+        );
+        this.reload();
+      }
     });
 
     this.reload();
@@ -60,8 +71,13 @@ export class StartRoundPageComponent {
       const response: any = await this.scoreService.getStatus(false);
       if (response.score) this.roundInProgress = true;
       this.scoreData = response.score;
+      this.scoreService.scoreData = this.scoreData;
       this.currentHole = this.getCurrentHoleInProgress(this.scoreData.score);
-      this.changeView.next({scorecard: this.courseData.scorecard, view: this.currentHole, roundInProgress: this.roundInProgress});
+      this.changeView.next({
+        teeData: this.scoreData.teeData,
+        view: this.currentHole,
+        roundInProgress: this.roundInProgress,
+      });
     } catch (error) {}
   }
 
@@ -71,10 +87,9 @@ export class StartRoundPageComponent {
       await this.scoreService.newScore(
         userData.id,
         this.courseData.id,
-        this.courseData,
-        tee
+        tee,
+        this.convertDateToMySql()
       );
-      this.roundInProgress = true;
       this.reload();
     } catch (error) {
       console.log(error);
@@ -109,8 +124,8 @@ export class StartRoundPageComponent {
     }
   }
 
-  createRange(number: number) {
-    // return new Array(number);
-    return new Array(number).fill(0).map((n, index) => index + 1);
+  convertDateToMySql() {
+    var date = new Date();
+    return date.toISOString().slice(0, 19).replace('T', ' ');
   }
 }

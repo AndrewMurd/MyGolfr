@@ -67,8 +67,9 @@ export class CourseMapComponent {
           this.selectedCourse.reference
         );
         this.courseData = response.course;
-
-        this.reload();
+        if (!this.roundInProgress) {
+          this.reload();
+        }
       });
     }
     if (this.rBackNine) {
@@ -78,20 +79,19 @@ export class CourseMapComponent {
     }
     if (this.changeView) {
       this.changeView.subscribe((value) => {
-        this.scorecard = value.scorecard;
+        this.scorecard = [value.teeData];
         this.roundInProgress = value.roundInProgress;
         this.selectedTeeView = this.scorecard[0];
         this.setMapView(value.view);
       });
     }
 
-    this.courseService.courseData
-      .asObservable()
-      .pipe(take(1))
-      .subscribe((value) => {
+    this.courseService.courseData.asObservable().subscribe((value) => {
+      if (value) {
         this.courseData = value;
         this.reload();
-      });
+      }
+    });
   }
 
   async reload() {
@@ -205,6 +205,8 @@ export class CourseMapComponent {
 
     let offsetTee = this.offsetFactor;
     for (let teeLoc of holeLayout.teeLocations) {
+      if (this.roundInProgress && teeLoc.id != this.selectedTeeView.id) return;
+
       let color;
       for (let tee of this.scorecard) {
         if (tee.id == teeLoc.id) {

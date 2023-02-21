@@ -1,11 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { ROOT_URL } from '../utilities/enviroment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ScoreService {
+  scoreData = new BehaviorSubject<any>(null);
+
   constructor(private http: HttpClient) {}
 
   async get(id: string) {
@@ -42,14 +45,33 @@ export class ScoreService {
     });
   }
 
-  async newScore(userId: string, courseId: string, courseData: any, teeData: any) {
+  async update(scoreId: string, data: any, type: string) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'scores/update', {
+          id: scoreId,
+          data: data,
+          type: type,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  async newScore(userId: string, courseId: string, teeData: any, dateTime: any) {
     return await new Promise((resolve, reject) => {
       this.http
         .post(ROOT_URL + 'scores/add', {
           userId: userId,
           courseId: courseId,
-          courseData: courseData,
-          teeData: teeData
+          teeData: teeData,
+          dateTime: dateTime
         })
         .subscribe({
           next: (data) => {
