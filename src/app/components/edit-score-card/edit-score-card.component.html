@@ -1,4 +1,11 @@
 <div class="container">
+  <img
+    *ngIf="!editing"
+    id="editBtn"
+    (click)="edit()"
+    src="../../../assets/edit.png"
+    alt=""
+  />
   <div class="scorecardContainer">
     <h1>{{ title }}</h1>
     <div class="gridContainer">
@@ -14,12 +21,12 @@
     </div>
   </div>
   <div id="containerBtn">
-    <button *ngIf="!isLoading" id="addBtn" (click)="addNewTee()">
+    <button *ngIf="!isLoading && editing" id="addBtn" (click)="addNewTee()">
       Add Tee
     </button>
-    <button *ngIf="!isLoading" id="doneBtn" (click)="finishEdit()">Done</button>
+    <button *ngIf="!isLoading && editing" id="doneBtn" (click)="finishEdit()">Done</button>
     <button
-      *ngIf="!isLoading"
+      *ngIf="!isLoading && editing"
       id="removebacknineBtn"
       (click)="removebacknine()"
     >

@@ -1,6 +1,9 @@
-<div (click)="showField = true" [ngClass]="showField ? 'nohoverDiv' : 'hoverDiv'">
+<div
+  (click)="editing ? showField = true : showField = false"
+  [ngClass]="showField || !editing ? 'nohoverDiv' : 'hoverDiv'"
+>
   <input
-    *ngIf="showField"
+    *ngIf="showField && editing"
     (keyup.enter)="submit()"
     id="{{ id }}"
     type="text"

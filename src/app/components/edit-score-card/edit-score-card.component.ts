@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild, ViewContainerRef } from '@angular/core';
 import { NewScorecardTeeComponent } from '../new-scorecard-tee/new-scorecard-tee.component';
 import { CourseDetailsService } from '../../Service/course-details.service';
+import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { map, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -10,14 +11,17 @@ import { Router } from '@angular/router';
   styleUrls: ['./edit-score-card.component.scss'],
 })
 export class EditScoreCardComponent {
+  signedIn: boolean = false;
   title: string = 'New Golf Course ScoreCard';
   courseId!: string;
+  courseData: any;
   eventsSubject: Subject<any> = new Subject<any>();
   @Output() onFinishEdit: EventEmitter<any> = new EventEmitter();
   @Output() edited: EventEmitter<any> = new EventEmitter();
   @Output() rBackNine: EventEmitter<any> = new EventEmitter();
   removedBackNine!: boolean;
   isLoading: boolean = false;
+  editing: boolean = false;
 
   @ViewChild('frontNine', { read: ViewContainerRef })
   frontNineContainer!: ViewContainerRef;
@@ -26,6 +30,7 @@ export class EditScoreCardComponent {
 
   constructor(
     private courseService: CourseDetailsService,
+    private authService: AuthenticationService,
     private router: Router
   ) {}
 
@@ -34,19 +39,30 @@ export class EditScoreCardComponent {
       localStorage.getItem('selectedCourse')!
     ).reference;
 
-    this.reload();
+    this.authService.token.asObservable().subscribe((value) => {
+      if (value) {
+        this.signedIn = true;
+      } else {
+        this.signedIn = false;
+      }
+    });
+
+    this.courseService.courseData.asObservable().subscribe((value) => {
+      if (value) {
+        this.courseData = value;
+        this.reload();
+      }
+    });
   }
 
   async reload() {
     this.isLoading = true;
-    const response: any = await this.courseService.get(this.courseId);
-    this.courseService.courseData.next(response.course);
 
-    this.title = response.course.name;
-    this.removedBackNine = response.course.courseDetails.nineHoleGolfCourse;
+    this.title = this.courseData.name;
+    this.removedBackNine = this.courseData.courseDetails.nineHoleGolfCourse;
 
     let teeRenderOrder = [];
-    for (let tee of response.course.scorecard) {
+    for (let tee of this.courseData.scorecard) {
       document.getElementById(tee.id)?.remove();
       document.getElementById(tee.id)?.remove();
       teeRenderOrder.push(tee);
@@ -57,7 +73,7 @@ export class EditScoreCardComponent {
     });
 
     for (let teeToRender of teeRenderOrder) {
-      this.createTeeComponents(teeToRender, response.course.scorecard);
+      this.createTeeComponents(teeToRender);
     }
 
     this.edited.emit();
@@ -72,31 +88,39 @@ export class EditScoreCardComponent {
     if (data.id[1] == 'Color' || data.id[1] == 'ColorName') this.edited.emit();
   }
 
-  finishEdit() {
+  async finishEdit() {
+    this.editing = false;
+    this.courseService.editingScoreCard.next(this.editing);
+    const response: any = await this.courseService.get(this.courseId);
+    this.courseService.courseData.next(response.course);
     this.onFinishEdit.emit();
   }
 
+  edit() {
+    if (!this.signedIn) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.editing = true;
+    this.courseService.editingScoreCard.next(this.editing);
+  }
+
   async removebacknine() {
-    const response: any = await this.courseService.get(this.courseId);
+    this.courseData.courseDetails['nineHoleGolfCourse'] = !this.courseData.courseDetails['nineHoleGolfCourse'];
 
-    response.course.courseDetails['nineHoleGolfCourse'] = !response.course.courseDetails['nineHoleGolfCourse'];
-
-    this.courseService.update(this.courseId, response.course.courseDetails, 'courseDetails').then(() => {
-      this.reload();
-    });
-    this.rBackNine.emit();
+    await this.courseService.update(this.courseId, this.courseData.courseDetails, 'courseDetails');
+    this.courseService.courseData.next(this.courseData);
   }
 
   async addNewTee() {
-    await this.courseService.setScorecardValue(
+    const response: any = await this.courseService.setScorecardValue(
       this.courseId,
       { id: 'new', value: '' }
     );
+    this.courseData.scorecard = response.scorecard;
 
-    const courseDataRes: any = await this.courseService.get(this.courseId);
-
-    let mapLayout = courseDataRes.course.mapLayout;
-    let scorecard = courseDataRes.course.scorecard;
+    let mapLayout = this.courseData.mapLayout;
+    let scorecard = this.courseData.scorecard;
 
     for (let [key, value] of Object.entries(mapLayout)) {
       mapLayout[key].teeLocations.push({
@@ -104,25 +128,19 @@ export class EditScoreCardComponent {
         lat: mapLayout[key].location.lat,
         lng: mapLayout[key].location.lng,
       });
-      // mapLayout[key].flagLocations.push({
-      //   id: scorecard[scorecard.length - 1].id,
-      //   lat: mapLayout[key].location.lat,
-      //   lng: mapLayout[key].location.lng,
-      // });
     }
 
-    this.courseService.update(this.courseId, mapLayout, 'mapLayout').then(() => {
-      this.reload();
-    });
+    this.courseService.update(this.courseId, mapLayout, 'mapLayout');
+    this.courseData.mapLayout = mapLayout;
+    this.courseService.courseData.next(this.courseData);
   }
 
-  createTeeComponents(teeData: any, scorecardData: any) {
+  createTeeComponents(teeData: any) {
     const frontNineTee = this.frontNineContainer.createComponent(
       NewScorecardTeeComponent
     );
     frontNineTee.setInput('id', teeData.id);
     frontNineTee.setInput('teeData', teeData);
-    frontNineTee.setInput('scorecard', scorecardData);
     frontNineTee.setInput('isFrontNine', true);
     frontNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
@@ -138,7 +156,6 @@ export class EditScoreCardComponent {
     );
     backNineTee.setInput('id', teeData.id);
     backNineTee.setInput('teeData', teeData);
-    backNineTee.setInput('scorecard', scorecardData);
     backNineTee.setInput('isFrontNine', false);
     backNineTee.instance.onReload.subscribe((value) => {
       this.reload();

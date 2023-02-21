@@ -14,10 +14,9 @@ import { createRange } from '../../utilities/functions';
 })
 export class StartRoundPageComponent {
   selectedCourse: any;
-  rBackNine: Subject<any> = new Subject<any>();
-  editedScorecard: Subject<any> = new Subject<any>();
   changeView: Subject<any> = new Subject<any>();
   courseData: any;
+  completedTees: any;
   scoreData: any;
   roundInProgress: any;
   loading: boolean = true;
@@ -43,27 +42,43 @@ export class StartRoundPageComponent {
     );
     this.courseService.courseData.next(response.course);
     this.courseData = response.course;
-    this.checkCompleteTees();
-
-    this.editedScorecard.asObservable().subscribe(async () => {
-      const response: any = await this.courseService.get(
-        this.selectedCourse.reference
-      );
-      this.courseData = response.course;
-      this.checkCompleteTees();
-      if (this.roundInProgress) {
-        // update teeData for score in database
-        await this.scoreService.update(
-          this.scoreData.id,
-          this.courseData.scorecard[0],
-          'teeData'
-        );
-        this.reload();
-      }
-    });
-
+    this.completedTees = Object.assign({}, this.courseData);
+    this.checkCompleteTees(this.completedTees);
     this.reload();
     this.loading = false;
+
+    this.courseService.courseData.asObservable().subscribe(async (value) => {
+      if (value) {
+        this.courseData = value;
+        this.completedTees = Object.assign({}, this.courseData);
+        this.checkCompleteTees(this.completedTees);
+        if (this.roundInProgress) {
+          // update teeData for score in database
+          await this.scoreService.update(
+            this.scoreData.id,
+            this.completedTees.scorecard[0],
+            'teeData'
+          );
+          this.reload();
+        }
+      }
+    });
+    // this.editedScorecard.asObservable().subscribe(async () => {
+    //   const response: any = await this.courseService.get(
+    //     this.selectedCourse.reference
+    //   );
+    //   this.courseData = response.course;
+    //   this.checkCompleteTees();
+    //   if (this.roundInProgress) {
+    //     // update teeData for score in database
+    //     await this.scoreService.update(
+    //       this.scoreData.id,
+    //       this.courseData.scorecard[0],
+    //       'teeData'
+    //     );
+    //     this.reload();
+    //   }
+    // });
   }
 
   async reload() {
@@ -108,20 +123,22 @@ export class StartRoundPageComponent {
     return ln;
   }
 
-  checkCompleteTees() {
-    if (this.courseData.courseDetails.nineHoleGolfCourse) {
-      this.courseData.scorecard = this.courseData.scorecard.filter(
+  checkCompleteTees(data: any) {
+    let courseData = data;
+    if (courseData.courseDetails.nineHoleGolfCourse) {
+      courseData.scorecard = courseData.scorecard.filter(
         (tee: any) => {
           return Object.keys(tee).length >= 31;
         }
       );
     } else {
-      this.courseData.scorecard = this.courseData.scorecard.filter(
+      courseData.scorecard = courseData.scorecard.filter(
         (tee: any) => {
           return Object.keys(tee).length === 32 * 2;
         }
       );
     }
+    return courseData;
   }
 
   convertDateToMySql() {

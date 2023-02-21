@@ -12,11 +12,13 @@ import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 export class NewScorecardTeeComponent {
   @Input() id!: string;
   @Input() teeData: any;
-  @Input() scorecard: any;
+  scorecard: any;
+  courseData: any;
   @Input() isFrontNine: boolean = true;
   @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
   @Output() onReload: EventEmitter<any> = new EventEmitter();
   @Input() events!: Observable<any>;
+  editing: boolean = false;
   showCopySI!: boolean;
   showCopyPar!: boolean;
   courseId!: string;
@@ -43,6 +45,13 @@ export class NewScorecardTeeComponent {
 
     this.color = this.teeData.Color;
     this.nameColor = this.teeData.ColorName;
+
+    this.courseService.courseData.asObservable().subscribe((value) => {
+      if (value) {
+        this.courseData = value;
+        this.scorecard = value.scorecard;
+      }
+    });
 
     let key, value: any;
     let countPar = 0,
@@ -114,6 +123,10 @@ export class NewScorecardTeeComponent {
         this.displayColorName = true;
       }
     });
+
+    this.courseService.editingScoreCard.asObservable().subscribe((value) => {
+      this.editing = value;
+    });
   }
 
   ngAfterViewInit() {
@@ -129,9 +142,6 @@ export class NewScorecardTeeComponent {
   async changePosition(event: any) {
     const newPos = event.target.value;
 
-    const response_scorecard: any = await this.courseService.get(this.courseId);
-    this.scorecard = response_scorecard.course.scorecard;
-
     for (let tee of this.scorecard) {
       if (tee.Position == newPos) {
         tee.Position = this.teeData.Position;
@@ -144,18 +154,13 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService
-      .update(this.courseId, this.scorecard, 'scorecard')
-      .then(() => {
-        this.onReload.emit();
-      });
+    await this.courseService.update(this.courseId, this.scorecard, 'scorecard');
+    this.courseData.scorecard = this.scorecard;
+    this.courseService.courseData.next(this.courseData);
   }
 
   async copyParData() {
     this.showCopyPar = false;
-
-    const response_scorecard: any = await this.courseService.get(this.courseId);
-    this.scorecard = response_scorecard.course.scorecard;
 
     const list: any[] = [];
 
@@ -194,18 +199,13 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService
-      .update(this.courseId, this.scorecard, 'scorecard')
-      .then(() => {
-        this.onReload.emit();
-      });
+    await this.courseService.update(this.courseId, this.scorecard, 'scorecard');
+    this.courseData.scorecard = this.scorecard;
+    this.courseService.courseData.next(this.courseData);
   }
 
   async copySIData() {
     this.showCopySI = false;
-
-    const response_scorecard: any = await this.courseService.get(this.courseId);
-    this.scorecard = response_scorecard.course.scorecard;
 
     const list: any[] = [];
 
@@ -240,11 +240,9 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService
-      .update(this.courseId, this.scorecard, 'scorecard')
-      .then(() => {
-        this.onReload.emit();
-      });
+    await this.courseService.update(this.courseId, this.scorecard, 'scorecard');
+    this.courseData.scorecard = this.scorecard;
+    this.courseService.courseData.next(this.courseData);
   }
 
   async deleteTee() {
@@ -267,34 +265,27 @@ export class NewScorecardTeeComponent {
           tee.Position = tee.Position - 1;
       }
 
-      await this.courseService
-        .update(this.courseId, this.scorecard, 'scorecard')
-        .then(() => {
-          this.onReload.emit();
-        });
+      await this.courseService.update(
+        this.courseId,
+        this.scorecard,
+        'scorecard'
+      );
 
-      const courseDataRes: any = await this.courseService.get(this.courseId);
+      let mapLayout = this.courseData.mapLayout;
 
-      let mapLayout = courseDataRes.course.mapLayout;
-
-      for (let [key, value] of Object.entries(courseDataRes.course.mapLayout)) {
+      for (let [key, value] of Object.entries(mapLayout)) {
         for (let i = 0; i < mapLayout[key].teeLocations.length; i++) {
           if (mapLayout[key].teeLocations[i].id == this.teeData.id) {
             mapLayout[key].teeLocations.splice(i, 1);
           }
         }
-        // for (let i = 0; i < mapLayout[key].flagLocations.length; i++) {
-        //   if (mapLayout[key].flagLocations[i].id == this.teeData.id) {
-        //     mapLayout[key].flagLocations.splice(i, 1);
-        //   }
-        // }
       }
 
-      await this.courseService
-        .update(this.courseId, mapLayout, 'mapLayout')
-        .then(() => {
-          this.onReload.emit();
-        });
+      await this.courseService.update(this.courseId, mapLayout, 'mapLayout');
+
+      this.courseData.scorecard = this.scorecard;
+      this.courseData.mapLayout = mapLayout;
+      this.courseService.courseData.next(this.courseData);
     }
   }
 
@@ -315,10 +306,13 @@ export class NewScorecardTeeComponent {
       this.nameColor =
         this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
 
-      await this.courseService.setScorecardValue(
+      const response: any = await this.courseService.setScorecardValue(
         JSON.parse(localStorage.getItem('selectedCourse')!).reference,
         { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
       );
+
+      this.courseData.scorecard = response.scorecard;
+      this.courseService.courseData.next(this.courseData);
 
       this.onSubmitofInput.emit({
         id: [this.teeData.id, 'ColorName'],
@@ -341,10 +335,12 @@ export class NewScorecardTeeComponent {
     }
 
     // set Color in database
-    await this.courseService.setScorecardValue(
+    const response: any = await this.courseService.setScorecardValue(
       JSON.parse(localStorage.getItem('selectedCourse')!).reference,
       { id: [this.teeData.id, 'Color'], value: this.color }
     );
+    this.courseData.scorecard = response.scorecard;
+    this.courseService.courseData.next(this.courseData);
 
     this.onSubmitofInput.emit({
       id: [this.teeData.id, 'Color'],

@@ -1,9 +1,5 @@
 const { Router } = require("express");
-const bcrypt = require("bcrypt");
-const User = require("../models/user");
 const Course = require("../models/course");
-const jwt = require("jsonwebtoken");
-const { check, validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
 
 const router = Router();
@@ -121,7 +117,7 @@ router.post("/set_scorecard_value", async (req, res) => {
 
   await Course.update(JSON.stringify(scorecard), "scorecard", id);
 
-  res.send({ data: scorecard[length - 1] });
+  res.send({ scorecard: scorecard });
 });
 
 // @desc Update Course Data

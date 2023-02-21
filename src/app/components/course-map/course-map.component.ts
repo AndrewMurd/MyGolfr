@@ -12,8 +12,6 @@ import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
   styleUrls: ['./course-map.component.scss'],
 })
 export class CourseMapComponent {
-  @Input() editedScorecard!: Observable<any>;
-  @Input() rBackNine!: Observable<any>;
   @Input() changeView!: Observable<any>;
   @Input() mapHeight: string = '400px';
   courseData: any;
@@ -61,22 +59,13 @@ export class CourseMapComponent {
       }
     });
 
-    if (this.editedScorecard) {
-      this.editedScorecard.subscribe(async () => {
-        const response: any = await this.courseService.get(
-          this.selectedCourse.reference
-        );
-        this.courseData = response.course;
-        if (!this.roundInProgress) {
-          this.reload();
-        }
-      });
-    }
-    if (this.rBackNine) {
-      this.rBackNine.subscribe(() => {
-        this.isNineHole = !this.isNineHole;
-      });
-    }
+    this.courseService.courseData.asObservable().subscribe((value) => {
+      if (value) {
+        this.courseData = value;
+        this.reload();
+      }
+    });
+
     if (this.changeView) {
       this.changeView.subscribe((value) => {
         this.scorecard = [value.teeData];
@@ -85,13 +74,6 @@ export class CourseMapComponent {
         this.setMapView(value.view);
       });
     }
-
-    this.courseService.courseData.asObservable().subscribe((value) => {
-      if (value) {
-        this.courseData = value;
-        this.reload();
-      }
-    });
   }
 
   async reload() {
@@ -167,17 +149,6 @@ export class CourseMapComponent {
   }
 
   async setMapView(a: any) {
-    if (this.editOn) {
-      const response: any = await this.courseService.get(
-        this.selectedCourse.reference
-      );
-
-      this.isNineHole = response.course.courseDetails.nineHoleGolfCourse;
-      this.layoutData = response.course.mapLayout;
-      this.scorecard = response.course.scorecard;
-      this.googleDetails = response.course.googleDetails;
-    }
-
     this.selectedMapView = `${a}`;
     let map = this.map;
 
@@ -501,7 +472,7 @@ export class CourseMapComponent {
     );
 
     this.courseData.mapLayout = response.course.mapLayout;
-    this.setMapView(this.selectedMapView);
+    this.courseService.courseData.next(this.courseData);
   }
 
   async setMarkerLocations() {
@@ -533,7 +504,7 @@ export class CourseMapComponent {
     );
 
     this.courseData.mapLayout = response.course.mapLayout;
-    this.setMapView(this.selectedMapView);
+    this.courseService.courseData.next(this.courseData);
   }
 
   @HostListener('window:resize', ['$event'])

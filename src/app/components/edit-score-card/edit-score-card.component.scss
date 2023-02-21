@@ -5,6 +5,18 @@
   width: 738px;
 }
 
+#editBtn {
+  left: 101%;
+  height: 30px;
+  position: absolute;
+  z-index: 1;
+  cursor: pointer;
+  transition: transform 150ms;
+  &:hover {
+    transform: scale(1.2) translateY(-3px);
+  }
+}
+
 .scorecardContainer {
   width: 738px;
   height: auto;

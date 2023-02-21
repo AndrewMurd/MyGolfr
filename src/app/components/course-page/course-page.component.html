@@ -4,12 +4,6 @@
   <app-loading-animation></app-loading-animation>
 </div>
 
-<app-course-map
-  [editedScorecard]="editedScorecard"
-  [rBackNine]="rBackNine"
-></app-course-map>
+<app-course-map></app-course-map>
 
-<app-scorecard
-  (editedScorecard)="editedScorecard.next('')"
-  (rBackNine)="rBackNine.next('')"
-></app-scorecard>
+<edit-score-card></edit-score-card>

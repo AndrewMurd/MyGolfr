@@ -9,7 +9,6 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { StartScoreComponent } from './components/start-score/start-score.component';
-import { ScorecardComponent } from './components/scorecard/scorecard.component';
 import { ScorecardInputComponent } from './components/scorecard-input/scorecard-input.component';
 import { EditScoreCardComponent } from './components/edit-score-card/edit-score-card.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,7 +21,6 @@ import { CoursePageComponent } from './components/course-page/course-page.compon
 import { StartRoundPageComponent } from './components/start-round-page/start-round-page.component';
 import { NewScorecardTeeComponent } from './components/new-scorecard-tee/new-scorecard-tee.component';
 import { ScorecardHeaderComponent } from './components/scorecard-header/scorecard-header.component';
-import { ScorecardTeeComponent } from './components/scorecard-tee/scorecard-tee.component';
 import { CourseMapComponent } from './components/course-map/course-map.component';
 import { LoadingAnimationComponent } from './components/loading-animation/loading-animation.component';
 
@@ -32,7 +30,6 @@ import { LoadingAnimationComponent } from './components/loading-animation/loadin
     HeaderComponent,
     HomePageComponent,
     StartScoreComponent,
-    ScorecardComponent,
     ScorecardInputComponent,
     EditScoreCardComponent,
     LoginPageComponent,
@@ -43,7 +40,6 @@ import { LoadingAnimationComponent } from './components/loading-animation/loadin
     StartRoundPageComponent,
     NewScorecardTeeComponent,
     ScorecardHeaderComponent,
-    ScorecardTeeComponent,
     CourseMapComponent,
     LoadingAnimationComponent,
   ],

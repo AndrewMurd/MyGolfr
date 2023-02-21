@@ -8,8 +8,6 @@ import { Subject } from 'rxjs';
   styleUrls: ['./course-page.component.scss'],
 })
 export class CoursePageComponent {
-  rBackNine: Subject<any> = new Subject<any>();
-  editedScorecard: Subject<any> = new Subject<any>();
   selectedCourse: any;
   loading: boolean = true;
 

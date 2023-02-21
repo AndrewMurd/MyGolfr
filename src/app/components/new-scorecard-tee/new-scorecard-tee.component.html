@@ -9,7 +9,7 @@
 </datalist>
 
 <img
-  *ngIf="isFrontNine"
+  *ngIf="isFrontNine && editing"
   id="deleteBtn"
   (click)="deleteTee()"
   src="../../../assets/error.png"
@@ -17,7 +17,7 @@
 />
 
 <select
-  *ngIf="isFrontNine"
+  *ngIf="isFrontNine && editing"
   id="selectPosition"
   (change)="changePosition($event)"
 >
@@ -39,12 +39,18 @@
   >
     <p
       [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
-      *ngIf="displayColorName"
+      *ngIf="displayColorName && !editing"
+    >
+      {{ teeData.ColorName }}
+    </p>
+    <p
+      [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
+      *ngIf="displayColorName && editing"
       (click)="displayColorName = false; displayInputSelector = true"
     >
       {{ teeData.ColorName }}
     </p>
-    <div *ngIf="displayInputSelector" id="inputSelector">
+    <div *ngIf="displayInputSelector && editing" id="inputSelector">
       <button
         id="openColorPicker"
         (click)="displayColorPicker = true; displayInputSelector = false"
@@ -58,11 +64,11 @@
         Name
       </button>
     </div>
-    <div *ngIf="displayColorPicker">
+    <div *ngIf="displayColorPicker && editing">
       <input type="color" id="colorPicker" [(ngModel)]="color" list="presets" />
       <button id="btnSetColor" (click)="setColor()">Set</button>
     </div>
-    <div *ngIf="displayColorNamer">
+    <div *ngIf="displayColorNamer && editing">
       <input
         id="colorNamer"
         onkeydown="return /[a-z]/i.test(event.key)"
@@ -116,7 +122,9 @@
     ></app-scorecard-input>
   </div>
   <!-- row 3 -->
-  <div [ngStyle]="{ 'background-color': 'grey' }" id="parHeader" class="header">Par</div>
+  <div [ngStyle]="{ 'background-color': 'grey' }" id="parHeader" class="header">
+    Par
+  </div>
   <div class="holes" *ngFor="let a of createRange(9); let index = index">
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
@@ -137,7 +145,7 @@
     ></app-scorecard-input>
   </div>
   <div>
-    <button *ngIf="showCopyPar" (click)="copyParData()" id="copyPar">
+    <button *ngIf="showCopyPar && editing" (click)="copyParData()" id="copyPar">
       Copy Par
     </button>
   </div>
@@ -157,7 +165,7 @@
     ></app-scorecard-input>
   </div>
   <div>
-    <button *ngIf="showCopySI" (click)="copySIData()" id="copyPar">
+    <button *ngIf="showCopySI && editing" (click)="copySIData()" id="copyPar">
       Copy SI
     </button>
   </div>

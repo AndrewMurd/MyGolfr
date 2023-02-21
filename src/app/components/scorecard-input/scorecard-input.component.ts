@@ -15,9 +15,9 @@ export class ScorecardInputComponent {
   @Input() whiteEvent!: Observable<any>;
   @Output() onSubmitInput: EventEmitter<any> = new EventEmitter();
   showField: boolean = true;
+  editing: boolean = false;
   value!: string;
   arrId: any;
-  // eventsSubscription!: Subscription;
   isWhite: boolean = false;
   courseId!: string;
 
@@ -43,6 +43,10 @@ export class ScorecardInputComponent {
         this.value = this.data[this.arrId[1]];
       }
     }
+
+    this.courseService.editingScoreCard.asObservable().subscribe((value) => {
+      this.editing = value;
+    });
 
     if (this.events) {
       this.events.subscribe((value) => {
