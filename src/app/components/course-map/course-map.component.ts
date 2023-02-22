@@ -2,8 +2,8 @@ import { Component, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { faFlag, faMapPin, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { Observable, take } from 'rxjs';
-import { AuthenticationService } from 'src/app/Service/authentication.service';
-import { CourseDetailsService } from 'src/app/Service/course-details.service';
+import { AuthenticationService } from '../../Service/authentication.service';
+import { CourseDetailsService } from '../../Service/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 
 @Component({
@@ -68,9 +68,9 @@ export class CourseMapComponent {
 
     if (this.changeView) {
       this.changeView.subscribe((value) => {
+        this.selectedTeeView = value.teeData;
         this.scorecard = [value.teeData];
         this.roundInProgress = value.roundInProgress;
-        this.selectedTeeView = this.scorecard[0];
         this.setMapView(value.view);
       });
     }

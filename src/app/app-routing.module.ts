@@ -7,7 +7,7 @@ import { CoursePageComponent } from './components/course-page/course-page.compon
 import { StartRoundPageComponent } from './components/start-round-page/start-round-page.component';
 
 const routes: Routes = [
-  { path: '', component: HomePageComponent },
+  { path: '', component: HomePageComponent},
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'course', component: CoursePageComponent },

@@ -9,7 +9,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 export class CourseDetailsService {
   courseData = new BehaviorSubject<any>(null);
   editingScoreCard = new BehaviorSubject<any>(false);
-
+  
   constructor(private http: HttpClient) {}
 
   async searchCourses(searchString: string) {

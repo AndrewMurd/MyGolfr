@@ -8,29 +8,6 @@
   <option value="#C0C0C0">Silver</option>
 </datalist>
 
-<img
-  *ngIf="isFrontNine && editing"
-  id="deleteBtn"
-  (click)="deleteTee()"
-  src="../../../assets/error.png"
-  alt=""
-/>
-
-<select
-  *ngIf="isFrontNine && editing"
-  id="selectPosition"
-  (change)="changePosition($event)"
->
-  <option
-    id="posOptions"
-    [selected]="teeData.Position == pos && 'selected'"
-    *ngFor="let pos of createRange(scorecard.length)"
-    [value]="pos"
-  >
-    {{ pos }}
-  </option>
-</select>
-
 <div class="grid-container">
   <!-- row 2 -->
   <div
@@ -145,9 +122,6 @@
     ></app-scorecard-input>
   </div>
   <div>
-    <button *ngIf="showCopyPar && editing" (click)="copyParData()" id="copyPar">
-      Copy Par
-    </button>
   </div>
   <div></div>
 
@@ -165,10 +139,8 @@
     ></app-scorecard-input>
   </div>
   <div>
-    <button *ngIf="showCopySI && editing" (click)="copySIData()" id="copyPar">
-      Copy SI
-    </button>
   </div>
   <div></div>
   <div></div>
 </div>
+

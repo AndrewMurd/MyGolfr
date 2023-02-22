@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-scorecard-input',
@@ -11,7 +11,7 @@ export class ScorecardInputComponent {
   @Input() id!: string;
   @Input() placeholder!: string;
   @Input() data: any;
-  @Input() events!: Observable<any>;
+  @Input() submitInput!: Observable<any>;
   @Input() whiteEvent!: Observable<any>;
   @Output() onSubmitInput: EventEmitter<any> = new EventEmitter();
   showField: boolean = true;
@@ -48,8 +48,8 @@ export class ScorecardInputComponent {
       this.editing = value;
     });
 
-    if (this.events) {
-      this.events.subscribe((value) => {
+    if (this.submitInput) {
+      this.submitInput.subscribe((value) => {
         if (this.data.id == value.id[0] && this.arrId[1] == value.id[1]) {
           this.showField = false;
           this.value = value.value;

@@ -8,7 +8,6 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
-import { StartScoreComponent } from './components/start-score/start-score.component';
 import { ScorecardInputComponent } from './components/scorecard-input/scorecard-input.component';
 import { EditScoreCardComponent } from './components/edit-score-card/edit-score-card.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,13 +22,14 @@ import { NewScorecardTeeComponent } from './components/new-scorecard-tee/new-sco
 import { ScorecardHeaderComponent } from './components/scorecard-header/scorecard-header.component';
 import { CourseMapComponent } from './components/course-map/course-map.component';
 import { LoadingAnimationComponent } from './components/loading-animation/loading-animation.component';
+import { ActiveScorecardComponent } from './components/active-scorecard/active-scorecard.component';
+import { ActiveTeeComponent } from './components/active-tee/active-tee.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     HomePageComponent,
-    StartScoreComponent,
     ScorecardInputComponent,
     EditScoreCardComponent,
     LoginPageComponent,
@@ -42,6 +42,8 @@ import { LoadingAnimationComponent } from './components/loading-animation/loadin
     ScorecardHeaderComponent,
     CourseMapComponent,
     LoadingAnimationComponent,
+    ActiveScorecardComponent,
+    ActiveTeeComponent,
   ],
   imports: [
     BrowserModule,

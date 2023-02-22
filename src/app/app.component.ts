@@ -4,7 +4,7 @@ import { AuthenticationService } from './Service/authentication.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   constructor(private authService: AuthenticationService) {}
@@ -16,6 +16,6 @@ export class AppComponent {
       if (res.accessToken) {
         this.authService.token.next(res.accessToken);
       }
-    } catch(error) {}
+    } catch (error) {}
   }
 }

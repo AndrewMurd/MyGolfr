@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { ScoreService } from '../../Service/score.service';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 
@@ -12,12 +13,11 @@ import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 export class NewScorecardTeeComponent {
   @Input() id!: string;
   @Input() teeData: any;
+  @Input() isFrontNine: boolean = true;
+  @Input() submitInput!: Observable<any>;
+  @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
   scorecard: any;
   courseData: any;
-  @Input() isFrontNine: boolean = true;
-  @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
-  @Output() onReload: EventEmitter<any> = new EventEmitter();
-  @Input() events!: Observable<any>;
   editing: boolean = false;
   showCopySI!: boolean;
   showCopyPar!: boolean;
@@ -36,7 +36,10 @@ export class NewScorecardTeeComponent {
   getRGB: Function = getRGB;
   getColorWhite: Function = getColorWhite;
 
-  constructor(private courseService: CourseDetailsService) {}
+  constructor(
+    private courseService: CourseDetailsService,
+    private scoreService: ScoreService
+  ) {}
 
   ngOnInit() {
     this.courseId = JSON.parse(
@@ -103,7 +106,7 @@ export class NewScorecardTeeComponent {
       this.displayInputSelector = true;
     }
 
-    this.events.subscribe((value) => {
+    this.submitInput.subscribe((value) => {
       if (this.teeData.id == value.id[0] && 'Color' == value.id[1]) {
         this.teeData.Color = value.value;
         if (this.teeData.ColorName) {

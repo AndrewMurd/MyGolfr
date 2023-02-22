@@ -1,0 +1,33 @@
+<div class="container">
+  <img
+    *ngIf="!editing"
+    id="editBtn"
+    (click)="edit()"
+    src="../../../assets/edit.png"
+    alt=""
+  />
+  <div class="scorecardContainer">
+    <h1>{{ title }}</h1>
+    <div class="gridContainer">
+      <app-scorecard-header [isFrontNine]="true"></app-scorecard-header>
+      <ng-container #frontNine> </ng-container>
+      <app-scorecard-header
+        *ngIf="!removedBackNine"
+        [isFrontNine]="false"
+      ></app-scorecard-header>
+      <ng-container #backNine> </ng-container>
+    </div>
+  </div>
+  <div id="containerBtn">
+    <button *ngIf="!isLoading && editing" id="doneBtn" (click)="finishEdit()">
+      Done
+    </button>
+    <button
+      *ngIf="!isLoading && editing"
+      id="removebacknineBtn"
+      (click)="removebacknine()"
+    >
+      {{ removedBackNine ? "Add Back Nine" : "Remove Back Nine" }}
+    </button>
+  </div>
+</div>

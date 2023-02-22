@@ -1,0 +1,155 @@
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { ScoreService } from '../../Service/score.service';
+import { CourseDetailsService } from '../../Service/course-details.service';
+import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
+
+@Component({
+  selector: 'app-active-tee',
+  templateUrl: './active-tee.component.html',
+  styleUrls: ['./active-tee.component.scss'],
+  host: { '[id]': 'id' },
+})
+export class ActiveTeeComponent {
+  @Input() id!: string;
+  @Input() teeData: any;
+  @Input() isFrontNine: boolean = true;
+  @Input() submitInput!: Observable<any>;
+  @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
+  scorecard: any;
+  courseData: any;
+  editing: boolean = false;
+  courseId!: string;
+  color!: string;
+  nameColor!: string;
+  displayColorPicker: boolean = false;
+  displayColorNamer: boolean = false;
+  displayInputSelector: boolean = false;
+  displayColorName: boolean = true;
+  isWhite!: boolean;
+  colorEventsSubject: Subject<boolean> = new Subject<boolean>();
+  factor: number = 170;
+  createRange: Function = createRange;
+  getRGB: Function = getRGB;
+  getColorWhite: Function = getColorWhite;
+
+  constructor(
+    private courseService: CourseDetailsService,
+    private scoreService: ScoreService
+  ) {}
+
+  ngOnInit() {
+    this.courseId = JSON.parse(
+      localStorage.getItem('selectedCourse')!
+    ).reference;
+
+    this.color = this.teeData.Color;
+    this.nameColor = this.teeData.ColorName;
+
+    // this.courseService.courseData.asObservable().subscribe((value) => {
+    //   if (value) {
+    //     this.courseData = value;
+    //     this.scorecard = value.scorecard;
+    //   }
+    // });
+
+    if (!this.teeData.ColorName) {
+      this.displayColorName = false;
+      this.displayInputSelector = true;
+    }
+
+    this.submitInput.subscribe((value) => {
+      if (this.teeData.id == value.id[0] && 'Color' == value.id[1]) {
+        this.teeData.Color = value.value;
+        if (this.teeData.ColorName) {
+          this.displayInputSelector = false;
+          this.displayColorName = true;
+        }
+
+        this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
+        if (this.isWhite) {
+          this.colorEventsSubject.next(true);
+        } else {
+          this.colorEventsSubject.next(false);
+        }
+      } else if (this.teeData.id == value.id[0] && 'ColorName' == value.id[1]) {
+        this.teeData.ColorName = value.value;
+        this.displayInputSelector = false;
+        this.displayColorName = true;
+      }
+    });
+
+    this.courseService.editingScoreCard.asObservable().subscribe((value) => {
+      this.editing = value;
+    });
+  }
+
+  ngAfterViewInit() {
+    if (!this.teeData.Color) return;
+    this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
+    if (this.isWhite) {
+      this.colorEventsSubject.next(true);
+    } else {
+      this.colorEventsSubject.next(false);
+    }
+  }
+
+  onSubmit(data: any) {
+    this.onSubmitofInput.emit(data);
+  }
+
+  async submitColorName() {
+    if (!this.nameColor) {
+      alert('Must enter name!');
+      this.displayColorNamer = false;
+      this.displayInputSelector = true;
+    } else {
+      this.displayColorNamer = false;
+      this.displayInputSelector = false;
+      this.displayColorName = true;
+
+      this.nameColor =
+        this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
+
+      const response: any = await this.courseService.setScorecardValue(
+        JSON.parse(localStorage.getItem('selectedCourse')!).reference,
+        { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
+      );
+
+      this.courseData.scorecard = response.scorecard;
+      this.courseService.courseData.next(this.courseData);
+
+      this.onSubmitofInput.emit({
+        id: [this.teeData.id, 'ColorName'],
+        value: this.nameColor,
+      });
+    }
+  }
+
+  async setColor() {
+    this.displayColorPicker = false;
+    if (this.teeData.ColorName) {
+      this.displayInputSelector = false;
+      this.displayColorName = true;
+    } else {
+      this.displayInputSelector = true;
+    }
+
+    if (!this.color) {
+      this.color = '#000000';
+    }
+
+    // set Color in database
+    const response: any = await this.courseService.setScorecardValue(
+      JSON.parse(localStorage.getItem('selectedCourse')!).reference,
+      { id: [this.teeData.id, 'Color'], value: this.color }
+    );
+    this.courseData.scorecard = response.scorecard;
+    this.courseService.courseData.next(this.courseData);
+
+    this.onSubmitofInput.emit({
+      id: [this.teeData.id, 'Color'],
+      value: this.color,
+    });
+  }
+}

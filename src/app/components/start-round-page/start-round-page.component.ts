@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { ScoreService } from 'src/app/Service/score.service';
+import { ScoreService } from '../../Service/score.service';
 import jwt_decode from 'jwt-decode';
-import { AuthenticationService } from 'src/app/Service/authentication.service';
+import { AuthenticationService } from '../../Service/authentication.service';
 import { createRange } from '../../utilities/functions';
+import { EditScoreCardComponent } from '../edit-score-card/edit-score-card.component';
+import { ActiveScorecardComponent } from '../active-scorecard/active-scorecard.component';
 
 @Component({
   selector: 'app-start-round-page',
@@ -25,7 +27,11 @@ export class StartRoundPageComponent {
   strokesInputValue: number = 10;
   currentHole!: number;
   showScorecard: boolean = false;
+  openDropdown: boolean = false;
   createRange: Function = createRange;
+
+  @ViewChild('scorecardContainer', { read: ViewContainerRef })
+  scorecardContainer!: ViewContainerRef;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -40,11 +46,11 @@ export class StartRoundPageComponent {
     const response: any = await this.courseService.get(
       this.selectedCourse.reference
     );
-    this.courseService.courseData.next(response.course);
     this.courseData = response.course;
     this.completedTees = Object.assign({}, this.courseData);
     this.checkCompleteTees(this.completedTees);
-    this.reload();
+    this.getScore();
+    this.courseService.courseData.next(response.course);
     this.loading = false;
 
     this.courseService.courseData.asObservable().subscribe(async (value) => {
@@ -53,40 +59,36 @@ export class StartRoundPageComponent {
         this.completedTees = Object.assign({}, this.courseData);
         this.checkCompleteTees(this.completedTees);
         if (this.roundInProgress) {
-          // update teeData for score in database
-          await this.scoreService.update(
-            this.scoreData.id,
-            this.completedTees.scorecard[0],
-            'teeData'
-          );
+          for (let tee of this.courseData.scorecard) {
+            if (tee.id == this.scoreData.teeData.id) {
+              await this.scoreService.update(this.scoreData.id, tee, 'teeData');
+              this.scoreData.teeData = tee;
+            }
+          }
           this.reload();
         }
       }
     });
-    // this.editedScorecard.asObservable().subscribe(async () => {
-    //   const response: any = await this.courseService.get(
-    //     this.selectedCourse.reference
-    //   );
-    //   this.courseData = response.course;
-    //   this.checkCompleteTees();
-    //   if (this.roundInProgress) {
-    //     // update teeData for score in database
-    //     await this.scoreService.update(
-    //       this.scoreData.id,
-    //       this.courseData.scorecard[0],
-    //       'teeData'
-    //     );
-    //     this.reload();
-    //   }
-    // });
+  }
+
+  async getScore() {
+    try {
+      const response: any = await this.scoreService.getStatus(false);
+      this.roundInProgress = true;
+      this.scoreData = response.score;
+      this.scoreService.scoreData.next(this.scoreData);
+      this.currentHole = this.getCurrentHoleInProgress(this.scoreData.score);
+      this.changeView.next({
+        teeData: this.scoreData.teeData,
+        view: this.currentHole,
+        roundInProgress: this.roundInProgress,
+      });
+    } catch (error) {}
   }
 
   async reload() {
     try {
-      const response: any = await this.scoreService.getStatus(false);
-      if (response.score) this.roundInProgress = true;
-      this.scoreData = response.score;
-      this.scoreService.scoreData = this.scoreData;
+      this.scoreService.scoreData.next(this.scoreData);
       this.currentHole = this.getCurrentHoleInProgress(this.scoreData.score);
       this.changeView.next({
         teeData: this.scoreData.teeData,
@@ -126,17 +128,13 @@ export class StartRoundPageComponent {
   checkCompleteTees(data: any) {
     let courseData = data;
     if (courseData.courseDetails.nineHoleGolfCourse) {
-      courseData.scorecard = courseData.scorecard.filter(
-        (tee: any) => {
-          return Object.keys(tee).length >= 31;
-        }
-      );
+      courseData.scorecard = courseData.scorecard.filter((tee: any) => {
+        return Object.keys(tee).length >= 31;
+      });
     } else {
-      courseData.scorecard = courseData.scorecard.filter(
-        (tee: any) => {
-          return Object.keys(tee).length === 32 * 2;
-        }
-      );
+      courseData.scorecard = courseData.scorecard.filter((tee: any) => {
+        return Object.keys(tee).length === 32 * 2;
+      });
     }
     return courseData;
   }

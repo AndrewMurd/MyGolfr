@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/Service/authentication.service';
+import { AuthenticationService } from '../../Service/authentication.service';
 
 @Component({
   selector: 'app-search-item',

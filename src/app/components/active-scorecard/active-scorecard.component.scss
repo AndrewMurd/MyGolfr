@@ -43,7 +43,6 @@ h1 {
 }
 
 /* CSS */
-#addBtn,
 #doneBtn,
 #removebacknineBtn {
   top: 8px;
@@ -110,16 +109,6 @@ h1 {
     border: 1px solid;
     border-radius: 2px;
     background-color: grey;
-  }
-
-  #addBtn {
-    font-size: 70%;
-    height: 25px;
-    width: 60px;
-    margin-right: 30px;
-    &:hover {
-      transform: scale(1) translateY(0px);
-    }
   }
 
   #doneBtn {

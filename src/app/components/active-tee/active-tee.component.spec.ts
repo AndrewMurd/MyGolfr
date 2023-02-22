@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StartScoreComponent } from './start-score.component';
+import { ActiveTeeComponent } from './active-tee.component';
 
-describe('StartScoreComponent', () => {
-  let component: StartScoreComponent;
-  let fixture: ComponentFixture<StartScoreComponent>;
+describe('ActiveTeeComponent', () => {
+  let component: ActiveTeeComponent;
+  let fixture: ComponentFixture<ActiveTeeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ StartScoreComponent ]
+      declarations: [ ActiveTeeComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(StartScoreComponent);
+    fixture = TestBed.createComponent(ActiveTeeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

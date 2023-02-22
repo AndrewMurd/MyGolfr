@@ -9,13 +9,15 @@
   [changeView]="changeView"
 ></app-course-map>
 
-<button id="openScorecard" (click)="showScorecard = !showScorecard">
-  Open Scorecard
-</button>
+<img src="../../../assets/scorecard.png" (click)="showScorecard = !showScorecard" alt="" id="openScorecard">
 
 <edit-score-card
-  [ngStyle]="showScorecard ? { display: '' } : { display: 'none' }"
+  [ngStyle]="showScorecard && !roundInProgress ? { display: '' } : { display: 'none' }"
 ></edit-score-card>
+
+<app-active-scorecard
+  [ngStyle]="showScorecard && roundInProgress ? { display: '' } : { display: 'none' }"
+></app-active-scorecard>
 
 <div id="scoreInput">
   <div *ngIf="!roundInProgress" class="dropdown">
@@ -30,11 +32,11 @@
     </div>
   </div>
   <div *ngIf="roundInProgress" class="dropdown">
-    <button *ngIf="!show10Input" id="selectScoreBtn" class="dropbtn">
+    <button *ngIf="!show10Input" (click)="openDropdown = !openDropdown" id="selectScoreBtn" class="dropbtn">
       {{ selectedScore }}
     </button>
-    <div id="selectScoreContent" class="dropdown-content">
-      <a (click)="selectedScore = num" *ngFor="let num of createRange(9)">{{
+    <div *ngIf="openDropdown" id="selectScoreContent" class="dropdown-content">
+      <a (click)="selectedScore = num; openDropdown = false" *ngFor="let num of createRange(9)">{{
         num
       }}</a>
       <a (click)="show10Input = true">10+</a>
