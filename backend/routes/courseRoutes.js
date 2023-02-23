@@ -115,7 +115,7 @@ router.post("/set_scorecard_value", async (req, res) => {
 
   console.log(`Updating Scorecard for ${id} with data:`, data);
 
-  await Course.update(JSON.stringify(scorecard), "scorecard", id);
+  await Course.updateColumn(JSON.stringify(scorecard), "scorecard", id);
 
   res.send({ scorecard: scorecard });
 });
@@ -124,13 +124,34 @@ router.post("/set_scorecard_value", async (req, res) => {
 // @route POST /courses/update
 // @access Private
 router.post("/update", async (req, res) => {
+  const { id, courseDetails, clicks, scorecard, mapLayout } = req.body.data;
+
+  const obj = {
+    id: id,
+    courseDetails: JSON.stringify(courseDetails),
+    clicks: clicks,
+    scorecard: JSON.stringify(scorecard),
+    mapLayout: JSON.stringify(mapLayout),
+  };
+
+  await Course.update(obj);
+
+  console.log(`Updating course: ${id}`);
+
+  res.end();
+});
+
+// @desc Update Course Data Column
+// @route POST /courses/update_column
+// @access Private
+router.post("/update_column", async (req, res) => {
   const id = req.body.id;
   const data = req.body.data;
   const type = req.body.type;
 
   console.log(`Updating ${type} for ${id}`);
 
-  await Course.update(JSON.stringify(data), type, id);
+  await Course.updateColumn(JSON.stringify(data), type, id);
 
   res.end();
 });
@@ -146,24 +167,6 @@ router.post("/add_click", async (req, res) => {
   await Course.addClick((courses[0].clicks += 1), id);
 
   res.send({ numberOfClick: (courses[0].clicks += 1) });
-});
-
-// NOT USED
-router.delete("/delete_tee", async (req, res) => {
-  const courseId = req.query.courseId;
-  const teeId = req.query.teeId;
-
-  const courses = await Course.find(courseId);
-
-  let scorecard = JSON.parse(courses[0].scorecard);
-
-  scorecard = scorecard.filter((tee) => {
-    return tee.id != teeId;
-  });
-
-  await Course.updateScorecard(JSON.stringify(scorecard), courseId);
-
-  res.end();
 });
 
 module.exports = router;

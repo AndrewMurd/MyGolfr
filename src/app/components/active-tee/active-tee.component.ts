@@ -18,6 +18,7 @@ export class ActiveTeeComponent {
   @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
   scorecard: any;
   courseData: any;
+  scoreData: any;
   editing: boolean = false;
   courseId!: string;
   color!: string;
@@ -46,12 +47,11 @@ export class ActiveTeeComponent {
     this.color = this.teeData.Color;
     this.nameColor = this.teeData.ColorName;
 
-    // this.courseService.courseData.asObservable().subscribe((value) => {
-    //   if (value) {
-    //     this.courseData = value;
-    //     this.scorecard = value.scorecard;
-    //   }
-    // });
+    this.scoreService.scoreData.asObservable().subscribe((value) => {
+      if (value) {
+        this.scoreData = value;
+      }
+    });
 
     if (!this.teeData.ColorName) {
       this.displayColorName = false;

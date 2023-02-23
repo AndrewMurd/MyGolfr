@@ -24,6 +24,7 @@ import { CourseMapComponent } from './components/course-map/course-map.component
 import { LoadingAnimationComponent } from './components/loading-animation/loading-animation.component';
 import { ActiveScorecardComponent } from './components/active-scorecard/active-scorecard.component';
 import { ActiveTeeComponent } from './components/active-tee/active-tee.component';
+import { ScoreInputComponent } from './components/score-input/score-input.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { ActiveTeeComponent } from './components/active-tee/active-tee.component
     LoadingAnimationComponent,
     ActiveScorecardComponent,
     ActiveTeeComponent,
+    ScoreInputComponent,
   ],
   imports: [
     BrowserModule,

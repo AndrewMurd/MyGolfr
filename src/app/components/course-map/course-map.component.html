@@ -76,17 +76,10 @@
     </div>
   </div>
 
+  <button *ngIf="editOn" id="setBtn" (click)="setHoleLayout()">
+    Set Markers and View
+  </button>
   <div id="setBtnContainer">
-    <button *ngIf="editOn" id="setLocationBtn" (click)="setLocation()">
-      Set View
-    </button>
-    <button
-      *ngIf="editOn"
-      id="setMarkerLocationsBtn"
-      (click)="setMarkerLocations()"
-    >
-      Set Markers
-    </button>
     <label id="editMapBtn" class="switch">
       <input
         type="checkbox"

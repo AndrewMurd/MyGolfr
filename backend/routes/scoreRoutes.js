@@ -67,11 +67,27 @@ router.post("/update", async (req, res) => {
   const data = req.body.data;
   const type = req.body.type;
 
+  if (type == 'score') {
+    let inNum = 0;
+    let outNum = 0;
+    for (let [key, value] of Object.entries(data)) {
+      if (key == 'Out' || key == 'In') {
+        continue;
+      } else if (key <= 9) {
+        outNum += Number(value);
+      } else if (key > 9) {
+        inNum += Number(value);
+      }
+    }
+    data['Out'] = outNum;
+    data['In'] = inNum;
+  }
+
   console.log(`Updating ${type} for ${id}`);
 
   await Score.update(JSON.stringify(data), type, id);
 
-  res.end();
+  res.json({data: data});
 });
 
 module.exports = router;

@@ -12,7 +12,6 @@ import { Subject } from 'rxjs';
 })
 export class SearchBarComponent {
   search!: string;
-  reset: Subject<any> = new Subject<any>();
   courses: any = [
     {
       icon: 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/golf-71.png',
@@ -57,18 +56,6 @@ export class SearchBarComponent {
     private courseService: CourseDetailsService
   ) {}
 
-  ngOnInit() {
-    this.reset.asObservable().subscribe(() => {
-      if (this.courses.length > 0) {
-        document.getElementById('homepageSearch')!.style.borderRadius =
-          '10px 10px 0px 0px';
-      } else {
-        document.getElementById('homepageSearch')!.style.borderRadius = '10px';
-        this.isLoading = false;
-      }
-    });
-  }
-
   async resetSession(data: any) {
     this.sessionToken = null;
     await this.courseService.addClick(data.reference);
@@ -96,14 +83,12 @@ export class SearchBarComponent {
         for (let index of temp) {
           this.courses.push(index.course);
         }
-        this.isLoading = false;
-        this.reset.next('');
+        this.setBorder();
 
         console.log('from database: ', this.courses);
 
         if (this.courses.length < 5) {
           try {
-            this.isLoading = true;
             const res: any = await this.getCourses();
             this.courses = res.results.filter((course: any) => {
               return (
@@ -117,8 +102,8 @@ export class SearchBarComponent {
                   course.name.toLowerCase().includes('club'))
               );
             });
+            this.setBorder();
             this.isLoading = false;
-            this.reset.next('');
 
             console.log('from googleAPI: ', this.courses);
 
@@ -131,9 +116,19 @@ export class SearchBarComponent {
             console.log(error);
           }
         }
+        this.isLoading = false;
       } catch (error: any) {
         console.log(error.error.error);
       }
+    } else {
+      document.getElementById('homepageSearch')!.style.borderRadius = '10px';
+    }
+  }
+
+  setBorder() {
+    if (this.courses.length > 0) {
+      document.getElementById('homepageSearch')!.style.borderRadius =
+        '10px 10px 0px 0px';
     } else {
       document.getElementById('homepageSearch')!.style.borderRadius = '10px';
     }

@@ -9,7 +9,7 @@
 </datalist>
 
 <div class="grid-container">
-  <!-- row 2 -->
+  <!-- row 1 -->
   <div
     id="colorInputsContainer"
     [ngStyle]="{ 'background-color': teeData.Color }"
@@ -98,7 +98,7 @@
       [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
-  <!-- row 3 -->
+  <!-- row 2 -->
   <div [ngStyle]="{ 'background-color': 'grey' }" id="parHeader" class="header">
     Par
   </div>
@@ -121,11 +121,10 @@
       [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
-  <div>
-  </div>
+  <div></div>
   <div></div>
 
-  <!-- row 4 -->
+  <!-- row 3 -->
   <div [ngStyle]="{ 'background-color': 'grey' }" id="siHeader" class="header">
     <span>Stroke Index</span>
   </div>
@@ -138,9 +137,25 @@
       [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
-  <div>
+  <div></div>
+  <div></div>
+  <div></div>
+
+  <!-- row 4 -->
+  <div [ngStyle]="{ 'background-color': 'grey' }" id="siHeader" class="header">
+    <span>Score</span>
+  </div>
+  <div class="holes" *ngFor="let a of createRange(9)">
+    <app-score-input
+      placeholder="strks"
+      id="{{ isFrontNine ? a : a + 9 }}"
+      [data]="scoreData"
+      [whiteEvent]="colorEventsSubject.asObservable()"
+    ></app-score-input>
+  </div>
+  <div [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }">
+    {{ isFrontNine ? scoreData.score.Out: scoreData.score.In }}
   </div>
   <div></div>
   <div></div>
 </div>
-

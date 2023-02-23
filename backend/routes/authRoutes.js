@@ -80,7 +80,7 @@ router.get("/refresh", async (req, res) => {
 
         res.json({ accessToken });
       } catch (error) {
-        res.status(404).json({ message: "User Not Found" });
+        res.status(404).json({ message: "Connection Error" });
       }
     }
   );

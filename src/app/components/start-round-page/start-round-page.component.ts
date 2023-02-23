@@ -1,4 +1,9 @@
-import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -25,9 +30,10 @@ export class StartRoundPageComponent {
   selectedScore: any = 'Strokes';
   show10Input: boolean = false;
   strokesInputValue: number = 10;
-  currentHole!: number;
+  currentHole: any;
   showScorecard: boolean = false;
-  openDropdown: boolean = false;
+  openScoreDropdown: boolean = false;
+  openTeeDropdown: boolean = false;
   createRange: Function = createRange;
 
   @ViewChild('scorecardContainer', { read: ViewContainerRef })
@@ -69,6 +75,19 @@ export class StartRoundPageComponent {
         }
       }
     });
+
+    this.scoreService.scoreData.asObservable().subscribe((value) => {
+      if (value) {
+        this.scoreData = value;
+        try {
+          if (this.scoreData.score[this.currentHole]) {
+            this.selectedScore = this.scoreData.score[this.currentHole];
+          } else {
+            this.selectedScore = 'Strokes';
+          }
+        } catch (error) {}
+      }
+    });
   }
 
   async getScore() {
@@ -107,16 +126,38 @@ export class StartRoundPageComponent {
         tee,
         this.convertDateToMySql()
       );
-      this.reload();
+      this.getScore();
     } catch (error) {
       console.log(error);
     }
   }
 
-  submitHole() {
-    console.log(this.selectedScore);
-    this.scoreData.score[this.currentHole] = this.selectedScore;
-    console.log(this.scoreData);
+  async updateScore(strokes: any) {
+    this.selectedScore = strokes;
+    if (
+      strokes != 'Strokes' &&
+      strokes != this.scoreData.score[this.currentHole]
+    ) {
+      this.scoreData.score[this.currentHole] = this.selectedScore;
+      const response: any = await this.scoreService.update(
+        this.scoreData.id,
+        this.scoreData.score,
+        'score'
+      );
+      this.scoreData.score = response.data;
+      this.scoreService.scoreData.next(this.scoreData);
+    }
+  }
+
+  async setCurrentHole(a: any) {
+    this.currentHole = a;
+    try {
+      if (this.scoreData.score[this.currentHole]) {
+        this.selectedScore = this.scoreData.score[this.currentHole];
+      } else {
+        this.selectedScore = 'Strokes';
+      }
+    } catch (error) {}
   }
 
   getCurrentHoleInProgress(score: any) {

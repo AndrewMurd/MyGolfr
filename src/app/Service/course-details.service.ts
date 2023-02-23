@@ -29,13 +29,30 @@ export class CourseDetailsService {
     });
   }
 
-  async update(courseId: string, data: any, type: string) {
+  async updateColumn(courseId: string, data: any, type: string) {
     return await new Promise((resolve, reject) => {
       this.http
-        .post(ROOT_URL + 'courses/update', {
+        .post(ROOT_URL + 'courses/update_column', {
           id: courseId,
           data: data,
           type: type,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  async update(data: any) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'courses/update', {
+          data: data
         })
         .subscribe({
           next: (data) => {

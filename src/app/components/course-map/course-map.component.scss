@@ -118,17 +118,17 @@
 }
 
 #setBtnContainer {
-  display: flex;
   position: absolute;
-  right: 0px;
-  width: 275px;
+  right: 270px;
+  width: auto;
   top: 65px;
 }
 
-#setLocationBtn,
-#setMarkerLocationsBtn {
+#setBtn {
   cursor: pointer;
-  position: relative;
+  position: absolute;
+  top: 65px;
+  right: 80px;
   z-index: 1;
   height: 30px;
   background-color: lightgrey;
@@ -140,10 +140,6 @@
   &:active {
     background-color: green;
   }
-}
-
-#setLocationBtn {
-  margin-right: 20px;
 }
 
 #flagBtnContainer {
@@ -171,19 +167,10 @@
   }
 }
 
-#addFlagBtn {
-  // background-image: url('../../../assets/rotate-right.png');
-}
-
-#removeFlagBtn {
-  margin-top: 20px;
-  // background-image: url('../../../assets/rotate-left.png');
-}
-
 .mapselectionBtn {
   cursor: pointer;
   background-color: lightgray;
-  border: 0px solid;
+  border: none;
   border-right: 1px solid grey;
   &:hover {
     background-color: $green;
@@ -192,11 +179,11 @@
 
 .mapselectionBtnSelected {
   cursor: pointer;
-  background-color: lightgray;
-  border: 0px solid;
+  background-color: $green;
+  border: none;
   border-right: 1px solid grey;
   font-size: larger;
-  // text-decoration: underline;
+  text-align: center;
 }
 
 /* The switch - the box around the slider */
@@ -282,10 +269,8 @@ input:checked + .slider:before {
     min-width: 5px;
     height: 20px;
     border-top: 1px solid grey;
-    font-size: 15px;
-    &:hover {
-      background-color: lightgray;
-    }
+    font-size: 12px;
+    background-color: $green;
   }
 
   #teeColorsDisplay {

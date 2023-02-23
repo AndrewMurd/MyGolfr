@@ -6,7 +6,9 @@ module.exports = class Score {
   }
 
   static findStatus(status) {
-    return executeQuery("SELECT * FROM scores WHERE statusComplete = ?", [status]);
+    return executeQuery("SELECT * FROM scores WHERE statusComplete = ?", [
+      status,
+    ]);
   }
 
   static save(userId, courseId, teeData, dateTime) {
@@ -17,6 +19,8 @@ module.exports = class Score {
   }
 
   static update(data, type, id) {
-    return executeQuery(`UPDATE scores SET ${type} = '${data}' WHERE id = '${id}'`);
+    return executeQuery(
+      `UPDATE scores SET ${type} = '${data}' WHERE id = '${id}'`
+    );
   }
 };

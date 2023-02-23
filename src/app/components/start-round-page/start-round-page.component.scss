@@ -70,12 +70,14 @@ edit-score-card, app-active-scorecard {
 
 #selectTeeBtn,
 #selectTeeContent {
-  width: 200px;
+  width: 150px;
+  z-index: 100;
 }
 
 #selectScoreBtn,
 #selectScoreContent {
   width: 100px;
+  z-index: 100;
   a {
     color: black;
     padding: 7px 12px;
@@ -102,6 +104,12 @@ edit-score-card, app-active-scorecard {
   padding: 16px;
   font-size: 20px;
   border: none;
+  cursor: pointer;
+  top: 145px;
+  left: 10px;
+  &:hover {
+    background-color: green;
+  }
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -111,6 +119,7 @@ edit-score-card, app-active-scorecard {
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   cursor: pointer;
+  display: block;
 }
 
 /* Links inside the dropdown */
@@ -126,7 +135,11 @@ edit-score-card, app-active-scorecard {
   background-color: #ddd;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
+  edit-score-card, app-active-scorecard {
+    top: 240px;
+  }
+
   #bodyContainer {
     width: 100%;
   }
@@ -134,7 +147,6 @@ edit-score-card, app-active-scorecard {
 
 @media (max-width: 830px) {
   edit-score-card, app-active-scorecard {
-    top: 200px;
     margin-left: 0;
     width: 100%;
   }
@@ -142,6 +154,10 @@ edit-score-card, app-active-scorecard {
   app-loading-animation {
     transform: scale(2);
     margin-top: 300px;
+  }
+
+  .dropdown-content a {
+    display: block;
   }
 
   #selectScoreBtn,

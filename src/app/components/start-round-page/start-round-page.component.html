@@ -7,22 +7,32 @@
 <app-course-map
   [mapHeight]="'100vh'"
   [changeView]="changeView"
+  (changedView)="setCurrentHole($event)"
 ></app-course-map>
 
-<img src="../../../assets/scorecard.png" (click)="showScorecard = !showScorecard" alt="" id="openScorecard">
+<img
+  src="../../../assets/scorecard.png"
+  (click)="showScorecard = !showScorecard"
+  alt=""
+  id="openScorecard"
+/>
 
 <edit-score-card
-  [ngStyle]="showScorecard && !roundInProgress ? { display: '' } : { display: 'none' }"
+  [ngStyle]="
+    showScorecard && !roundInProgress ? { display: '' } : { display: 'none' }
+  "
 ></edit-score-card>
 
 <app-active-scorecard
-  [ngStyle]="showScorecard && roundInProgress ? { display: '' } : { display: 'none' }"
+  [ngStyle]="
+    showScorecard && roundInProgress ? { display: '' } : { display: 'none' }
+  "
 ></app-active-scorecard>
 
 <div id="scoreInput">
   <div *ngIf="!roundInProgress" class="dropdown">
-    <button id="selectTeeBtn" class="dropbtn">Select Tee</button>
-    <div id="selectTeeContent" class="dropdown-content">
+    <button id="selectTeeBtn" (click)="openTeeDropdown = !openTeeDropdown" class="dropbtn">Select Tee</button>
+    <div id="selectTeeContent" *ngIf="openTeeDropdown" class="dropdown-content">
       <a
         (click)="startRound(tee)"
         id="{{ tee.id }}"
@@ -32,13 +42,20 @@
     </div>
   </div>
   <div *ngIf="roundInProgress" class="dropdown">
-    <button *ngIf="!show10Input" (click)="openDropdown = !openDropdown" id="selectScoreBtn" class="dropbtn">
+    <button
+      *ngIf="!show10Input && currentHole != 'course'"
+      (click)="openScoreDropdown = !openScoreDropdown"
+      id="selectScoreBtn"
+      class="dropbtn"
+    >
       {{ selectedScore }}
     </button>
-    <div *ngIf="openDropdown" id="selectScoreContent" class="dropdown-content">
-      <a (click)="selectedScore = num; openDropdown = false" *ngFor="let num of createRange(9)">{{
-        num
-      }}</a>
+    <div *ngIf="openScoreDropdown" id="selectScoreContent" class="dropdown-content">
+      <a
+        (click)="updateScore(num); openScoreDropdown = false"
+        *ngFor="let num of createRange(9)"
+        >{{ num }}</a
+      >
       <a (click)="show10Input = true">10+</a>
     </div>
   </div>
@@ -51,7 +68,7 @@
     max="20"
     oninput="validity.valid || (value='');"
     step="0.01"
-    (keyup.enter)="selectedScore = strokesInputValue; show10Input = false"
+    (keyup.enter)="updateScore(strokesInputValue); show10Input = false"
   />
 </div>
 <!-- <button id="submitHole" (click)="submitHole()">Next Hole</button> -->

@@ -157,7 +157,7 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService.update(this.courseId, this.scorecard, 'scorecard');
+    await this.courseService.updateColumn(this.courseId, this.scorecard, 'scorecard');
     this.courseData.scorecard = this.scorecard;
     this.courseService.courseData.next(this.courseData);
   }
@@ -202,7 +202,7 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService.update(this.courseId, this.scorecard, 'scorecard');
+    await this.courseService.updateColumn(this.courseId, this.scorecard, 'scorecard');
     this.courseData.scorecard = this.scorecard;
     this.courseService.courseData.next(this.courseData);
   }
@@ -243,7 +243,7 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService.update(this.courseId, this.scorecard, 'scorecard');
+    await this.courseService.updateColumn(this.courseId, this.scorecard, 'scorecard');
     this.courseData.scorecard = this.scorecard;
     this.courseService.courseData.next(this.courseData);
   }
@@ -268,7 +268,7 @@ export class NewScorecardTeeComponent {
           tee.Position = tee.Position - 1;
       }
 
-      await this.courseService.update(
+      await this.courseService.updateColumn(
         this.courseId,
         this.scorecard,
         'scorecard'
@@ -284,7 +284,7 @@ export class NewScorecardTeeComponent {
         }
       }
 
-      await this.courseService.update(this.courseId, mapLayout, 'mapLayout');
+      await this.courseService.updateColumn(this.courseId, mapLayout, 'mapLayout');
 
       this.courseData.scorecard = this.scorecard;
       this.courseData.mapLayout = mapLayout;

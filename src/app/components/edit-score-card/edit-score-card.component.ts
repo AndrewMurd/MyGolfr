@@ -86,13 +86,18 @@ export class EditScoreCardComponent {
 
   onSubmit(data: any) {
     this.onSubmitInput.next(data);
+    for (let tee of this.courseData.scorecard) {
+      if (tee.id == data.id[0]) {
+        tee[data.id[1]] = data.value;
+      }
+    }
   }
 
   async finishEdit() {
     this.editing = false;
     this.courseService.editingScoreCard.next(this.editing);
-    const response: any = await this.courseService.get(this.courseId);
-    this.courseService.courseData.next(response.course);
+    this.courseService.courseData.next(this.courseData);
+    await this.courseService.updateColumn(this.courseId, this.courseData.scorecard, 'scorecard');
   }
 
   edit() {
@@ -108,7 +113,7 @@ export class EditScoreCardComponent {
     this.courseData.courseDetails['nineHoleGolfCourse'] =
       !this.courseData.courseDetails['nineHoleGolfCourse'];
 
-    await this.courseService.update(
+    await this.courseService.updateColumn(
       this.courseId,
       this.courseData.courseDetails,
       'courseDetails'
@@ -134,7 +139,7 @@ export class EditScoreCardComponent {
       });
     }
 
-    this.courseService.update(this.courseId, mapLayout, 'mapLayout');
+    await this.courseService.updateColumn(this.courseId, mapLayout, 'mapLayout');
     this.courseData.mapLayout = mapLayout;
     this.courseService.courseData.next(this.courseData);
   }

@@ -1,4 +1,10 @@
-import { Component, HostListener, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { faFlag, faMapPin, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { Observable, take } from 'rxjs';
@@ -14,6 +20,7 @@ import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 export class CourseMapComponent {
   @Input() changeView!: Observable<any>;
   @Input() mapHeight: string = '400px';
+  @Output() changedView: EventEmitter<any> = new EventEmitter();
   courseData: any;
   signedIn: boolean = false;
   selectedCourse: any;
@@ -150,6 +157,7 @@ export class CourseMapComponent {
 
   async setMapView(a: any) {
     this.selectedMapView = `${a}`;
+    this.changedView.emit(this.selectedMapView);
     let map = this.map;
 
     if (a === 'course') {
@@ -174,8 +182,8 @@ export class CourseMapComponent {
       this.map.setZoom(holeLayout.zoom);
     }
 
-    let offsetTee = this.offsetFactor;
-    for (let teeLoc of holeLayout.teeLocations) {
+    var offsetTee = this.offsetFactor;
+    for (const teeLoc of holeLayout.teeLocations) {
       if (this.roundInProgress && teeLoc.id != this.selectedTeeView.id) return;
 
       let color;
@@ -187,14 +195,6 @@ export class CourseMapComponent {
             color = tee.Color;
           }
         }
-      }
-
-      if (
-        teeLoc.lat == this.googleDetails.geometry.location.lat &&
-        teeLoc.lng == this.googleDetails.geometry.location.lng
-      ) {
-        teeLoc.lng = teeLoc.lng + offsetTee;
-        offsetTee += this.offsetFactor;
       }
 
       if (this.roundInProgress) {
@@ -226,10 +226,19 @@ export class CourseMapComponent {
         );
       }
 
+      let lng: number = teeLoc.lng;
+      if (
+        teeLoc.lat == holeLayout.location.lat ||
+        teeLoc.lng == holeLayout.location.lng
+      ) {
+        lng += offsetTee;
+        offsetTee += this.offsetFactor;
+      }
+
       // tee markers
       this.markers.push(
         new google.maps.Marker({
-          position: teeLoc,
+          position: { lat: teeLoc.lat, lng: lng },
           map,
           icon: {
             path: faMapPin.icon[4] as string,
@@ -255,8 +264,8 @@ export class CourseMapComponent {
       flagLoc.lat == this.googleDetails.geometry.location.lat &&
       flagLoc.lng == this.googleDetails.geometry.location.lng
     ) {
-      flagLoc.lat = flagLoc.lat - this.offsetFactor;
-      flagLoc.lng = flagLoc.lng + this.offsetFactor;
+      flagLoc.lat -= this.offsetFactor;
+      flagLoc.lng += this.offsetFactor;
     }
     this.flagMarker.push(
       new google.maps.Marker({
@@ -447,63 +456,32 @@ export class CourseMapComponent {
     return d;
   }
 
-  async setLocation() {
-    const response: any = await this.courseService.get(
-      this.selectedCourse.reference
-    );
+  async setHoleLayout() {
+    if (this.selectedMapView == 'course') return;
 
-    if (this.selectedMapView == 'course') {
-      return;
-    }
-
-    response.course.mapLayout[this.selectedMapView].location.lat = this.map
+    this.courseData.mapLayout[this.selectedMapView].location.lat = this.map
       .getCenter()!
       .lat();
-    response.course.mapLayout[this.selectedMapView].location.lng = this.map
+    this.courseData.mapLayout[this.selectedMapView].location.lng = this.map
       .getCenter()!
       .lng();
+    this.courseData.mapLayout[this.selectedMapView].zoom = this.map.getZoom();
 
-    response.course.mapLayout[this.selectedMapView].zoom = this.map.getZoom();
-
-    await this.courseService.update(
-      this.selectedCourse.reference,
-      response.course.mapLayout,
-      'mapLayout'
-    );
-
-    this.courseData.mapLayout = response.course.mapLayout;
-    this.courseService.courseData.next(this.courseData);
-  }
-
-  async setMarkerLocations() {
-    const response: any = await this.courseService.get(
-      this.selectedCourse.reference
-    );
-
-    if (this.selectedMapView == 'course' || this.markers.length == 0) {
-      return;
-    }
-
-    const layoutData = response.course.mapLayout[this.selectedMapView];
-    for (let teeLoc of layoutData.teeLocations) {
-      for (let marker of this.markers) {
-        if (teeLoc.id == marker.title) {
-          teeLoc.lat = marker.getPosition().lat();
-          teeLoc.lng = marker.getPosition().lng();
+    if (this.markers.length != 0) {
+      const layoutData = this.courseData.mapLayout[this.selectedMapView];
+      for (let teeLoc of layoutData.teeLocations) {
+        for (let marker of this.markers) {
+          if (teeLoc.id == marker.title) {
+            teeLoc.lat = marker.getPosition().lat();
+            teeLoc.lng = marker.getPosition().lng();
+          }
         }
       }
+      layoutData.flagLocation.lat = this.flagMarker[0].getPosition()?.lat();
+      layoutData.flagLocation.lng = this.flagMarker[0].getPosition()?.lng();
     }
 
-    layoutData.flagLocation.lat = this.flagMarker[0].getPosition()?.lat();
-    layoutData.flagLocation.lng = this.flagMarker[0].getPosition()?.lng();
-
-    await this.courseService.update(
-      this.selectedCourse.reference,
-      response.course.mapLayout,
-      'mapLayout'
-    );
-
-    this.courseData.mapLayout = response.course.mapLayout;
+    await this.courseService.update(this.courseData);
     this.courseService.courseData.next(this.courseData);
   }
 

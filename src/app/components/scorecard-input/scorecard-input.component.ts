@@ -66,10 +66,10 @@ export class ScorecardInputComponent {
 
     this.showField = false;
 
-    this.courseService.setScorecardValue(this.courseId, {
-      id: this.arrId,
-      value: this.value,
-    });
+    // await this.courseService.setScorecardValue(this.courseId, {
+    //   id: this.arrId,
+    //   value: this.value,
+    // });
 
     this.onSubmitInput.emit({ id: this.arrId, value: this.value });
   }
