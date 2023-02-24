@@ -25,6 +25,7 @@ import { LoadingAnimationComponent } from './components/loading-animation/loadin
 import { ActiveScorecardComponent } from './components/active-scorecard/active-scorecard.component';
 import { ActiveTeeComponent } from './components/active-tee/active-tee.component';
 import { ScoreInputComponent } from './components/score-input/score-input.component';
+import { StatsPageComponent } from './components/stats-page/stats-page.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { ScoreInputComponent } from './components/score-input/score-input.compon
     ActiveScorecardComponent,
     ActiveTeeComponent,
     ScoreInputComponent,
+    StatsPageComponent,
   ],
   imports: [
     BrowserModule,

@@ -6,6 +6,9 @@
     src="../../../assets/edit.png"
     alt=""
   />
+  <div *ngIf="isLoading" id="loadingContainer">
+    <app-loading-animation></app-loading-animation>
+  </div>  
   <div class="scorecardContainer">
     <h1>{{ title }}</h1>
     <div class="gridContainer">
@@ -21,6 +24,12 @@
   <div id="containerBtn">
     <button *ngIf="!isLoading && editing" id="doneBtn" (click)="finishEdit()">
       Done
+    </button>
+    <button *ngIf="!isLoading && !editing" id="submitBtn" (click)="submitScore()">
+      Submit Score
+    </button>
+    <button *ngIf="!isLoading && !editing" id="deleteScoreBtn" (click)="deleteScore()">
+      Delete Score
     </button>
     <button
       *ngIf="!isLoading && editing"

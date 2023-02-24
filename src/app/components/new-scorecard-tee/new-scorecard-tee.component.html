@@ -8,29 +8,6 @@
   <option value="#C0C0C0">Silver</option>
 </datalist>
 
-<img
-  *ngIf="isFrontNine && editing"
-  id="deleteBtn"
-  (click)="deleteTee()"
-  src="../../../assets/error.png"
-  alt=""
-/>
-
-<select
-  *ngIf="isFrontNine && editing"
-  id="selectPosition"
-  (change)="changePosition($event)"
->
-  <option
-    id="posOptions"
-    [selected]="teeData.Position == pos && 'selected'"
-    *ngFor="let pos of createRange(scorecard.length)"
-    [value]="pos"
-  >
-    {{ pos }}
-  </option>
-</select>
-
 <div class="grid-container">
   <!-- row 2 -->
   <div
@@ -149,7 +126,15 @@
       Copy Par
     </button>
   </div>
-  <div></div>
+  <div>
+    <img
+      *ngIf="isFrontNine && editing"
+      id="deleteBtn"
+      (click)="deleteTee()"
+      src="../../../assets/error.png"
+      alt=""
+    />
+  </div>
 
   <!-- row 4 -->
   <div [ngStyle]="{ 'background-color': 'grey' }" id="siHeader" class="header">
@@ -170,5 +155,20 @@
     </button>
   </div>
   <div></div>
-  <div></div>
+  <div>
+    <select
+      *ngIf="isFrontNine && editing"
+      id="selectPosition"
+      (change)="changePosition($event)"
+    >
+      <option
+        id="posOptions"
+        [selected]="teeData.Position == pos && 'selected'"
+        *ngFor="let pos of createRange(scorecard.length)"
+        [value]="pos"
+      >
+        {{ pos }}
+      </option>
+    </select>
+  </div>
 </div>

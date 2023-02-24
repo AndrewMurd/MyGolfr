@@ -4,7 +4,7 @@
   display: grid;
   grid-template-columns: 16.5% repeat(9, 6.2%) 8% 10% 10%;
   grid-auto-rows: 40px;
-  border-bottom: 0px solid;
+  border: none;
 }
 
 .header {
@@ -19,6 +19,7 @@
 div {
   font-size: 1.2rem;
   line-height: 40px;
+  border: none;
   border-bottom: 1px solid rgb(88, 88, 88);
 }
 

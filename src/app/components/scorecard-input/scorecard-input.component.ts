@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Observable } from 'rxjs';
+import { ScoreService } from 'src/app/Service/score.service';
 
 @Component({
   selector: 'app-scorecard-input',
@@ -21,7 +22,10 @@ export class ScorecardInputComponent {
   isWhite: boolean = false;
   courseId!: string;
 
-  constructor(private courseService: CourseDetailsService) {}
+  constructor(
+    private courseService: CourseDetailsService,
+    private scoreService: ScoreService
+  ) {}
 
   ngOnInit() {
     this.courseId = JSON.parse(

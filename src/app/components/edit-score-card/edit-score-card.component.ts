@@ -12,8 +12,9 @@ import { ScoreService } from '../../Service/score.service';
   styleUrls: ['./edit-score-card.component.scss'],
 })
 export class EditScoreCardComponent {
+  @Input() fullSize: boolean = false;
   signedIn: boolean = false;
-  title: string = 'New Golf Course ScoreCard';
+  title!: string;
   courseId!: string;
   courseData: any;
   currentRound: any;
@@ -38,6 +39,7 @@ export class EditScoreCardComponent {
     this.courseId = JSON.parse(
       localStorage.getItem('selectedCourse')!
     ).reference;
+    this.isLoading = true;
 
     this.authService.token.asObservable().subscribe((value) => {
       if (value) {
@@ -46,18 +48,21 @@ export class EditScoreCardComponent {
         this.signedIn = false;
       }
     });
+  }
 
-    this.courseService.courseData.asObservable().subscribe((value) => {
-      if (value) {
-        this.courseData = value;
-        this.reload();
-      }
+  async ngAfterViewInit() {
+    setTimeout(() => {
+      this.courseService.courseData.asObservable().subscribe((value) => {
+        if (value) {
+          this.courseData = value;
+          this.reload();
+        }
+      });
     });
   }
 
   async reload() {
     this.isLoading = true;
-
     this.title = this.courseData.name;
     this.removedBackNine = this.courseData.courseDetails.nineHoleGolfCourse;
 
@@ -78,10 +83,7 @@ export class EditScoreCardComponent {
     for (let teeToRender of teeRenderOrder) {
       this.createTeeComponents(teeToRender);
     }
-
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 500);
+    this.isLoading = false;
   }
 
   onSubmit(data: any) {
@@ -94,10 +96,15 @@ export class EditScoreCardComponent {
   }
 
   async finishEdit() {
+    this.isLoading = true;
     this.editing = false;
     this.courseService.editingScoreCard.next(this.editing);
     this.courseService.courseData.next(this.courseData);
-    await this.courseService.updateColumn(this.courseId, this.courseData.scorecard, 'scorecard');
+    await this.courseService.updateColumn(
+      this.courseId,
+      this.courseData.scorecard,
+      'scorecard'
+    );
   }
 
   edit() {
@@ -110,6 +117,7 @@ export class EditScoreCardComponent {
   }
 
   async removebacknine() {
+    this.isLoading = true;
     this.courseData.courseDetails['nineHoleGolfCourse'] =
       !this.courseData.courseDetails['nineHoleGolfCourse'];
 
@@ -122,6 +130,7 @@ export class EditScoreCardComponent {
   }
 
   async addNewTee() {
+    this.isLoading = true;
     const response: any = await this.courseService.setScorecardValue(
       this.courseId,
       { id: 'new', value: '' }
@@ -139,7 +148,11 @@ export class EditScoreCardComponent {
       });
     }
 
-    await this.courseService.updateColumn(this.courseId, mapLayout, 'mapLayout');
+    await this.courseService.updateColumn(
+      this.courseId,
+      mapLayout,
+      'mapLayout'
+    );
     this.courseData.mapLayout = mapLayout;
     this.courseService.courseData.next(this.courseData);
   }

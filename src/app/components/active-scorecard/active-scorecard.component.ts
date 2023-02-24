@@ -1,5 +1,6 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { faC } from '@fortawesome/free-solid-svg-icons';
 import { Subject } from 'rxjs';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { CourseDetailsService } from 'src/app/Service/course-details.service';
@@ -9,15 +10,17 @@ import { ActiveTeeComponent } from '../active-tee/active-tee.component';
 @Component({
   selector: 'app-active-scorecard',
   templateUrl: './active-scorecard.component.html',
-  styleUrls: ['./active-scorecard.component.scss']
+  styleUrls: ['./active-scorecard.component.scss'],
 })
 export class ActiveScorecardComponent {
   signedIn: boolean = false;
-  title: string = 'New Golf Course ScoreCard';
+  title!: string;
   courseId!: string;
   courseData: any;
+  scoreData: any;
   teeData: any;
   onSubmitInput: Subject<any> = new Subject<any>();
+  @Output() refreshPage: EventEmitter<any> = new EventEmitter();
   removedBackNine!: boolean;
   isLoading: boolean = false;
   editing: boolean = false;
@@ -54,18 +57,23 @@ export class ActiveScorecardComponent {
         this.removedBackNine = this.courseData.courseDetails.nineHoleGolfCourse;
       }
     });
+  }
 
-    this.scoreService.scoreData.asObservable().subscribe((value) => {
-      if (value) {
-        this.teeData = value.teeData;
-        this.reload();
-      }
+  async ngAfterViewInit() {
+    setTimeout(() => {
+      this.scoreService.scoreData.asObservable().subscribe((value) => {
+        if (value) {
+          this.scoreData = value;
+          this.teeData = value.teeData;
+          this.reload();
+        }
+      });
     });
   }
 
   async reload() {
     this.isLoading = true;
-    
+
     if (this.frontNineContainer && this.backNineContainer) {
       this.frontNineContainer.clear();
       this.backNineContainer.clear();
@@ -76,6 +84,32 @@ export class ActiveScorecardComponent {
     setTimeout(() => {
       this.isLoading = false;
     }, 500);
+  }
+
+  async submitScore() {
+    let factor = 0;
+    this.courseData.courseDetails.nineHoleGolfCourse
+      ? (factor = 10)
+      : (factor = 20);
+
+    if (Object.keys(this.scoreData.score).length >= factor) {
+      await this.scoreService.update(this.scoreData.id, 1, 'statusComplete');
+      this.scoreService.scoreData.next(null);
+      this.router.navigate(['/stats']);
+    } else {
+      alert('Must complete scorecard!');
+    }
+  }
+
+  async deleteScore() {
+    const confirmRes = window.confirm(
+      'Are you sure you want to delete this score. (Cannot be undone)'
+    );
+    if (confirmRes) {
+      await this.scoreService.delete(this.scoreData.id);
+      this.scoreService.scoreData.next(null);
+      this.refreshPage.emit();
+    }
   }
 
   onSubmit(data: any) {
@@ -91,7 +125,11 @@ export class ActiveScorecardComponent {
     this.editing = false;
     this.courseService.editingScoreCard.next(this.editing);
     this.courseService.courseData.next(this.courseData);
-    await this.courseService.updateColumn(this.courseId, this.courseData.scorecard, 'scorecard');
+    await this.courseService.updateColumn(
+      this.courseId,
+      this.courseData.scorecard,
+      'scorecard'
+    );
   }
 
   edit() {
@@ -114,11 +152,10 @@ export class ActiveScorecardComponent {
     );
     this.courseService.courseData.next(this.courseData);
   }
-  
+
   createTeeComponents(teeData: any) {
-    const frontNineTee = this.frontNineContainer.createComponent(
-      ActiveTeeComponent
-    );
+    const frontNineTee =
+      this.frontNineContainer.createComponent(ActiveTeeComponent);
     frontNineTee.setInput('id', teeData.id);
     frontNineTee.setInput('teeData', teeData);
     frontNineTee.setInput('isFrontNine', true);
@@ -128,9 +165,8 @@ export class ActiveScorecardComponent {
     frontNineTee.instance.submitInput = this.onSubmitInput.asObservable();
 
     if (this.removedBackNine) return;
-    const backNineTee = this.backNineContainer.createComponent(
-      ActiveTeeComponent
-    );
+    const backNineTee =
+      this.backNineContainer.createComponent(ActiveTeeComponent);
     backNineTee.setInput('id', teeData.id);
     backNineTee.setInput('teeData', teeData);
     backNineTee.setInput('isFrontNine', false);

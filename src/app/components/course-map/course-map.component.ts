@@ -75,8 +75,13 @@ export class CourseMapComponent {
 
     if (this.changeView) {
       this.changeView.subscribe((value) => {
-        this.selectedTeeView = value.teeData;
-        this.scorecard = [value.teeData];
+        if (value.teeData == 'refresh') {
+          this.selectedTeeView = null;
+          this.scorecard = this.courseData.scorecard;
+        } else {
+          this.selectedTeeView = value.teeData;
+          this.scorecard = [value.teeData];
+        }
         this.roundInProgress = value.roundInProgress;
         this.setMapView(value.view);
       });
@@ -160,6 +165,9 @@ export class CourseMapComponent {
     this.changedView.emit(this.selectedMapView);
     let map = this.map;
 
+    console.log(this.courseData);
+    console.log(this.layoutData);
+
     if (a === 'course') {
       this.map.setCenter(this.center);
       this.map.setZoom(16);
@@ -169,10 +177,17 @@ export class CourseMapComponent {
       this.clearOverlays();
     }
 
-    const holeLayout = this.layoutData[a];
-
-    while (holeLayout.teeLocations.length > this.scorecard.length) {
-      holeLayout.teeLocations.pop();
+    let holeLayout;
+    try {
+      holeLayout = JSON.parse(JSON.stringify(this.layoutData[a]));
+    } catch(err) {
+      return;
+    }
+    
+    if (this.scorecard.length == 1) {
+      holeLayout.teeLocations = holeLayout.teeLocations.filter((teeLoc: any) => {
+        return teeLoc.id == this.scorecard[0].id;
+      });
     }
 
     this.map.setCenter(holeLayout.location);
@@ -229,7 +244,9 @@ export class CourseMapComponent {
       let lng: number = teeLoc.lng;
       if (
         teeLoc.lat == holeLayout.location.lat ||
-        teeLoc.lng == holeLayout.location.lng
+        teeLoc.lng == holeLayout.location.lng ||
+        teeLoc.lat == this.googleDetails.geometry.location.lat ||
+        teeLoc.lng == this.googleDetails.geometry.location.lng
       ) {
         lng += offsetTee;
         offsetTee += this.offsetFactor;

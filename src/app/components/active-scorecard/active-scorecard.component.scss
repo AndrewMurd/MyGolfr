@@ -5,6 +5,23 @@
   width: 738px;
 }
 
+#loadingContainer {
+  height: 100%;
+  width: 100%;
+  z-index: 1000;
+  background-color: black;
+  opacity: 0.9;
+  position: absolute;
+}
+
+app-loading-animation {
+  position: absolute;
+  left: 42%;
+  transform: translate(-50%, 0);
+  top: 40%;
+  transform: scale(2);
+}
+
 #editBtn {
   left: 101%;
   height: 30px;
@@ -44,7 +61,9 @@ h1 {
 
 /* CSS */
 #doneBtn,
-#removebacknineBtn {
+#removebacknineBtn,
+#submitBtn,
+#deleteScoreBtn {
   top: 8px;
   height: 30px;
   width: 100px;
@@ -57,7 +76,7 @@ h1 {
   color: black;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: bold;
   outline: none;
   outline: 0;
   text-align: center;
@@ -72,11 +91,18 @@ h1 {
   }
 }
 
+#deleteScoreBtn {
+  width: 150px;
+  background-color: red;
+  border: 1px solid red;
+}
+
 #addBtn {
   right: 15%;
 }
 
-#doneBtn {
+#doneBtn, #submitBtn {
+  width: 130px;
   right: 0;
 }
 
@@ -111,23 +137,30 @@ h1 {
     background-color: grey;
   }
 
-  #doneBtn {
-    font-size: 65%;
+  #doneBtn, #submitBtn {
+    font-size: 80%;
+    font-weight: bold;
     height: 25px;
-    width: 60px;
+    width: 100px;
     right: 10px;
     &:hover {
       transform: scale(1) translateY(0px);
     }
   }
 
-  #removebacknineBtn {
+  #removebacknineBtn, #deleteScoreBtn {
     width: 95px;
-    font-size: 65%;
+    font-size: 80%;
+    left: 10px;
+    font-weight: bold;
     height: 25px;
     &:hover {
       transform: scale(1) translateY(0px);
     }
+  }
+
+  #removebacknineBtn {
+    height: 30px;
   }
 
   h1 {

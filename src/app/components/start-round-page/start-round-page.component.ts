@@ -8,11 +8,9 @@ import { CourseDetailsService } from '../../Service/course-details.service';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ScoreService } from '../../Service/score.service';
-import jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../../Service/authentication.service';
 import { createRange } from '../../utilities/functions';
-import { EditScoreCardComponent } from '../edit-score-card/edit-score-card.component';
-import { ActiveScorecardComponent } from '../active-scorecard/active-scorecard.component';
+import jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-start-round-page',
@@ -20,6 +18,7 @@ import { ActiveScorecardComponent } from '../active-scorecard/active-scorecard.c
   styleUrls: ['./start-round-page.component.scss'],
 })
 export class StartRoundPageComponent {
+  userData: any;
   selectedCourse: any;
   changeView: Subject<any> = new Subject<any>();
   courseData: any;
@@ -49,16 +48,22 @@ export class StartRoundPageComponent {
   async ngOnInit() {
     this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
 
+    this.authService.user.asObservable().subscribe((value) => {
+      if (value) {
+        this.userData = value;
+        this.getScore();
+      }
+    });
+
     const response: any = await this.courseService.get(
       this.selectedCourse.reference
     );
     this.courseData = response.course;
     this.completedTees = Object.assign({}, this.courseData);
     this.checkCompleteTees(this.completedTees);
-    this.getScore();
     this.courseService.courseData.next(response.course);
     this.loading = false;
-
+    
     this.courseService.courseData.asObservable().subscribe(async (value) => {
       if (value) {
         this.courseData = value;
@@ -92,9 +97,9 @@ export class StartRoundPageComponent {
 
   async getScore() {
     try {
-      const response: any = await this.scoreService.getStatus(false);
+      const response: any = await this.scoreService.getUser(this.userData.id, false);
       this.roundInProgress = true;
-      this.scoreData = response.score;
+      this.scoreData = response.scores[0];
       this.scoreService.scoreData.next(this.scoreData);
       this.currentHole = this.getCurrentHoleInProgress(this.scoreData.score);
       this.changeView.next({
@@ -102,7 +107,15 @@ export class StartRoundPageComponent {
         view: this.currentHole,
         roundInProgress: this.roundInProgress,
       });
-    } catch (error) {}
+    } catch (error) {
+      this.roundInProgress = false;
+      this.changeView.next({
+        teeData: 'refresh',
+        view: 'course',
+        roundInProgress: this.roundInProgress,
+      });
+      console.log(error);
+    }
   }
 
   async reload() {
@@ -119,9 +132,8 @@ export class StartRoundPageComponent {
 
   async startRound(tee: any) {
     try {
-      const userData: any = jwt_decode(this.authService.token.getValue());
       await this.scoreService.newScore(
-        userData.id,
+        this.userData.id,
         this.courseData.id,
         tee,
         this.convertDateToMySql()
@@ -151,6 +163,11 @@ export class StartRoundPageComponent {
 
   async setCurrentHole(a: any) {
     this.currentHole = a;
+    if (this.currentHole == 'course') {
+      document.getElementById('scoreInput')!.style.top = '65px';
+    } else {
+      document.getElementById('scoreInput')!.style.top = '145px';
+    }
     try {
       if (this.scoreData.score[this.currentHole]) {
         this.selectedScore = this.scoreData.score[this.currentHole];
@@ -163,7 +180,7 @@ export class StartRoundPageComponent {
   getCurrentHoleInProgress(score: any) {
     const ln = Object.keys(score).length;
     if (ln < 1) return 1;
-    return ln;
+    return ln - 2;
   }
 
   checkCompleteTees(data: any) {
@@ -183,5 +200,25 @@ export class StartRoundPageComponent {
   convertDateToMySql() {
     var date = new Date();
     return date.toISOString().slice(0, 19).replace('T', ' ');
+  }
+
+  setDropdownHeightTee() {
+    this.openTeeDropdown = !this.openTeeDropdown;
+    let pixels = 44 * this.completedTees?.scorecard.length;
+    if (this.openTeeDropdown) {
+      document.getElementById('selectTeeBtnSlide')!.style.height = `${pixels}px`;
+    } else {
+      document.getElementById('selectTeeBtnSlide')!.style.height = '0px';
+    }
+  }
+
+  setDropdownHeightScore() {
+    this.openScoreDropdown = !this.openScoreDropdown;
+    let pixels = 34 * 10;
+    if (this.openScoreDropdown) {
+      document.getElementById('selectScoreBtnSlide')!.style.height = `${pixels}px`;
+    } else {
+      document.getElementById('selectScoreBtnSlide')!.style.height = '0px';
+    }
   }
 }

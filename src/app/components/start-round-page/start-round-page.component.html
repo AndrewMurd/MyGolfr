@@ -27,36 +27,42 @@
   [ngStyle]="
     showScorecard && roundInProgress ? { display: '' } : { display: 'none' }
   "
+  (refreshPage)="getScore()"
 ></app-active-scorecard>
 
 <div id="scoreInput">
-  <div *ngIf="!roundInProgress" class="dropdown">
-    <button id="selectTeeBtn" (click)="openTeeDropdown = !openTeeDropdown" class="dropbtn">Select Tee</button>
-    <div id="selectTeeContent" *ngIf="openTeeDropdown" class="dropdown-content">
-      <a
-        (click)="startRound(tee)"
-        id="{{ tee.id }}"
-        *ngFor="let tee of completedTees?.scorecard"
-        >{{ tee.ColorName }}</a
-      >
-    </div>
+  <div *ngIf="!roundInProgress">
+    <nav id="selectTeeBtn">
+      <label for="touch"><span id="startRoundSpan">Start Round</span></label>
+      <input type="checkbox" (click)="setDropdownHeightTee()" id="touch" />
+      <div id="selectTeeBtnSlide" class="slide">
+        <a
+          *ngFor="let tee of completedTees?.scorecard"
+          (click)="startRound(tee)"
+          id="{{ tee.id }}"
+          >{{ tee.ColorName }}</a
+        >
+      </div>
+    </nav>
   </div>
-  <div *ngIf="roundInProgress" class="dropdown">
-    <button
-      *ngIf="!show10Input && currentHole != 'course'"
-      (click)="openScoreDropdown = !openScoreDropdown"
-      id="selectScoreBtn"
-      class="dropbtn"
-    >
-      {{ selectedScore }}
-    </button>
-    <div *ngIf="openScoreDropdown" id="selectScoreContent" class="dropdown-content">
-      <a
-        (click)="updateScore(num); openScoreDropdown = false"
-        *ngFor="let num of createRange(9)"
-        >{{ num }}</a
-      >
-      <a (click)="show10Input = true">10+</a>
+  <div *ngIf="roundInProgress">
+    <div *ngIf="!show10Input">
+      <nav id="selectScoreBtn">
+        <label for="touch"><span id="scoreSpan">{{ selectedScore }}</span></label>
+        <input
+          type="checkbox"
+          (click)="setDropdownHeightScore()"
+          id="touch"
+        />
+        <div id="selectScoreBtnSlide" class="slide">
+          <a
+            (click)="updateScore(num); setDropdownHeightScore()"
+            *ngFor="let num of createRange(9)"
+            >{{ num }}</a
+          >
+          <a (click)="show10Input = true">10+</a>
+        </div>
+      </nav>
     </div>
   </div>
   <input
@@ -71,4 +77,3 @@
     (keyup.enter)="updateScore(strokesInputValue); show10Input = false"
   />
 </div>
-<!-- <button id="submitHole" (click)="submitHole()">Next Hole</button> -->

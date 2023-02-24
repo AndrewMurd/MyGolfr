@@ -21,11 +21,10 @@
 
 #deleteBtn {
   cursor: pointer;
-  margin-left: 5px;
-  margin-top: 7px;
   height: 30px;
-  position: absolute;
-  left: 100%;
+  position: relative;
+  top: -35px;
+  left: 80px;
   transition: transform 150ms, box-shadow 150ms;
   &:hover {
     transform: scale(1.2) translateY(-3px);
@@ -33,12 +32,12 @@
 }
 
 #selectPosition {
-  margin-top: 5px;
+  width: 30px;
   height: 25px;
   border-radius: 5px;
-  right: 100%;
-  position: absolute;
-  margin-right: 3px;
+  right: 695px;
+  bottom: 83px;
+  position: relative;
   cursor: pointer;
 }
 
@@ -122,12 +121,18 @@ div {
 @media (max-width: 830px) {
   #selectPosition {
     height: 18px;
-    width: 5%;
-    border-radius: 5px;
-    left: 94%;
-    margin-top: 20px;
+    left: 0px;
+    top: 0px;
     font-size: 0.6rem;
-    cursor: pointer;
+  }
+
+  #deleteBtn {
+    height: 18px;
+    left: 15px;
+    top: 0px;
+    &:hover {
+      transform: scale(1) translateY(0px);
+    }
   }
 
   select::-ms-expand {
@@ -138,7 +143,7 @@ div {
     display: grid;
     grid-template-columns: 10% repeat(9, 6.7%) 10% 10% 10%;
     grid-auto-rows: 20px;
-    border-bottom: 0px solid;
+    border: none;
   }
 
   div {
@@ -156,15 +161,6 @@ div {
     margin-top: 5px;
     &:hover {
       transform: translateY(0px);
-    }
-  }
-
-  #deleteBtn {
-    margin-top: 41px;
-    left: 93%;
-    height: 18px;
-    &:hover {
-      transform: scale(1) translateY(0px);
     }
   }
 

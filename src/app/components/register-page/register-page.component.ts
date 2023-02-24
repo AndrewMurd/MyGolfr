@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthenticationService } from '../../Service/authentication.service';
 import { Router } from '@angular/router';
+import jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-register-page',
@@ -84,7 +85,11 @@ export class RegisterPageComponent {
         this.resetInnerText();
         this.resetInputClass();
 
-        this.authService.login(this.email, this.password);
+        this.authService.login(this.email, this.password).then((data: any) => {
+          this.authService.token.next(data.accessToken);
+          const userData: any = jwt_decode(data.accessToken);
+          this.authService.user.next(userData);
+        });
 
         setTimeout(() => {
           this.router.navigate(['/']);

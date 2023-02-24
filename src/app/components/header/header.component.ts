@@ -27,6 +27,8 @@ export class HeaderComponent {
 
   signOut() {
     this.signedIn = false;
+    this.authService.token.next(null);
+    this.authService.user.next(null);
     this.router.navigate(['/login']);
     this.authService.logout();
   }

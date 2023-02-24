@@ -45,6 +45,23 @@ export class ScoreService {
     });
   }
 
+  async getUser(userId: any, status: boolean) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .get(ROOT_URL + 'scores/score_user', {
+          params: new HttpParams().set('userId', userId).set('status', status),
+        })
+        .subscribe({
+          next: (data: any) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
   async update(scoreId: string, data: any, type: string) {
     return await new Promise((resolve, reject) => {
       this.http
@@ -77,6 +94,23 @@ export class ScoreService {
           courseId: courseId,
           teeData: teeData,
           dateTime: dateTime,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  async delete(scoreId: any) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'scores/delete', {
+          id: scoreId,
         })
         .subscribe({
           next: (data) => {

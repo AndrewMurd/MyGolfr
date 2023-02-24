@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthenticationService } from '../../Service/authentication.service';
 import { Router } from '@angular/router';
+import jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-login-page',
@@ -61,11 +62,15 @@ export class LoginPageComponent {
 
     this.authService
       .login(this.email, this.password)
-      .then((data) => {
+      .then((data: any) => {
         this.btn!.classList.remove('onclic');
         this.btn!.classList.add('validate');
         this.resetInnerText();
         this.resetInputClass();
+
+        this.authService.token.next(data.accessToken);
+        const userData: any = jwt_decode(data.accessToken);
+        this.authService.user.next(userData);
 
         setTimeout(() => {
           this.router.navigate(['/']);
