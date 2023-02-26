@@ -1,9 +1,5 @@
 <app-header></app-header>
 
-<div *ngIf="loading" id="loadingContainer">
-  <app-loading-animation></app-loading-animation>
-</div>
-
 <app-course-map
   [mapHeight]="'100vh'"
   [changeView]="changeView"
@@ -30,11 +26,15 @@
   (refreshPage)="getScore()"
 ></app-active-scorecard>
 
-<div id="scoreInput">
+<div id="scoreInput" (clickOutside)="clickedOutside()">
   <div *ngIf="!roundInProgress">
     <nav id="selectTeeBtn">
       <label for="touch"><span id="startRoundSpan">Start Round</span></label>
-      <input type="checkbox" (click)="setDropdownHeightTee()" id="touch" />
+      <input
+        type="checkbox"
+        (click)="teeDropdown(!this.openTeeDropdown)"
+        id="touch"
+      />
       <div id="selectTeeBtnSlide" class="slide">
         <a
           *ngFor="let tee of completedTees?.scorecard"
@@ -45,25 +45,25 @@
       </div>
     </nav>
   </div>
-  <div *ngIf="roundInProgress">
-    <div *ngIf="!show10Input">
-      <nav id="selectScoreBtn">
-        <label for="touch"><span id="scoreSpan">{{ selectedScore }}</span></label>
-        <input
-          type="checkbox"
-          (click)="setDropdownHeightScore()"
-          id="touch"
-        />
-        <div id="selectScoreBtnSlide" class="slide">
-          <a
-            (click)="updateScore(num); setDropdownHeightScore()"
-            *ngFor="let num of createRange(9)"
-            >{{ num }}</a
-          >
-          <a (click)="show10Input = true">10+</a>
-        </div>
-      </nav>
-    </div>
+  <div *ngIf="roundInProgress && !show10Input">
+    <nav id="selectScoreBtn">
+      <label for="touch"
+        ><span id="scoreSpan">{{ selectedScore }}</span></label
+      >
+      <input
+        type="checkbox"
+        (click)="scoreDropdown(!this.openScoreDropdown)"
+        id="touch"
+      />
+      <div id="selectScoreBtnSlide" class="slide">
+        <a
+          (click)="updateScore(num); scoreDropdown(false)"
+          *ngFor="let num of createRange(9)"
+          >{{ num }}</a
+        >
+        <a (click)="show10Input = true">10+</a>
+      </div>
+    </nav>
   </div>
   <input
     *ngIf="show10Input"

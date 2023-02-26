@@ -26,6 +26,8 @@ input {
   border-radius: 3px;
   border: 1px solid;
   width: 70%;
+  height: 25px;
+  font-size: 15px;
 }
 
 input::-webkit-outer-spin-button,
@@ -45,7 +47,7 @@ p {
       font-size: 0.5rem;
     }
     font-size: 0.8rem;
-    width: 80%;
+    width: 60%;
   }
 
   .hoverDiv {

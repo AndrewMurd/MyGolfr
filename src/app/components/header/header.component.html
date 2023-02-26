@@ -1,5 +1,26 @@
 <div class="header">
-    <img routerLink="/" src="../../../assets/Golf-ball-isolated-on-transparent-background-PNG.png" alt="" class="logo">
-    <a *ngIf="!signedIn" routerLink="/login" id="loginLink" class="headerLink">Login</a>
-    <a *ngIf="signedIn" (click)="signOut()" id="loginLink" class="headerLink">Logout</a>
+  <img
+    routerLink="/"
+    src="../../../assets/Golf-ball-isolated-on-transparent-background-PNG.png"
+    alt=""
+    class="logo"
+  />
+  <div id="linkContainer" (clickOutside)="setDropdownUser(false)">
+    <a *ngIf="!signedIn" routerLink="/login" id="loginLink" class="headerLink"
+      >Login</a
+    >
+    <a *ngIf="signedIn" routerLink="/stats" id="statsLink" class="headerLink"
+      >Stats</a
+    >
+    <div>
+      <div *ngIf="signedIn" class="underline">
+        <a (click)="setDropdownUser(!userDropdown)" id="userLink" class="headerLink"
+          >{{ userData.name }} <i id="userArrow" class="arrow down"></i
+        ></a>
+      </div>
+      <div id="selectUserDropdown" class="slide">
+        <p (click)="signOut()">Logout</p>
+      </div>
+    </div>
+  </div>
 </div>

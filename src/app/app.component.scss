@@ -1,0 +1,27 @@
+@import "./utilities/variables.scss";
+
+app-loading-animation {
+  position: absolute;
+  z-index: 10;
+  transform: scale(3, 3);
+  left: 0;
+  right: 0;
+  margin: auto;
+  margin-top: 400px;
+}
+
+#loadingContainer {
+  height: 100vh;
+  width: 100%;
+  z-index: 10000000000;
+  background-color: black;
+  opacity: 0.9;
+  position: absolute;
+}
+
+@media (max-width: 830px) {
+  app-loading-animation {
+    transform: scale(2, 2);
+    margin-top: 300px;
+  }
+}

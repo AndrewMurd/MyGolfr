@@ -26,6 +26,7 @@ import { ActiveScorecardComponent } from './components/active-scorecard/active-s
 import { ActiveTeeComponent } from './components/active-tee/active-tee.component';
 import { ScoreInputComponent } from './components/score-input/score-input.component';
 import { StatsPageComponent } from './components/stats-page/stats-page.component';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { StatsPageComponent } from './components/stats-page/stats-page.component
     ActiveTeeComponent,
     ScoreInputComponent,
     StatsPageComponent,
+    ClickOutsideDirective,
   ],
   imports: [
     BrowserModule,

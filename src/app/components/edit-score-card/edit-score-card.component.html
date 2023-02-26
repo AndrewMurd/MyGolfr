@@ -1,15 +1,15 @@
 <div id="container">
   <div *ngIf="!fullSize" id="scrollContainer">
     <img
-    *ngIf="!editing"
-    id="editBtn"
-    (click)="edit()"
-    src="../../../assets/edit.png"
-    alt=""
+      *ngIf="!editing"
+      id="editBtn"
+      (click)="edit()"
+      src="../../../assets/edit.png"
+      alt=""
     />
-    <div *ngIf="isLoading" id="loadingContainer">
+    <!-- <div *ngIf="isLoading" id="loadingContainer">
       <app-loading-animation></app-loading-animation>
-    </div>  
+    </div> -->
     <div id="scorecardContainer">
       <h1>{{ title }}</h1>
       <div class="gridContainer">
@@ -28,7 +28,9 @@
       <button *ngIf="!isLoading && editing" id="addBtn" (click)="addNewTee()">
         Add Tee
       </button>
-      <button *ngIf="!isLoading && editing" id="doneBtn" (click)="finishEdit()">Done</button>
+      <button *ngIf="!isLoading && editing" id="doneBtn" (click)="finishEdit()">
+        Done
+      </button>
       <button
         *ngIf="!isLoading && editing"
         id="removebacknineBtn"
@@ -40,15 +42,15 @@
   </div>
   <div id="fullSizeContainer" *ngIf="fullSize">
     <img
-    *ngIf="!editing"
-    id="editBtn"
-    (click)="edit()"
-    src="../../../assets/edit.png"
-    alt=""
+      *ngIf="!editing"
+      id="editBtn"
+      (click)="edit()"
+      src="../../../assets/edit.png"
+      alt=""
     />
-    <div *ngIf="isLoading" id="loadingContainer">
+    <!-- <div *ngIf="isLoading" id="loadingContainer">
       <app-loading-animation></app-loading-animation>
-    </div>  
+    </div> -->
     <div id="scorecardContainer">
       <h1>{{ title }}</h1>
       <div class="gridContainer">
@@ -67,7 +69,9 @@
       <button *ngIf="!isLoading && editing" id="addBtn" (click)="addNewTee()">
         Add Tee
       </button>
-      <button *ngIf="!isLoading && editing" id="doneBtn" (click)="finishEdit()">Done</button>
+      <button *ngIf="!isLoading && editing" id="doneBtn" (click)="finishEdit()">
+        Done
+      </button>
       <button
         *ngIf="!isLoading && editing"
         id="removebacknineBtn"

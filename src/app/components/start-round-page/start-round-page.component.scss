@@ -1,24 +1,5 @@
 @import "../../utilities/variables.scss";
 
-app-loading-animation {
-  position: absolute;
-  z-index: 10;
-  transform: scale(3);
-  left: 0;
-  right: 0;
-  margin: auto;
-  margin-top: 400px;
-}
-
-#loadingContainer {
-  height: 100%;
-  width: 100%;
-  z-index: 1000;
-  background-color: black;
-  opacity: 0.9;
-  position: absolute;
-}
-
 edit-score-card,
 app-active-scorecard {
   top: 85px;
@@ -92,17 +73,18 @@ span {
   overflow: hidden;
   text-align: center;
   transition: height 0.4s ease;
-}
-.slide a {
-  color: black;
-  padding: 12px 16px;
-  height: 20px;
-  text-decoration: none;
-  display: block;
-  font-size: 1em;
-  cursor: pointer;
-  &:hover {
-    background-color: rgb(196, 196, 196);
+  a {
+    color: black;
+    padding: 12px 16px;
+    height: 20px;
+    text-decoration: none;
+    display: block;
+    font-size: 1em;
+    cursor: pointer;
+    &:hover {
+      font-weight: bold;
+      background-color: rgb(196, 196, 196);
+    }
   }
 }
 #touch {
@@ -167,6 +149,11 @@ span {
   #selectTeeBtn {
     font-size: smaller;
     width: 130px;
+  }
+
+  #scoreSpan {
+    font-size: 18px;
+    padding: 15px 0px;
   }
 
   #selectScoreBtn {

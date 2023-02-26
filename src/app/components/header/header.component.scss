@@ -8,6 +8,23 @@ $color3: #0f3f00;
   user-select: none;
 }
 
+.arrow {
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.down {
+  transition: transform 0.2s;
+  transform: rotate(45deg);
+}
+
+.up {
+  transition: transform 0.2s;
+  transform: rotate(225deg);
+}
+
 .header {
   height: 60px;
   display: flex;
@@ -31,17 +48,65 @@ $color3: #0f3f00;
   }
 }
 
+.underline {
+  position: relative;
+  height: 60px;
+  z-index: 10;
+  &:before {
+    content: "";
+    background: $green;
+    display: block;
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 0;
+    height: 5px;
+    transition: all 0.2s;
+  }
+  &:hover {
+    background-position: 0
+  }
+  &:hover::before {
+    width: 100%;
+  }
+  a:before {
+    height: 0px;
+  }
+}
+
+#userLink {
+  padding-right: 30px;
+}
+
+.slide {
+  background: $lightgrey;
+  clear: both;
+  width: 100%;
+  height: 0px;
+  overflow: hidden;
+  text-align: center;
+  transition: height 0.4s ease;
+  p {
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    &:hover {
+      font-weight: bold;
+      background-color: rgb(196, 196, 196);
+    }
+  }
+}
+
 a {
+  line-height: 50px;
+  text-align: center;
+  height: 50px;
   cursor: pointer;
   position: relative;
   font-size: 22px;
   font-weight: 500;
-  background-image: linear-gradient(
-    to right,
-    $green,
-    $green 50%,
-    white 50%
-  );
+  background-image: linear-gradient(to right, $green, $green 50%, white 50%);
   background-size: 200% 100%;
   background-position: -100%;
   display: inline-block;
@@ -49,46 +114,54 @@ a {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   transition: all 0.2s;
+  i {
+    position: absolute;
+    right: 4px;
+    top: 23px;
+    transform-origin: 65% 70%;
+  }
+  &:before {
+    content: "";
+    background: $green;
+    display: block;
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 0;
+    height: 5px;
+    transition: all 0.2s;
+  }
+  &:hover {
+    background-position: 0
+  }
+  &:hover::before {
+    width: 100%;
+  }
+  &:hover .arrow {
+    border-color: $green;
+  }
 }
 
-a:before {
-  content: '';
-  background: $green;
-  display: block;
+#linkContainer {
   position: absolute;
-  bottom: -15px;
-  left: 0;
-  width: 0;
-  height: 5px;
-  transition: all 0.2s;
-}
-
-a:hover {
-  background-position: 0;
-}
-
-a:hover::before{
-  width: 100%;
+  display: flex;
+  right: 25%;
+  width: 100px;
+  height: 60px;
+  top: 0px;
 }
 
 .headerLink {
-  position: absolute;
   color: white;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
-#loginLink {
-  position: absolute;
-  right: 25%;
+#statsLink {
+  position: relative;
+  margin-right: 40px;
 }
 
 @media (max-width: 830px) {
   .logo {
     left: 5%;
-  }
-
-  #loginLink {
-    right: 10%;
   }
 }

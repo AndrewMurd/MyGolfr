@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { Subject } from 'rxjs';
+import { LoadingService } from 'src/app/Service/loading.service';
 
 @Component({
   selector: 'app-course-page',
@@ -9,17 +10,20 @@ import { Subject } from 'rxjs';
 })
 export class CoursePageComponent {
   selectedCourse: any;
-  loading: boolean = true;
 
-  constructor(private courseService: CourseDetailsService) {}
+  constructor(
+    private courseService: CourseDetailsService,
+    private loadingService: LoadingService
+  ) {}
 
   async ngOnInit() {
+    this.loadingService.loading.next(true);
     this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
 
     const response: any = await this.courseService.get(
       this.selectedCourse.reference
     );
     this.courseService.courseData.next(response.course);
-    this.loading = false;
+    this.loadingService.loading.next(false);
   }
 }

@@ -10,7 +10,7 @@ import { Subject } from 'rxjs';
 import { ScoreService } from '../../Service/score.service';
 import { AuthenticationService } from '../../Service/authentication.service';
 import { createRange } from '../../utilities/functions';
-import jwt_decode from 'jwt-decode';
+import { LoadingService } from 'src/app/Service/loading.service';
 
 @Component({
   selector: 'app-start-round-page',
@@ -25,14 +25,13 @@ export class StartRoundPageComponent {
   completedTees: any;
   scoreData: any;
   roundInProgress: any;
-  loading: boolean = true;
   selectedScore: any = 'Strokes';
   show10Input: boolean = false;
   strokesInputValue: number = 10;
   currentHole: any;
   showScorecard: boolean = false;
-  openScoreDropdown: boolean = false;
-  openTeeDropdown: boolean = false;
+  openScoreDropdown: Boolean = false;
+  openTeeDropdown: Boolean = false;
   createRange: Function = createRange;
 
   @ViewChild('scorecardContainer', { read: ViewContainerRef })
@@ -42,10 +41,12 @@ export class StartRoundPageComponent {
     private courseService: CourseDetailsService,
     private authService: AuthenticationService,
     private scoreService: ScoreService,
+    private loadingService: LoadingService,
     private router: Router
   ) {}
 
   async ngOnInit() {
+    this.loadingService.loading.next(true);
     this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
 
     this.authService.user.asObservable().subscribe((value) => {
@@ -62,8 +63,7 @@ export class StartRoundPageComponent {
     this.completedTees = Object.assign({}, this.courseData);
     this.checkCompleteTees(this.completedTees);
     this.courseService.courseData.next(response.course);
-    this.loading = false;
-    
+
     this.courseService.courseData.asObservable().subscribe(async (value) => {
       if (value) {
         this.courseData = value;
@@ -80,7 +80,6 @@ export class StartRoundPageComponent {
         }
       }
     });
-
     this.scoreService.scoreData.asObservable().subscribe((value) => {
       if (value) {
         this.scoreData = value;
@@ -93,11 +92,15 @@ export class StartRoundPageComponent {
         } catch (error) {}
       }
     });
+    this.loadingService.loading.next(false);
   }
 
   async getScore() {
     try {
-      const response: any = await this.scoreService.getUser(this.userData.id, false);
+      const response: any = await this.scoreService.getUser(
+        this.userData.id,
+        false
+      );
       this.roundInProgress = true;
       this.scoreData = response.scores[0];
       this.scoreService.scoreData.next(this.scoreData);
@@ -114,7 +117,6 @@ export class StartRoundPageComponent {
         view: 'course',
         roundInProgress: this.roundInProgress,
       });
-      console.log(error);
     }
   }
 
@@ -202,23 +204,36 @@ export class StartRoundPageComponent {
     return date.toISOString().slice(0, 19).replace('T', ' ');
   }
 
-  setDropdownHeightTee() {
-    this.openTeeDropdown = !this.openTeeDropdown;
-    let pixels = 44 * this.completedTees?.scorecard.length;
-    if (this.openTeeDropdown) {
-      document.getElementById('selectTeeBtnSlide')!.style.height = `${pixels}px`;
-    } else {
-      document.getElementById('selectTeeBtnSlide')!.style.height = '0px';
-    }
+  clickedOutside() {
+    this.teeDropdown(false);
+    this.scoreDropdown(false);
   }
 
-  setDropdownHeightScore() {
-    this.openScoreDropdown = !this.openScoreDropdown;
+  teeDropdown(set: boolean) {
+    this.openTeeDropdown = set;
+    let pixels = 44 * this.completedTees?.scorecard.length;
+    try {
+      if (this.openTeeDropdown) {
+        document.getElementById(
+          'selectTeeBtnSlide'
+        )!.style.height = `${pixels}px`;
+      } else {
+        document.getElementById('selectTeeBtnSlide')!.style.height = '0px';
+      }
+    } catch (error) {}
+  }
+
+  scoreDropdown(set: boolean) {
+    this.openScoreDropdown = set;
     let pixels = 34 * 10;
-    if (this.openScoreDropdown) {
-      document.getElementById('selectScoreBtnSlide')!.style.height = `${pixels}px`;
-    } else {
-      document.getElementById('selectScoreBtnSlide')!.style.height = '0px';
-    }
+    try {
+      if (this.openScoreDropdown) {
+        document.getElementById(
+          'selectScoreBtnSlide'
+        )!.style.height = `${pixels}px`;
+      } else {
+        document.getElementById('selectScoreBtnSlide')!.style.height = '0px';
+      }
+    } catch (error) {}
   }
 }

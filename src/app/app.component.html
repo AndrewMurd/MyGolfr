@@ -1,3 +1,6 @@
 <div>
+  <div *ngIf="loading" id="loadingContainer">
+    <app-loading-animation></app-loading-animation>
+  </div>
   <router-outlet></router-outlet>
 </div>

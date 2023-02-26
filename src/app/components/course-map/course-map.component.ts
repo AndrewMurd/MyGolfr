@@ -165,9 +165,6 @@ export class CourseMapComponent {
     this.changedView.emit(this.selectedMapView);
     let map = this.map;
 
-    console.log(this.courseData);
-    console.log(this.layoutData);
-
     if (a === 'course') {
       this.map.setCenter(this.center);
       this.map.setZoom(16);

@@ -268,12 +268,6 @@ export class NewScorecardTeeComponent {
           tee.Position = tee.Position - 1;
       }
 
-      await this.courseService.updateColumn(
-        this.courseId,
-        this.scorecard,
-        'scorecard'
-      );
-
       let mapLayout = this.courseData.mapLayout;
 
       for (let [key, value] of Object.entries(mapLayout)) {
@@ -284,11 +278,10 @@ export class NewScorecardTeeComponent {
         }
       }
 
-      await this.courseService.updateColumn(this.courseId, mapLayout, 'mapLayout');
-
       this.courseData.scorecard = this.scorecard;
       this.courseData.mapLayout = mapLayout;
       this.courseService.courseData.next(this.courseData);
+      await this.courseService.update(this.courseData);
     }
   }
 
