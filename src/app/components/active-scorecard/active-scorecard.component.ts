@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { faC } from '@fortawesome/free-solid-svg-icons';
 import { Subject } from 'rxjs';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { CourseDetailsService } from 'src/app/Service/course-details.service';
@@ -94,7 +93,7 @@ export class ActiveScorecardComponent {
 
     if (Object.keys(this.scoreData.score).length >= factor) {
       await this.scoreService.update(this.scoreData.id, 1, 'statusComplete');
-      this.scoreService.scoreData.next(null);
+      // this.scoreService.scoreData.next(null);
       this.router.navigate(['/stats']);
     } else {
       alert('Must complete scorecard!');

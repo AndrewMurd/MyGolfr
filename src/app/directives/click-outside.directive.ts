@@ -22,7 +22,7 @@ export class ClickOutsideDirective {
   ) {}
 
   ngAfterViewInit(): void {
-    this.documentClickSubscription = fromEvent(this.document.body, 'click')
+    this.documentClickSubscription = fromEvent(this.document, 'click')
       .pipe(
         filter((event) => {
           return !this.isInside(event.target as HTMLElement);

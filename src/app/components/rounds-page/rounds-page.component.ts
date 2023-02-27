@@ -6,11 +6,11 @@ import { LoadingService } from 'src/app/Service/loading.service';
 import { ScoreService } from 'src/app/Service/score.service';
 
 @Component({
-  selector: 'app-stats-page',
-  templateUrl: './stats-page.component.html',
-  styleUrls: ['./stats-page.component.scss'],
+  selector: 'app-rounds-page',
+  templateUrl: './rounds-page.component.html',
+  styleUrls: ['./rounds-page.component.scss'],
 })
-export class StatsPageComponent {
+export class RoundsPageComponent {
   userData: any;
   scores: any;
 

@@ -17,6 +17,8 @@ export class ScoreInputComponent {
   showField: boolean = true;
   editing: boolean = false;
   value!: string;
+  par: number = 0;
+  borderClass: string = 'par';
   arrId: any;
   isWhite: boolean = false;
   courseId!: string;
@@ -34,8 +36,11 @@ export class ScoreInputComponent {
   
     if (this.data.score[this.id]) {
       this.value = this.data.score[this.id];
+      this.par = this.data.teeData["P"+this.id];
       this.showField = false;
     }
+
+    this.setBorder();
   }
 
   async submit() {
@@ -54,5 +59,22 @@ export class ScoreInputComponent {
     );
     this.data.score = response.data;
     this.scoreService.scoreData.next(this.data);
+
+    this.setBorder();
+  }
+
+  setBorder() {
+    const diff = Number(this.value) - this.par;
+    if (diff == 0) {
+      this.borderClass = 'par';
+    } else if (diff == -1) {
+      this.borderClass = 'birdie';
+    } else if (diff <= -2) {
+      this.borderClass = 'eagle';
+    } else if (diff == 1) {
+      this.borderClass = 'bogey';
+    } else if (diff >= 2) {
+      this.borderClass = 'doublebogey';
+    }
   }
 }

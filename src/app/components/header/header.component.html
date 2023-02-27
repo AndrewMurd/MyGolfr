@@ -5,16 +5,17 @@
     alt=""
     class="logo"
   />
-  <div id="linkContainer" (clickOutside)="setDropdownUser(false)">
-    <a *ngIf="!signedIn" routerLink="/login" id="loginLink" class="headerLink"
-      >Login</a
-    >
-    <a *ngIf="signedIn" routerLink="/stats" id="statsLink" class="headerLink"
-      >Stats</a
-    >
+  <div
+    *ngIf="!isPhone"
+    id="linkContainer"
+    (clickOutside)="setDropdownUser(false)"
+  >
     <div>
       <div *ngIf="signedIn" class="underline">
-        <a (click)="setDropdownUser(!userDropdown)" id="userLink" class="headerLink"
+        <a
+          (click)="setDropdownUser(!userDropdown)"
+          id="userLink"
+          class="headerLink header-right"
           >{{ userData.name }} <i id="userArrow" class="arrow down"></i
         ></a>
       </div>
@@ -22,5 +23,76 @@
         <p (click)="signOut()">Logout</p>
       </div>
     </div>
+    <a *ngIf="!signedIn" routerLink="/login" id="loginLink" class="headerLink"
+      >Login</a
+    >
+    <a *ngIf="signedIn" routerLink="/rounds" id="roundsLink" class="headerLink"
+      >Rounds</a
+    >
+    <a *ngIf="signedIn" routerLink="/stats" id="statsLink" class="headerLink"
+      >Stats</a
+    >
+    <div id="roundContainer" class="underline">
+      <a
+        *ngIf="signedIn && scoreData"
+        routerLink="/start_round"
+        id="roundLink"
+        class="headerLink"
+        >Continue Round</a
+      >
+    </div>
+  </div>
+  <div *ngIf="isPhone" class="hamburger-menu" (clickOutside)="closeBox()">
+    <input id="menu__toggle" type="checkbox" [(ngModel)]="isChecked" />
+    <label class="menu__btn" for="menu__toggle">
+      <span></span>
+    </label>
+
+    <ul class="menu__box">
+      <li>
+        <a
+          *ngIf="!signedIn"
+          routerLink="/login"
+          class="menu__item"
+          (click)="closeBox()"
+          >Login</a
+        >
+      </li>
+      <li>
+        <a (click)="setDropdownUser(!userDropdown)" class="menu__item"
+          >{{ userData.name }} <i id="userArrow" class="arrow down"></i
+        ></a>
+        <div id="selectUserDropdown" class="slide">
+          <p (click)="signOut()">Logout</p>
+        </div>
+      </li>
+      <li>
+        <a
+          *ngIf="signedIn && scoreData"
+          routerLink="/start_round"
+          class="menu__item"
+          (click)="closeBox()"
+          >Continue Round</a
+        >
+      </li>
+      <li>
+        <a
+          *ngIf="signedIn"
+          routerLink="/rounds"
+          class="menu__item"
+          (click)="closeBox()"
+          >Rounds</a
+        >
+      </li>
+      <li>
+        <a
+          *ngIf="signedIn"
+          routerLink="/stats"
+          class="menu__item"
+          (click)="closeBox()"
+          >Stats</a
+        >
+      </li>
+    </ul>
   </div>
 </div>

@@ -42,7 +42,8 @@ p {
 
 @media (max-width: 830px) {
   input {
-    height: 10px;
+    top: -5px;
+    height: 15px;
     &::placeholder {
       font-size: 0.5rem;
     }

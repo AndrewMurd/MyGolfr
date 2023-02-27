@@ -99,7 +99,7 @@ export class StartRoundPageComponent {
     try {
       const response: any = await this.scoreService.getUser(
         this.userData.id,
-        false
+        0
       );
       this.roundInProgress = true;
       this.scoreData = response.scores[0];

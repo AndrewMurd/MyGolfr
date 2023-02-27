@@ -45,7 +45,7 @@ export class ScoreService {
     });
   }
 
-  async getUser(userId: any, status: boolean) {
+  async getUser(userId: any, status: number) {
     return await new Promise((resolve, reject) => {
       this.http
         .get(ROOT_URL + 'scores/score_user', {

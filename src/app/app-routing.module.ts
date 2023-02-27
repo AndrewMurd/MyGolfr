@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterPageComponent },
   { path: 'course', component: CoursePageComponent },
   { path: 'stats', component: StatsPageComponent },
+  { path: 'rounds', component: StatsPageComponent },
   { path: 'start_round', component: StartRoundPageComponent }
 ];
 

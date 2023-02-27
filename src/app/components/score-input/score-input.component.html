@@ -1,5 +1,6 @@
 <div
   (click)="showField = true"
+  id="container"
   [ngClass]="showField ? 'nohoverDiv' : 'hoverDiv'"
 >
   <input
@@ -14,10 +15,11 @@
     oninput="validity.valid || (value='');"
     step="0.01"
   />
-  <p
-    *ngIf="!showField"
-    [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
-  >
-    {{ value }}
-  </p>
+  <div id="border" *ngIf="!showField" [ngClass]="borderClass">
+    <p
+      [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
+    >
+      {{ value }}
+    </p>
+  </div>
 </div>
