@@ -64,6 +64,10 @@ router.get("/score_user", async (req, res) => {
       for (const score of scores) {
         score.score = JSON.parse(score.score);
         score.teeData = JSON.parse(score.teeData);
+        score.googleDetails = JSON.parse(score.googleDetails);
+        score.courseDetails = JSON.parse(score.courseDetails);
+        score.scorecard = JSON.parse(score.scorecard);
+        score.mapLayout = JSON.parse(score.mapLayout);
       }
       res.status(200).send({ scores: scores });
     }

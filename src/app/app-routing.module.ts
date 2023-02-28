@@ -6,6 +6,7 @@ import { RegisterPageComponent } from './components/register-page/register-page.
 import { CoursePageComponent } from './components/course-page/course-page.component';
 import { StartRoundPageComponent } from './components/start-round-page/start-round-page.component';
 import { StatsPageComponent } from './components/stats-page/stats-page.component';
+import { RoundsPageComponent } from './components/rounds-page/rounds-page.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent},
@@ -13,7 +14,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterPageComponent },
   { path: 'course', component: CoursePageComponent },
   { path: 'stats', component: StatsPageComponent },
-  { path: 'rounds', component: StatsPageComponent },
+  { path: 'rounds', component: RoundsPageComponent },
   { path: 'start_round', component: StartRoundPageComponent }
 ];
 

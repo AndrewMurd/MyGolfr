@@ -1,0 +1,120 @@
+@import "../../utilities/variables.scss";
+
+#roundsPageContainer {
+  position: relative;
+  height: 100%;
+  top: 100px;
+  color: white;
+}
+
+h1 {
+  margin-bottom: 0px;
+}
+
+#title {
+  position: relative;
+  font-weight: bold;
+  font-size: 40px;
+}
+
+#numberInfo {
+  font-weight: normal;
+  font-size: 20px;
+}
+
+#roundsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.roundItem {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  width: 100%;
+  height: 100px;
+  background-color: lightgrey;
+  color: black;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  top: 0;
+  transition: top 0.2s, box-shadow 0.2s;
+  &:hover {
+    top: -4px;
+    box-shadow: 0px 0px 12px 1px $green;
+  }
+  div {
+    margin-left: 30px;
+    margin-top: 15px;
+  }
+  h1 {
+    font-weight: bold;
+    font-size: 30px;
+  }
+  h2 {
+    margin-top: 5px;
+    font-weight: normal;
+    color: grey;
+  }
+}
+#total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 30px;
+  height: 70px;
+  width: 80px;
+  border-radius: 10px;
+  background-color: $theme;
+  color: white;
+  h1 {
+    font-size: 28px;
+    margin-top: 10px;
+  }
+  h2 {
+    margin-top: 0px;
+    font-size: 12px;
+    color: white;
+    line-height: 20px;
+  }
+}
+
+
+@media (max-width: 830px) {
+  #title {
+    position: relative;
+    font-weight: bold;
+    font-size: 35px;
+  }
+  
+  #numberInfo {
+    font-weight: normal;
+    font-size: 20px;
+  }
+
+  .roundItem {
+    flex-direction: column;
+    height: auto;
+    div {
+      margin-left: 10px;
+    }
+    h1 {
+      font-size: 25px;
+    }
+    h2 {
+      margin-bottom: 0px;
+    }
+  }
+  #total {
+    flex-direction: column;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: calc(100% - 20px);
+    h2 {
+      margin-top: 0px;
+      font-size: 12px;
+    }
+  }
+}

@@ -23,6 +23,12 @@ export class HeaderComponent {
   ) {}
 
   ngOnInit() {
+    if (window.innerWidth < 830) {
+      this.isPhone = true;
+    } else {
+      this.isPhone = false;
+    }
+
     this.authService.token.asObservable().subscribe((value) => {
       if (value) {
         this.signedIn = true;
@@ -31,7 +37,7 @@ export class HeaderComponent {
       }
     });
 
-    this.authService.user.asObservable().subscribe((value) => {
+    this.authService.user.asObservable().subscribe(async (value) => {
       if (value) {
         this.userData = value;
       }

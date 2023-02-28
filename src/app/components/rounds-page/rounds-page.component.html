@@ -1,1 +1,39 @@
 <app-header></app-header>
+<div id="roundsPageContainer">
+  <div *ngIf="!selectedScore">
+    <h1 id="title">{{ userData?.name }}'s Rounds</h1>
+    <h2 id="numberInfo">
+      2023:
+      <span [ngStyle]="{ 'font-weight': 500 }">{{
+        amountOfRoundsThisYear
+      }}</span
+      >, Total:
+      <span [ngStyle]="{ 'font-weight': 500 }">{{ scores?.length }}</span>
+    </h2>
+    <div id="roundsContainer">
+      <div
+        class="roundItem"
+        *ngFor="let score of scores"
+        (click)="showOverview(score)"
+      >
+        <div>
+          <h1>{{ score.name }}</h1>
+          <h2>
+            {{ score.formattedDate }} •
+            {{
+              score.courseDetails.nineHoleGolfCourse ? "9 Holes" : "18 Holes"
+            }}
+            • {{ score.teeData.ColorName }}
+          </h2>
+        </div>
+        <div id="total">
+          <h1>{{ score.score.In + score.score.Out }}</h1>
+          <h2>Total</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selectedScore">
+  
+  </div>
+</div>

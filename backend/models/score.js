@@ -6,14 +6,14 @@ module.exports = class Score {
   }
 
   static findStatus(status) {
-    return executeQuery("SELECT * FROM scores WHERE statusComplete = ?", [
+    return executeQuery("SELECT * FROM courses INNER JOIN scores ON courses.id = scores.courseId WHERE statusComplete = ?", [
       status,
     ]);
   }
 
   static findUser(userId, status) {
     return executeQuery(
-      "SELECT * FROM scores WHERE userId = ? AND statusComplete = ?",
+      "SELECT * FROM courses INNER JOIN scores ON courses.id = scores.courseId WHERE userId = ? AND statusComplete = ?",
       [userId, status]
     );
   }

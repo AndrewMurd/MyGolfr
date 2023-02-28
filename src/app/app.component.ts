@@ -4,6 +4,7 @@ import jwt_decode from 'jwt-decode';
 import { Router } from '@angular/router';
 import { CourseDetailsService } from './Service/course-details.service';
 import { LoadingService } from './Service/loading.service';
+import { ScoreService } from './Service/score.service';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ export class AppComponent {
     private authService: AuthenticationService,
     private courseService: CourseDetailsService,
     private loadingService: LoadingService,
+    private scoreService: ScoreService,
     router: Router
   ) {
     router.events.subscribe((value) => {
@@ -33,8 +35,12 @@ export class AppComponent {
       }
       const userData: any = jwt_decode(this.authService.token.getValue());
       this.authService.user.next(userData);
+      const response: any = await this.scoreService.getUser(
+        userData.id,
+        0
+      );
+      this.scoreService.scoreData.next(response.scores[0]);
     } catch (error) {}
-    
     this.loadingService.loading.asObservable().subscribe((value) => {
       this.loading = value;
     });

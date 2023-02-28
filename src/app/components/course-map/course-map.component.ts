@@ -77,7 +77,9 @@ export class CourseMapComponent {
       this.changeView.subscribe((value) => {
         if (value.teeData == 'refresh') {
           this.selectedTeeView = null;
-          this.scorecard = this.courseData.scorecard;
+          setTimeout(() => {
+            this.scorecard = this.courseData.scorecard;
+          });
         } else {
           this.selectedTeeView = value.teeData;
           this.scorecard = [value.teeData];
