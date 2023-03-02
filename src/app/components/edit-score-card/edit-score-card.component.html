@@ -7,10 +7,10 @@
       src="../../../assets/edit.png"
       alt=""
     />
-    <!-- <div *ngIf="isLoading" id="loadingContainer">
-      <app-loading-animation></app-loading-animation>
-    </div> -->
     <div id="scorecardContainer">
+      <div *ngIf="isLoading" id="loadingContainer">
+        <app-loading-animation></app-loading-animation>
+      </div>
       <h1>{{ title }}</h1>
       <div class="gridContainer">
         <ng-container #frontNine>
@@ -24,7 +24,8 @@
         </ng-container>
       </div>
     </div>
-    <div id="containerBtn">
+  </div>
+  <div id="containerBtn">
       <button *ngIf="!isLoading && editing" id="addBtn" (click)="addNewTee()">
         Add Tee
       </button>
@@ -39,7 +40,6 @@
         {{ removedBackNine ? "Add Back Nine" : "Remove Back Nine" }}
       </button>
     </div>
-  </div>
   <div id="fullSizeContainer" *ngIf="fullSize">
     <img
       *ngIf="!editing"
@@ -48,10 +48,10 @@
       src="../../../assets/edit.png"
       alt=""
     />
-    <!-- <div *ngIf="isLoading" id="loadingContainer">
-      <app-loading-animation></app-loading-animation>
-    </div> -->
     <div id="scorecardContainer">
+      <div *ngIf="isLoading" id="loadingContainer">
+        <app-loading-animation></app-loading-animation>
+      </div>
       <h1>{{ title }}</h1>
       <div class="gridContainer">
         <ng-container #frontNine>

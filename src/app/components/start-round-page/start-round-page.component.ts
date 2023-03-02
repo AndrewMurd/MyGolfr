@@ -32,6 +32,7 @@ export class StartRoundPageComponent {
   showScorecard: boolean = false;
   openScoreDropdown: Boolean = false;
   openTeeDropdown: Boolean = false;
+  popUp: boolean = false;
   createRange: Function = createRange;
 
   @ViewChild('scorecardContainer', { read: ViewContainerRef })
@@ -207,6 +208,10 @@ export class StartRoundPageComponent {
   clickedOutside() {
     this.teeDropdown(false);
     this.scoreDropdown(false);
+  }
+
+  closePopUp() {
+    
   }
 
   teeDropdown(set: boolean) {

@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
@@ -86,23 +92,28 @@ export class ActiveScorecardComponent {
   }
 
   async submitScore() {
-    let factor = 0;
-    this.courseData.courseDetails.nineHoleGolfCourse
-      ? (factor = 10)
-      : (factor = 20);
+    const confirmRes = window.confirm(
+      'Are you sure you want to submit this score?'
+    );
+    if (confirmRes) {
+      let factor = 0;
+      this.courseData.courseDetails.nineHoleGolfCourse
+        ? (factor = 10)
+        : (factor = 20);
 
-    if (Object.keys(this.scoreData.score).length >= factor) {
-      await this.scoreService.update(this.scoreData.id, 1, 'statusComplete');
-      // this.scoreService.scoreData.next(null);
-      this.router.navigate(['/stats']);
-    } else {
-      alert('Must complete scorecard!');
+      if (Object.keys(this.scoreData.score).length >= factor) {
+        await this.scoreService.update(this.scoreData.id, 1, 'statusComplete');
+        // this.scoreService.scoreData.next(null);
+        this.router.navigate(['/stats']);
+      } else {
+        alert('Must complete scorecard!');
+      }
     }
   }
 
   async deleteScore() {
     const confirmRes = window.confirm(
-      'Are you sure you want to delete this score. (Cannot be undone)'
+      'Are you sure you want to delete this score? (Cannot be undone)'
     );
     if (confirmRes) {
       await this.scoreService.delete(this.scoreData.id);

@@ -250,7 +250,7 @@ export class NewScorecardTeeComponent {
 
   async deleteTee() {
     const confirmRes = window.confirm(
-      'Are you sure you want to delete this tee. (Cannot be undone)'
+      'Are you sure you want to delete this tee? (Cannot be undone)'
     );
 
     if (confirmRes) {

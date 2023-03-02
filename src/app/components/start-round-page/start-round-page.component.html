@@ -26,6 +26,13 @@
   (refreshPage)="getScore()"
 ></app-active-scorecard>
 
+<div *ngIf="popUp" id="startRoundPopUpContainer">
+
+</div>
+<div *ngIf="popUp" id="startRoundPopUp">
+  
+</div>
+
 <div id="scoreInput" (clickOutside)="clickedOutside()">
   <div *ngIf="!roundInProgress">
     <nav id="selectTeeBtn">

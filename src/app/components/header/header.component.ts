@@ -58,7 +58,7 @@ export class HeaderComponent {
 
   setDropdownUser(set: boolean) {
     this.userDropdown = set;
-    if (this.userDropdown && document.getElementById('userArrow') != null) {
+    if (this.userDropdown) {
       document.getElementById('userArrow')!.className = 'arrow up';
       document.getElementById('selectUserDropdown')!.style.height = '40px';
     } else {

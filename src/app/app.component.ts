@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { CourseDetailsService } from './Service/course-details.service';
 import { LoadingService } from './Service/loading.service';
 import { ScoreService } from './Service/score.service';
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 @Component({
   selector: 'app-root',
@@ -42,6 +43,12 @@ export class AppComponent {
       this.scoreService.scoreData.next(response.scores[0]);
     } catch (error) {}
     this.loadingService.loading.asObservable().subscribe((value) => {
+      const body = document.getElementsByTagName('body')[0];
+      if (!value) {
+        enableBodyScroll(body);
+      } else {
+        disableBodyScroll(body);
+      }
       this.loading = value;
     });
   }

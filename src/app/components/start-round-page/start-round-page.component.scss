@@ -12,6 +12,30 @@ app-active-scorecard {
   width: 738px;
 }
 
+#startRoundPopUpContainer {
+  height: 100vh;
+  width: 100vw;
+  background-color: grey;
+  opacity: 0.5;
+  z-index: 1000000;
+  position: absolute;
+  top: 0px;
+}
+
+#startRoundPopUp {
+  height: 300px;
+  width: 400px;
+  background-color: lightgrey;
+  border-radius: 20px;
+  z-index: 10000001;
+  opacity: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
 #openScorecard {
   position: absolute;
   bottom: 30px;

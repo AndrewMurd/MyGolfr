@@ -1,7 +1,8 @@
 <app-header></app-header>
 <div id="roundsPageContainer">
   <div *ngIf="!selectedScore">
-    <h1 id="title">{{ userData?.name }}'s Rounds</h1>
+    <h1 *ngIf="selectedUser" id="title">{{ userData?.name }}'s Rounds</h1>
+    <h1 *ngIf="!selectedUser" id="title">Rounds</h1>
     <h2 id="numberInfo">
       2023:
       <span [ngStyle]="{ 'font-weight': 500 }">{{
@@ -11,29 +12,45 @@
       <span [ngStyle]="{ 'font-weight': 500 }">{{ scores?.length }}</span>
     </h2>
     <div id="roundsContainer">
-      <div
-        class="roundItem"
-        *ngFor="let score of scores"
-        (click)="showOverview(score)"
-      >
-        <div>
-          <h1>{{ score.name }}</h1>
-          <h2>
-            {{ score.formattedDate }} •
-            {{
-              score.courseDetails.nineHoleGolfCourse ? "9 Holes" : "18 Holes"
-            }}
-            • {{ score.teeData.ColorName }}
-          </h2>
+      <div id="roundItemContainer" *ngFor="let score of scores; let index = index">
+        <div
+          class="roundItem"
+          id="roundItem{{ index }}"
+          (swipeleft)="openDelete(index)"
+          (swiperight)="closeDelete(index)"
+          (panmove)="onPan($event, index)"
+          (click)="showOverview(score)"
+        >
+          <div id="info">
+            <h1>{{ score.name }}</h1>
+            <h2>
+              {{ score.formattedDate }} •
+              {{
+                score.courseDetails.nineHoleGolfCourse ? "9 Holes" : "18 Holes"
+              }}
+              • {{ score.teeData.ColorName }}
+            </h2>
+          </div>
+          <div class="total" id="total{{ index }}">
+            <h1>{{ score.score.In + score.score.Out }}</h1>
+            <h2>Total</h2>
+          </div>
+          <img
+            (click)="deleteRound(score)"
+            src="../../../assets/delete35x35.png"
+            alt=""
+            class="deleteRound"
+            id="deleteRound{{ index }}"
+          />
         </div>
-        <div id="total">
-          <h1>{{ score.score.In + score.score.Out }}</h1>
-          <h2>Total</h2>
+        <div id="deleteContainer{{ index }}" class="deleteContainer" (click)="deleteRound(score)">
+          <img
+            src="../../../assets/delete35x35.png"
+            alt=""
+          />
         </div>
       </div>
     </div>
   </div>
-  <div *ngIf="selectedScore">
-  
-  </div>
+  <div *ngIf="selectedScore"></div>
 </div>
