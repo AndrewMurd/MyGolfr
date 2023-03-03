@@ -29,6 +29,7 @@ import { ScoreInputComponent } from './components/score-input/score-input.compon
 import { StatsPageComponent } from './components/stats-page/stats-page.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { RoundsPageComponent } from './components/rounds-page/rounds-page.component';
+import { ConfirmationPopupComponent } from './components/confirmation-popup/confirmation-popup.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { RoundsPageComponent } from './components/rounds-page/rounds-page.compon
     StatsPageComponent,
     ClickOutsideDirective,
     RoundsPageComponent,
+    ConfirmationPopupComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService } from 'src/app/Service/alert.service';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { CourseDetailsService } from 'src/app/Service/course-details.service';
 import { LoadingService } from 'src/app/Service/loading.service';
@@ -34,9 +35,10 @@ export class RoundsPageComponent {
 
   constructor(
     private courseService: CourseDetailsService,
+    private alertService: AlertService,
     private authService: AuthenticationService,
     private scoreService: ScoreService,
-    private loadingService: LoadingService,
+    private loadingService: LoadingService
   ) {}
 
   async ngOnInit() {
@@ -87,16 +89,21 @@ export class RoundsPageComponent {
     });
   }
 
-  async deleteRound(s: any) {
-    const confirmRes = window.confirm(
-      'Are you sure you want to delete this score? (Cannot be undone)'
+  async deleteRound(s: any, event: any) {
+    event.stopPropagation();
+    this.alertService.confirm(
+      'Deleting this round will make it disappear forever and will not be retrievable. Are you sure you want to delete it?',
+      { color: 'red', content: 'Delete' }, 'confirm',
+      async () => {
+        try {
+          this.scores = this.scores.filter((score: any) => {
+            return s.id != score.id;
+          });
+          await this.scoreService.delete(s.id);
+        } catch (error) {}
+      },
+      () => {}
     );
-    if (confirmRes) {
-      await this.scoreService.delete(s.id);
-      this.scores = this.scores.filter((score: any) => {
-        return s.id != score.id;
-      });
-    }
   }
 
   onPan(event: any, index: number) {
@@ -104,25 +111,39 @@ export class RoundsPageComponent {
       // event.target.style.right = `${-event.deltaX}px`;
       // event.target.style.transform = `translateX(${event.deltaX}px)`;
       if (event.deltaX < -50 || event.deltaX > 0) return;
-      document.getElementById(`roundItem${index}`)!.style.transform = `translateX(${event.deltaX}px)`;
-      document.getElementById(`roundItem${index}`)!.style.borderRadius = `8px 0px 0px 8px`;
+      document.getElementById(
+        `roundItem${index}`
+      )!.style.transform = `translateX(${event.deltaX}px)`;
+      document.getElementById(
+        `roundItem${index}`
+      )!.style.borderRadius = `8px 0px 0px 8px`;
     }
   }
 
   openDelete(index: number) {
-    document.getElementById(`roundItem${index}`)!.style.transition = `transform 0.5s`;
-    document.getElementById(`roundItem${index}`)!.style.transform = `translateX(-50px)`;
+    document.getElementById(
+      `roundItem${index}`
+    )!.style.transition = `transform 0.5s`;
+    document.getElementById(
+      `roundItem${index}`
+    )!.style.transform = `translateX(-50px)`;
   }
 
   closeDelete(index: number) {
-    document.getElementById(`roundItem${index}`)!.style.transition = `transform 0.5s`;
-    document.getElementById(`roundItem${index}`)!.style.transform = `translateX(0px)`;
+    document.getElementById(
+      `roundItem${index}`
+    )!.style.transition = `transform 0.5s`;
+    document.getElementById(
+      `roundItem${index}`
+    )!.style.transform = `translateX(0px)`;
     document.getElementById(`roundItem${index}`)!.style.borderRadius = `8px`;
   }
 
   resetDelete() {
     for (let i = 0; i < this.scores.length; i++) {
-      document.getElementById(`roundItem${i}`)!.style.transform = `translateX(0px)`;
+      document.getElementById(
+        `roundItem${i}`
+      )!.style.transform = `translateX(0px)`;
       document.getElementById(`roundItem${i}`)!.style.borderRadius = `8px`;
     }
   }

@@ -1,0 +1,56 @@
+<div *ngIf="showPopUp" id="container" (click)="cancel()"></div>
+<div *ngIf="showPopUp && type == 'confirm'" id="PopUp">
+  <h1>Are You Sure?</h1>
+  <h2>{{ msg }}</h2>
+  <div id="btnContainer">
+    <button
+      id="confirm"
+      [ngStyle]="
+        hover
+          ? {
+              'background-color': confirmBtnConfig.color,
+              'border-color': confirmBtnConfig.color,
+              color: confirmBtnConfig.color
+            }
+          : {
+              'background-color': confirmBtnConfig.color,
+              'border-color': confirmBtnConfig.color,
+              color: 'lightgrey'
+            }
+      "
+      (mouseover)="hover = true"
+      (mouseleave)="hover = false"
+      (click)="confirm()"
+    >
+      {{ confirmBtnConfig.content }}
+    </button>
+    <button (click)="cancel()" id="cancel">Cancel</button>
+  </div>
+</div>
+<div *ngIf="showPopUp && type == 'alert'" id="PopUp">
+  <h1>Alert</h1>
+  <h2>{{ msg }}</h2>
+  <div id="btnContainer">
+    <button
+      id="confirm"
+      [ngStyle]="
+        hover
+          ? {
+              'background-color': confirmBtnConfig.color,
+              'border-color': confirmBtnConfig.color,
+              color: confirmBtnConfig.color
+            }
+          : {
+              'background-color': confirmBtnConfig.color,
+              'border-color': confirmBtnConfig.color,
+              color: 'lightgrey'
+            }
+      "
+      (mouseover)="hover = true"
+      (mouseleave)="hover = false"
+      (click)="confirm()"
+    >
+      {{ confirmBtnConfig.content }}
+    </button>
+  </div>
+</div>

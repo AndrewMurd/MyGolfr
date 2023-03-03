@@ -3,6 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { ScoreService } from '../../Service/score.service';
 import { CourseDetailsService } from '../../Service/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
+import { AlertService } from 'src/app/Service/alert.service';
 
 @Component({
   selector: 'app-new-scorecard-tee',
@@ -38,7 +39,8 @@ export class NewScorecardTeeComponent {
 
   constructor(
     private courseService: CourseDetailsService,
-    private scoreService: ScoreService
+    private scoreService: ScoreService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit() {
@@ -157,7 +159,11 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService.updateColumn(this.courseId, this.scorecard, 'scorecard');
+    await this.courseService.updateColumn(
+      this.courseId,
+      this.scorecard,
+      'scorecard'
+    );
     this.courseData.scorecard = this.scorecard;
     this.courseService.courseData.next(this.courseData);
   }
@@ -202,7 +208,11 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService.updateColumn(this.courseId, this.scorecard, 'scorecard');
+    await this.courseService.updateColumn(
+      this.courseId,
+      this.scorecard,
+      'scorecard'
+    );
     this.courseData.scorecard = this.scorecard;
     this.courseService.courseData.next(this.courseData);
   }
@@ -243,46 +253,53 @@ export class NewScorecardTeeComponent {
       }
     }
 
-    await this.courseService.updateColumn(this.courseId, this.scorecard, 'scorecard');
+    await this.courseService.updateColumn(
+      this.courseId,
+      this.scorecard,
+      'scorecard'
+    );
     this.courseData.scorecard = this.scorecard;
     this.courseService.courseData.next(this.courseData);
   }
 
   async deleteTee() {
-    const confirmRes = window.confirm(
-      'Are you sure you want to delete this tee? (Cannot be undone)'
-    );
+    this.alertService.confirm(
+      'Deleting this Tee Box will delete it in the database forever. Are you sure you want to delete it?',
+      { color: 'red', content: 'Delete' }, 'confirm',
+      async () => {
+        try {
+          document.getElementById(this.teeData.id)?.remove();
+          document.getElementById(this.teeData.id)?.remove();
 
-    if (confirmRes) {
-      document.getElementById(this.teeData.id)?.remove();
-      document.getElementById(this.teeData.id)?.remove();
-
-      for (let i = 0; i < this.scorecard.length; i++) {
-        if (this.scorecard[i].id == this.teeData.id) {
-          this.scorecard.splice(i, 1);
-        }
-      }
-
-      for (let tee of this.scorecard) {
-        if (tee.Position > this.teeData.Position)
-          tee.Position = tee.Position - 1;
-      }
-
-      let mapLayout = this.courseData.mapLayout;
-
-      for (let [key, value] of Object.entries(mapLayout)) {
-        for (let i = 0; i < mapLayout[key].teeLocations.length; i++) {
-          if (mapLayout[key].teeLocations[i].id == this.teeData.id) {
-            mapLayout[key].teeLocations.splice(i, 1);
+          for (let i = 0; i < this.scorecard.length; i++) {
+            if (this.scorecard[i].id == this.teeData.id) {
+              this.scorecard.splice(i, 1);
+            }
           }
-        }
-      }
 
-      this.courseData.scorecard = this.scorecard;
-      this.courseData.mapLayout = mapLayout;
-      this.courseService.courseData.next(this.courseData);
-      await this.courseService.update(this.courseData);
-    }
+          for (let tee of this.scorecard) {
+            if (tee.Position > this.teeData.Position)
+              tee.Position = tee.Position - 1;
+          }
+
+          let mapLayout = this.courseData.mapLayout;
+
+          for (let [key, value] of Object.entries(mapLayout)) {
+            for (let i = 0; i < mapLayout[key].teeLocations.length; i++) {
+              if (mapLayout[key].teeLocations[i].id == this.teeData.id) {
+                mapLayout[key].teeLocations.splice(i, 1);
+              }
+            }
+          }
+
+          this.courseData.scorecard = this.scorecard;
+          this.courseData.mapLayout = mapLayout;
+          this.courseService.courseData.next(this.courseData);
+          await this.courseService.update(this.courseData);
+        } catch (error) {}
+      },
+      () => {}
+    );
   }
 
   onSubmit(data: any) {

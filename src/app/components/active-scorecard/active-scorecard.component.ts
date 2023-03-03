@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { AlertService } from 'src/app/Service/alert.service';
 import { AuthenticationService } from 'src/app/Service/authentication.service';
 import { CourseDetailsService } from 'src/app/Service/course-details.service';
 import { ScoreService } from 'src/app/Service/score.service';
@@ -39,6 +40,7 @@ export class ActiveScorecardComponent {
     private courseService: CourseDetailsService,
     private authService: AuthenticationService,
     private scoreService: ScoreService,
+    private alertService: AlertService,
     private router: Router
   ) {}
 
@@ -92,34 +94,54 @@ export class ActiveScorecardComponent {
   }
 
   async submitScore() {
-    const confirmRes = window.confirm(
-      'Are you sure you want to submit this score?'
-    );
-    if (confirmRes) {
-      let factor = 0;
-      this.courseData.courseDetails.nineHoleGolfCourse
-        ? (factor = 10)
-        : (factor = 20);
+    let factor = 0;
+    this.courseData.courseDetails.nineHoleGolfCourse
+      ? (factor = 10)
+      : (factor = 20);
 
-      if (Object.keys(this.scoreData.score).length >= factor) {
-        await this.scoreService.update(this.scoreData.id, 1, 'statusComplete');
-        // this.scoreService.scoreData.next(null);
-        this.router.navigate(['/stats']);
-      } else {
-        alert('Must complete scorecard!');
-      }
+    if (Object.keys(this.scoreData.score).length >= factor) {
+      this.alertService.confirm(
+        'Are you sure you want to submit this score?',
+        { color: 'green', content: 'Confirm' },
+        'confirm',
+        async () => {
+          try {
+            await this.scoreService.update(
+              this.scoreData.id,
+              1,
+              'statusComplete'
+            );
+            // this.scoreService.scoreData.next(null);
+            this.router.navigate(['/stats']);
+          } catch (error) {}
+        },
+        () => {}
+      );
+    } else {
+      this.alertService.confirm(
+        'This scorecard is incomplete!',
+        { color: 'green', content: 'Ok' },
+        'alert',
+        () => {},
+        () => {}
+      );
     }
   }
 
   async deleteScore() {
-    const confirmRes = window.confirm(
-      'Are you sure you want to delete this score? (Cannot be undone)'
+    this.alertService.confirm(
+      'Are you sure you want to delete this score? (Cannot be undone)',
+      { color: 'red', content: 'Delete' },
+      'confirm',
+      async () => {
+        try {
+          await this.scoreService.delete(this.scoreData.id);
+          this.scoreService.scoreData.next(null);
+          this.refreshPage.emit();
+        } catch (error) {}
+      },
+      () => {}
     );
-    if (confirmRes) {
-      await this.scoreService.delete(this.scoreData.id);
-      this.scoreService.scoreData.next(null);
-      this.refreshPage.emit();
-    }
   }
 
   onSubmit(data: any) {
