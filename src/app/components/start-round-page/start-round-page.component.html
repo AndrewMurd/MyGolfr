@@ -52,7 +52,7 @@
       </div>
     </nav>
   </div>
-  <div *ngIf="roundInProgress && !show10Input">
+  <div *ngIf="roundInProgress && !show10Input && currentHole != 'course'">
     <nav id="selectScoreBtn">
       <label for="touch"
         ><span id="scoreSpan">{{ selectedScore }}</span></label

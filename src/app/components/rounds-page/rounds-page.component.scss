@@ -53,19 +53,7 @@ h1 {
   top: 0px;
   z-index: 2;
   cursor: pointer;
-  transition: top 0.2s, box-shadow 0.2s;
-  &:hover {
-    top: -4px;
-    box-shadow: 0px 0px 6px 1px $green;
-    .total {
-      transition: margin-right 0.4s;
-      margin-right: 60px;
-    }
-    .deleteRoundImg {
-      transition: right 0.4s;
-      right: 10px;
-    }
-  }
+  transition: top 1s, box-shadow 0.2s;
   #info {
     margin-left: 30px;
     margin-top: 15px;
@@ -84,9 +72,22 @@ h1 {
     right: -32px;
     top: 30px;
     z-index: 2;
+    transition: transform 0.2s, right 0.4s;
     &:hover {
-      transition: transform 0.2s ease-out;
       transform: scale(1.2);
+    }
+  }
+  .total {
+    transition: margin-right 0.4s;
+  }
+  &:hover {
+    top: -4px;
+    box-shadow: 0px 0px 6px 1px $green;
+    .total {
+      margin-right: 60px;
+    }
+    .deleteRoundImg {
+      right: 10px;
     }
   }
 }
@@ -101,11 +102,6 @@ h1 {
   top: 0px;
   z-index: -1;
   margin-top: 0px;
-  img {
-    position: absolute;
-    left: 9px;
-    top: 70px;
-  }
 }
 .total {
   display: flex;
@@ -130,6 +126,19 @@ h1 {
   }
 }
 
+@media (hover: none) {
+  .deleteContainer {
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    text-align: center; 
+  }
+
+  .deleteRoundImg {
+    display: none;
+  }
+}
+
 @media (max-width: 830px) {
   #title {
     position: relative;
@@ -140,14 +149,6 @@ h1 {
   #numberInfo {
     font-weight: normal;
     font-size: 20px;
-  }
-
-  .deleteContainer {
-    display: block;
-  }
-
-  .deleteRoundImg {
-    display: none;
   }
 
   .roundItem {

@@ -2,8 +2,10 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
 import { ROOT_URL } from '../../utilities/enviroment';
-import { CourseDetailsService } from '../../Service/course-details.service';
+import { CourseDetailsService } from '../../services/course-details.service';
 import { Subject } from 'rxjs';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -11,41 +13,9 @@ import { Subject } from 'rxjs';
   styleUrls: ['./search-bar.component.scss'],
 })
 export class SearchBarComponent {
+  userData: any;
   search!: string;
-  courses: any = [
-    {
-      icon: 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/golf-71.png',
-      name: 'Timber Ridge Golf Course',
-      types: ['restaurant', 'food', 'point_of_interest', 'establishment'],
-      photos: [
-        {
-          width: 4000,
-          height: 3000,
-          photo_reference:
-            'AfLeUgN08P0RsEyHZXH-Ypa8vYzFmRHigQWm8gOu5M4i7qAluNA7I3zZ-2r3c0MF9WAgJEqf_YHi5fT0XoFxLcWKn-r4P3Np3luTrPpnr0esVHWtLRuCxUJT6yuou0q9wWVBlUyF_ZLRRWEeTwXGdKkb3wMVP_qK4KEhAHNISg-uGNmL3Z73',
-          html_attributions: [Array],
-        },
-      ],
-      rating: 4.4,
-      geometry: {
-        location: { lat: 44.0751152, lng: -77.7006225 },
-        viewport: { northeast: [Object], southwest: [Object] },
-      },
-      place_id: 'ChIJp0zRKawT1okRPPUONYrhrqU',
-      plus_code: {
-        global_code: '87P437GX+2Q',
-        compound_code: '37GX+2Q Brighton, Ontario',
-      },
-      reference: 'ChIJp0zRKawT1okRPPUONYrhrqU',
-      opening_hours: { open_now: false },
-      business_status: 'OPERATIONAL',
-      formatted_address: '19 Timber Ridge Dr, Brighton, ON K0K 1H0, Canada',
-      icon_mask_base_uri:
-        'https://maps.gstatic.com/mapfiles/place_api/icons/v2/golf_pinlet',
-      user_ratings_total: 281,
-      icon_background_color: '#13B5C7',
-    },
-  ];
+  courses: any = [];
   sessionToken: any = null;
   src: any = '../../../assets/check.png';
   isLoading: boolean = false;
@@ -53,8 +23,31 @@ export class SearchBarComponent {
 
   constructor(
     private http: HttpClient,
-    private courseService: CourseDetailsService
+    private courseService: CourseDetailsService,
+    private authService: AuthenticationService
   ) {}
+
+  ngOnInit() {
+    this.isLoading = true;
+    this.setBorder();
+    this.authService.user.asObservable().subscribe(async (value) => {
+      if (value) {
+        this.userData = value;
+        const items = Object.keys(this.userData.favCourses).map((key) => {
+          return [key, this.userData.favCourses[key]];
+        });
+        items.sort((first, second) => {
+          return second[1] - first[1];
+        });
+        const response: any = await this.courseService.getCourses(items);
+        for (let course of response.courses) {
+          this.courses.push(course.googleDetails);
+        }
+        this.isLoading = false;
+        this.setBorder();
+      }
+    });
+  }
 
   async resetSession(data: any) {
     this.sessionToken = null;
@@ -126,7 +119,7 @@ export class SearchBarComponent {
   }
 
   setBorder() {
-    if (this.courses.length > 0) {
+    if (this.courses.length > 0 || this.isLoading) {
       document.getElementById('homepageSearch')!.style.borderRadius =
         '10px 10px 0px 0px';
     } else {

@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { ScoreService } from '../../Service/score.service';
-import { CourseDetailsService } from '../../Service/course-details.service';
+import { ScoreService } from '../../services/score.service';
+import { CourseDetailsService } from '../../services/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
-import { AlertService } from 'src/app/Service/alert.service';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-new-scorecard-tee',
@@ -265,7 +265,8 @@ export class NewScorecardTeeComponent {
   async deleteTee() {
     this.alertService.confirm(
       'Deleting this Tee Box will delete it in the database forever. Are you sure you want to delete it?',
-      { color: 'red', content: 'Delete' }, 'confirm',
+      { color: 'red', content: 'Delete' },
+      'confirm',
       async () => {
         try {
           document.getElementById(this.teeData.id)?.remove();

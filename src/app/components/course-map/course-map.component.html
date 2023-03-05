@@ -9,8 +9,8 @@
             ? { 'background-color': tee.Color, color: 'black' }
             : { 'background-color': tee.Color, color: 'white' }
         "
-        *ngFor="let tee of scorecard; let index = index"
-        (click)="selectTeeView(tee)"
+        *ngFor="let tee of roundInProgress? [scoreData.teeData]:scorecard; let index = index"
+        (click)="selectedTeeView = tee"
       >
         {{ tee["H" + selectedMapView] }}
       </div>

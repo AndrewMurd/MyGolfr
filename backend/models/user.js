@@ -11,4 +11,13 @@ module.exports = class User {
       [user.name, user.email, user.password]
     );
   }
+
+  static update(update) {
+    return executeQuery(
+      `UPDATE users SET name = '${update.name}',
+                        email = '${update.email}',
+                        favCourses = '${JSON.stringify(update.favCourses)}'
+        WHERE id = '${update.id}'`
+    );
+  }
 };

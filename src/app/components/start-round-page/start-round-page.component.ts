@@ -4,13 +4,13 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { CourseDetailsService } from '../../Service/course-details.service';
+import { CourseDetailsService } from '../../services/course-details.service';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { ScoreService } from '../../Service/score.service';
-import { AuthenticationService } from '../../Service/authentication.service';
+import { ScoreService } from '../../services/score.service';
+import { AuthenticationService } from '../../services/authentication.service';
 import { createRange } from '../../utilities/functions';
-import { LoadingService } from 'src/app/Service/loading.service';
+import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-start-round-page',
@@ -48,22 +48,12 @@ export class StartRoundPageComponent {
 
   async ngOnInit() {
     this.loadingService.loading.next(true);
-    this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
-
     this.authService.user.asObservable().subscribe((value) => {
       if (value) {
         this.userData = value;
         this.getScore();
       }
     });
-
-    const response: any = await this.courseService.get(
-      this.selectedCourse.reference
-    );
-    this.courseData = response.course;
-    this.completedTees = Object.assign({}, this.courseData);
-    this.checkCompleteTees(this.completedTees);
-    this.courseService.courseData.next(response.course);
 
     this.courseService.courseData.asObservable().subscribe(async (value) => {
       if (value) {
@@ -72,12 +62,16 @@ export class StartRoundPageComponent {
         this.checkCompleteTees(this.completedTees);
         if (this.roundInProgress) {
           for (let tee of this.courseData.scorecard) {
-            if (tee.id == this.scoreData.teeData.id) {
+            if (
+              tee.id == this.scoreData.teeData.id &&
+              JSON.stringify(tee) != JSON.stringify(this.scoreData.teeData)
+            ) {
               await this.scoreService.update(this.scoreData.id, tee, 'teeData');
               this.scoreData.teeData = tee;
             }
           }
           this.reload();
+          this.changeView.next(this.currentHole);
         }
       }
     });
@@ -106,18 +100,23 @@ export class StartRoundPageComponent {
       this.scoreData = response.scores[0];
       this.scoreService.scoreData.next(this.scoreData);
       this.currentHole = this.getCurrentHoleInProgress(this.scoreData.score);
-      this.changeView.next({
-        teeData: this.scoreData.teeData,
-        view: this.currentHole,
-        roundInProgress: this.roundInProgress,
-      });
+      this.courseData = this.scoreData;
+      this.completedTees = Object.assign({}, this.courseData);
+      this.checkCompleteTees(this.completedTees);
+      this.courseService.courseData.next(this.courseData);
+      this.changeView.next(this.currentHole);
     } catch (error) {
+      this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
+
+      const response: any = await this.courseService.get(
+        this.selectedCourse.reference
+      );
+      this.courseData = response.course;
+      this.completedTees = Object.assign({}, this.courseData);
+      this.checkCompleteTees(this.completedTees);
+
       this.roundInProgress = false;
-      this.changeView.next({
-        teeData: 'refresh',
-        view: 'course',
-        roundInProgress: this.roundInProgress,
-      });
+      this.changeView.next('course');
     }
   }
 
@@ -125,11 +124,7 @@ export class StartRoundPageComponent {
     try {
       this.scoreService.scoreData.next(this.scoreData);
       this.currentHole = this.getCurrentHoleInProgress(this.scoreData.score);
-      this.changeView.next({
-        teeData: this.scoreData.teeData,
-        view: this.currentHole,
-        roundInProgress: this.roundInProgress,
-      });
+      this.changeView.next(this.currentHole);
     } catch (error) {}
   }
 
@@ -208,10 +203,6 @@ export class StartRoundPageComponent {
   clickedOutside() {
     this.teeDropdown(false);
     this.scoreDropdown(false);
-  }
-
-  closePopUp() {
-    
   }
 
   teeDropdown(set: boolean) {

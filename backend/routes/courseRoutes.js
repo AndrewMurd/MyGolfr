@@ -46,6 +46,34 @@ router.get("/course", async (req, res) => {
   }
 });
 
+// @desc Get an array of courses
+// @route GET /courses/courses
+// @access Private
+router.post("/courses", async (req, res) => {
+  const ids = req.body.ids;
+
+  const courses = [];
+  for (let id of ids) {
+    try {
+      const course = await Course.find(id[0]);
+  
+      if (course.length == 0) {
+        res.status(404).send({ error: "Course does not exist!" });
+      } else {
+        course[0].googleDetails = JSON.parse(course[0].googleDetails);
+        course[0].courseDetails = JSON.parse(course[0].courseDetails);
+        course[0].scorecard = JSON.parse(course[0].scorecard);
+        course[0].mapLayout = JSON.parse(course[0].mapLayout);
+        courses.push(course[0]);
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(404).end();
+    }
+  }
+  res.status(200).send({ courses: courses });
+});
+
 // @desc Add a course
 // @route POST /courses/add
 // @access Private

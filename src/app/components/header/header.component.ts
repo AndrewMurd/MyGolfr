@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { ScoreService } from 'src/app/Service/score.service';
-import { AuthenticationService } from '../../Service/authentication.service';
+import { ScoreService } from 'src/app/services/score.service';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-header',

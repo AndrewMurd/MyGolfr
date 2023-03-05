@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertService } from 'src/app/Service/alert.service';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-confirmation-popup',
   templateUrl: './confirmation-popup.component.html',
-  styleUrls: ['./confirmation-popup.component.scss']
+  styleUrls: ['./confirmation-popup.component.scss'],
 })
 export class ConfirmationPopupComponent {
   confirmBtnConfig: any;

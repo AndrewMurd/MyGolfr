@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
-import { AuthenticationService } from './Service/authentication.service';
+import { AuthenticationService } from './services/authentication.service';
 import jwt_decode from 'jwt-decode';
 import { Router } from '@angular/router';
-import { CourseDetailsService } from './Service/course-details.service';
-import { LoadingService } from './Service/loading.service';
-import { ScoreService } from './Service/score.service';
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
+import { CourseDetailsService } from './services/course-details.service';
+import { LoadingService } from './services/loading.service';
+import { ScoreService } from './services/score.service';
+import {
+  disableBodyScroll,
+  enableBodyScroll,
+  clearAllBodyScrollLocks,
+} from 'body-scroll-lock';
 
 @Component({
   selector: 'app-root',
@@ -36,10 +40,7 @@ export class AppComponent {
       }
       const userData: any = jwt_decode(this.authService.token.getValue());
       this.authService.user.next(userData);
-      const response: any = await this.scoreService.getUser(
-        userData.id,
-        0
-      );
+      const response: any = await this.scoreService.getUser(userData.id, 0);
       this.scoreService.scoreData.next(response.scores[0]);
     } catch (error) {}
     this.loadingService.loading.asObservable().subscribe((value) => {

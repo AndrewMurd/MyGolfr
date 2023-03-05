@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { CourseDetailsService } from '../../Service/course-details.service';
+import { CourseDetailsService } from '../../services/course-details.service';
 import { Subject } from 'rxjs';
-import { LoadingService } from 'src/app/Service/loading.service';
+import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-course-page',

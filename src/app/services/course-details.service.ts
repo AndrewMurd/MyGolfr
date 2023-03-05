@@ -82,6 +82,23 @@ export class CourseDetailsService {
     });
   }
 
+  async getCourses(ids: any) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'courses/courses', {
+          ids: ids
+        })
+        .subscribe({
+          next: (data: any) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
   async setScorecardValue(courseId: string, data: any) {
     return await new Promise((resolve, reject) => {
       this.http

@@ -8,8 +8,9 @@ import {
 import { Router } from '@angular/router';
 import { faFlag, faMapPin, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { Observable, take } from 'rxjs';
-import { AuthenticationService } from '../../Service/authentication.service';
-import { CourseDetailsService } from '../../Service/course-details.service';
+import { ScoreService } from 'src/app/services/score.service';
+import { AuthenticationService } from '../../services/authentication.service';
+import { CourseDetailsService } from '../../services/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 
 @Component({
@@ -22,6 +23,7 @@ export class CourseMapComponent {
   @Input() mapHeight: string = '400px';
   @Output() changedView: EventEmitter<any> = new EventEmitter();
   courseData: any;
+  scoreData: any;
   signedIn: boolean = false;
   selectedCourse: any;
   display: any;
@@ -52,6 +54,7 @@ export class CourseMapComponent {
   constructor(
     private courseService: CourseDetailsService,
     private authService: AuthenticationService,
+    private scoreService: ScoreService,
     private router: Router
   ) {}
 
@@ -73,19 +76,26 @@ export class CourseMapComponent {
       }
     });
 
+    this.scoreService.scoreData.asObservable().subscribe((value) => {
+      if (this.router.url == '/course') {
+        this.scoreData = null;
+        this.roundInProgress = false;
+        return;
+      }
+      if (value) {
+        this.roundInProgress = true;
+        this.scoreData = value;
+        this.selectedTeeView = value.teeData;
+        this.reload();
+      } else {
+        this.scoreData = null;
+        this.roundInProgress = false;
+      }
+    });
+
     if (this.changeView) {
       this.changeView.subscribe((value) => {
-        if (value.teeData == 'refresh') {
-          this.selectedTeeView = null;
-          setTimeout(() => {
-            this.scorecard = this.courseData.scorecard;
-          });
-        } else {
-          this.selectedTeeView = value.teeData;
-          this.scorecard = [value.teeData];
-        }
-        this.roundInProgress = value.roundInProgress;
-        this.setMapView(value.view);
+        this.setMapView(value);
       });
     }
   }
@@ -117,10 +127,6 @@ export class CourseMapComponent {
     } else {
       this.isPhone = false;
     }
-  }
-
-  selectTeeView(tee: any) {
-    this.selectedTeeView = tee;
   }
 
   clearOverlays() {
@@ -179,14 +185,16 @@ export class CourseMapComponent {
     let holeLayout;
     try {
       holeLayout = JSON.parse(JSON.stringify(this.layoutData[a]));
-    } catch(err) {
+    } catch (err) {
       return;
     }
-    
+
     if (this.scorecard.length == 1) {
-      holeLayout.teeLocations = holeLayout.teeLocations.filter((teeLoc: any) => {
-        return teeLoc.id == this.scorecard[0].id;
-      });
+      holeLayout.teeLocations = holeLayout.teeLocations.filter(
+        (teeLoc: any) => {
+          return teeLoc.id == this.scorecard[0].id;
+        }
+      );
     }
 
     this.map.setCenter(holeLayout.location);
@@ -198,7 +206,7 @@ export class CourseMapComponent {
 
     var offsetTee = this.offsetFactor;
     for (const teeLoc of holeLayout.teeLocations) {
-      if (this.roundInProgress && teeLoc.id != this.selectedTeeView.id) return;
+      if (this.roundInProgress && teeLoc.id != this.scoreData.teeData.id) break;
 
       let color;
       for (let tee of this.scorecard) {

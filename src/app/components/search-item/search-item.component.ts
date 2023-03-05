@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CourseDetailsService } from '../../Service/course-details.service';
+import { CourseDetailsService } from '../../services/course-details.service';
 import { Router } from '@angular/router';
-import { AuthenticationService } from '../../Service/authentication.service';
+import { AuthenticationService } from '../../services/authentication.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-search-item',
@@ -10,6 +11,7 @@ import { AuthenticationService } from '../../Service/authentication.service';
 })
 export class SearchItemComponent {
   signedIn: boolean = false;
+  userData: any;
   @Input() data!: any;
   @Output() onClickItem: EventEmitter<any> = new EventEmitter();
   src: string =
@@ -22,6 +24,7 @@ export class SearchItemComponent {
   constructor(
     private courseService: CourseDetailsService,
     private authService: AuthenticationService,
+    private userService: UserService,
     private router: Router
   ) {}
 
@@ -39,6 +42,12 @@ export class SearchItemComponent {
       }
     });
 
+    this.authService.user.asObservable().subscribe((value) => {
+      if (value) {
+        this.userData = value;
+      }
+    });
+
     let stringArray = this.data.plus_code.compound_code.split(/(\s+)/);
     this.addressInfo = '';
 
@@ -52,6 +61,7 @@ export class SearchItemComponent {
     this.onClickItem.emit(this.data);
     localStorage.setItem('selectedCourse', JSON.stringify(this.data));
     this.router.navigate(['/course']);
+    this.addClickToUser();
   }
 
   startRound() {
@@ -63,5 +73,21 @@ export class SearchItemComponent {
     this.onClickItem.emit(this.data);
     localStorage.setItem('selectedCourse', JSON.stringify(this.data));
     this.router.navigate(['/start_round']);
+    this.addClickToUser();
+  }
+
+  async addClickToUser() {
+    if (this.userData.favCourses) {
+      if (this.userData.favCourses[this.data.reference]) {
+        this.userData.favCourses[this.data.reference] += 1;
+      } else {
+        this.userData.favCourses[this.data.reference] = 1;
+      }
+    } else {
+      this.userData.favCourses = {};
+      this.userData.favCourses[this.data.reference] = 1;
+    }
+    this.authService.user.next(this.userData);
+    await this.userService.update(this.userData);
   }
 }

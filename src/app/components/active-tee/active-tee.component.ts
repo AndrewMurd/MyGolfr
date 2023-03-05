@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { ScoreService } from '../../Service/score.service';
-import { CourseDetailsService } from '../../Service/course-details.service';
+import { ScoreService } from '../../services/score.service';
+import { CourseDetailsService } from '../../services/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 
 @Component({

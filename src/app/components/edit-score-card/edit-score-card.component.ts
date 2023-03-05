@@ -1,10 +1,10 @@
 import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { NewScorecardTeeComponent } from '../new-scorecard-tee/new-scorecard-tee.component';
-import { CourseDetailsService } from '../../Service/course-details.service';
-import { AuthenticationService } from '../../Service/authentication.service';
+import { CourseDetailsService } from '../../services/course-details.service';
+import { AuthenticationService } from '../../services/authentication.service';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import { ScoreService } from '../../Service/score.service';
+import { ScoreService } from '../../services/score.service';
 
 @Component({
   selector: 'edit-score-card',

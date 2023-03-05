@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/Service/authentication.service';
-import { CourseDetailsService } from 'src/app/Service/course-details.service';
-import { LoadingService } from 'src/app/Service/loading.service';
-import { ScoreService } from 'src/app/Service/score.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { CourseDetailsService } from 'src/app/services/course-details.service';
+import { LoadingService } from 'src/app/services/loading.service';
+import { ScoreService } from 'src/app/services/score.service';
 
 @Component({
   selector: 'app-stats-page',

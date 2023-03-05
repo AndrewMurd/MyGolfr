@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ScoreService } from 'src/app/Service/score.service';
+import { ScoreService } from 'src/app/services/score.service';
 
 @Component({
   selector: 'app-score-input',
@@ -33,10 +33,10 @@ export class ScoreInputComponent {
     this.whiteEvent.subscribe((value: boolean) => {
       this.isWhite = value;
     });
-  
+
     if (this.data.score[this.id]) {
       this.value = this.data.score[this.id];
-      this.par = this.data.teeData["P"+this.id];
+      this.par = this.data.teeData['P' + this.id];
       this.showField = false;
     }
 

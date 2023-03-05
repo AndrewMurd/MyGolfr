@@ -23,6 +23,7 @@ router.post("/login", loginLimiter, async (req, res) => {
         id: result[0].id,
         name: result[0].name,
         email: result[0].email,
+        favCourses: JSON.parse(result[0].favCourses),
       };
 
       const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
@@ -72,6 +73,7 @@ router.get("/refresh", async (req, res) => {
           id: decoded.id,
           name: decoded.name,
           email: decoded.email,
+          favCourses: JSON.parse(result[0].favCourses),
         };
 
         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {

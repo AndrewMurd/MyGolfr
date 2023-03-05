@@ -1,7 +1,6 @@
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
-const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 
 const router = Router();
@@ -63,5 +62,18 @@ router.post(
     }
   }
 );
+
+// @desc update user
+// @route GET /users/update
+// @access Public
+router.post("/update", async (req, res) => {
+  const user = req.body.user;
+
+  console.log(`Updating user: ${user.id}`);
+
+  await User.update(user);
+
+  res.json({ user: user });
+});
 
 module.exports = router;

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CourseDetailsService } from '../../Service/course-details.service';
+import { CourseDetailsService } from '../../services/course-details.service';
 import { Observable } from 'rxjs';
-import { ScoreService } from 'src/app/Service/score.service';
+import { ScoreService } from 'src/app/services/score.service';
 
 @Component({
   selector: 'app-scorecard-input',

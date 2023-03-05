@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { AuthenticationService } from '../../Service/authentication.service';
 import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-register-page',
@@ -25,6 +26,7 @@ export class RegisterPageComponent {
   confirmPassInput: any;
 
   constructor(
+    private userService: UserService,
     private authService: AuthenticationService,
     private router: Router
   ) {}
@@ -77,7 +79,7 @@ export class RegisterPageComponent {
     this.resetInnerText();
     this.resetInputClass();
 
-    this.authService
+    this.userService
       .signUp(this.name, this.email, this.password, this.confirmPass)
       .then((data) => {
         this.btn.classList.remove('onclic');

@@ -1,10 +1,10 @@
 import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService } from 'src/app/Service/alert.service';
-import { AuthenticationService } from 'src/app/Service/authentication.service';
-import { CourseDetailsService } from 'src/app/Service/course-details.service';
-import { LoadingService } from 'src/app/Service/loading.service';
-import { ScoreService } from 'src/app/Service/score.service';
+import { AlertService } from 'src/app/services/alert.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { CourseDetailsService } from 'src/app/services/course-details.service';
+import { LoadingService } from 'src/app/services/loading.service';
+import { ScoreService } from 'src/app/services/score.service';
 
 @Component({
   selector: 'app-rounds-page',
@@ -93,7 +93,8 @@ export class RoundsPageComponent {
     event.stopPropagation();
     this.alertService.confirm(
       'Deleting this round will make it disappear forever and will not be retrievable. Are you sure you want to delete it?',
-      { color: 'red', content: 'Delete' }, 'confirm',
+      { color: 'red', content: 'Delete' },
+      'confirm',
       async () => {
         try {
           this.scores = this.scores.filter((score: any) => {
@@ -107,7 +108,7 @@ export class RoundsPageComponent {
   }
 
   onPan(event: any, index: number) {
-    if (event.additionalEvent == 'panleft' && window.innerWidth <= 830) {
+    if (event.additionalEvent == 'panleft') {
       // event.target.style.right = `${-event.deltaX}px`;
       // event.target.style.transform = `translateX(${event.deltaX}px)`;
       if (event.deltaX < -50 || event.deltaX > 0) return;

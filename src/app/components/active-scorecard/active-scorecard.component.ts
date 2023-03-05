@@ -7,10 +7,10 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { AlertService } from 'src/app/Service/alert.service';
-import { AuthenticationService } from 'src/app/Service/authentication.service';
-import { CourseDetailsService } from 'src/app/Service/course-details.service';
-import { ScoreService } from 'src/app/Service/score.service';
+import { AlertService } from 'src/app/services/alert.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { CourseDetailsService } from 'src/app/services/course-details.service';
+import { ScoreService } from 'src/app/services/score.service';
 import { ActiveTeeComponent } from '../active-tee/active-tee.component';
 
 @Component({
