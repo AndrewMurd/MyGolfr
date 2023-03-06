@@ -6,7 +6,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
@@ -19,9 +19,9 @@ import { ActiveTeeComponent } from '../active-tee/active-tee.component';
   styleUrls: ['./active-scorecard.component.scss'],
 })
 export class ActiveScorecardComponent {
+  subscriptions: Subscription = new Subscription();
   signedIn: boolean = false;
   title!: string;
-  courseId!: string;
   courseData: any;
   scoreData: any;
   teeData: any;
@@ -45,10 +45,6 @@ export class ActiveScorecardComponent {
   ) {}
 
   async ngOnInit() {
-    this.courseId = JSON.parse(
-      localStorage.getItem('selectedCourse')!
-    ).reference;
-
     this.authService.token.asObservable().subscribe((value) => {
       if (value) {
         this.signedIn = true;
@@ -57,25 +53,30 @@ export class ActiveScorecardComponent {
       }
     });
 
-    this.courseService.courseData.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.courseService.courseData.asObservable().subscribe((value) => {
       if (value) {
         this.courseData = value;
         this.title = this.courseData.name;
         this.removedBackNine = this.courseData.courseDetails.nineHoleGolfCourse;
+        this.reload();
       }
-    });
+    }));
   }
 
   async ngAfterViewInit() {
     setTimeout(() => {
-      this.scoreService.scoreData.asObservable().subscribe((value) => {
+      this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
         if (value) {
           this.scoreData = value;
           this.teeData = value.teeData;
           this.reload();
         }
-      });
+      }));
     });
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   async reload() {
@@ -111,7 +112,7 @@ export class ActiveScorecardComponent {
               1,
               'statusComplete'
             );
-            // this.scoreService.scoreData.next(null);
+            this.scoreService.inProgressScoreData.next(null);
             this.router.navigate(['/stats']);
           } catch (error) {}
         },
@@ -136,7 +137,7 @@ export class ActiveScorecardComponent {
       async () => {
         try {
           await this.scoreService.delete(this.scoreData.id);
-          this.scoreService.scoreData.next(null);
+          this.scoreService.inProgressScoreData.next(null);
           this.refreshPage.emit();
         } catch (error) {}
       },
@@ -158,7 +159,7 @@ export class ActiveScorecardComponent {
     this.courseService.editingScoreCard.next(this.editing);
     this.courseService.courseData.next(this.courseData);
     await this.courseService.updateColumn(
-      this.courseId,
+      this.courseData.googleDetails.reference,
       this.courseData.scorecard,
       'scorecard'
     );
@@ -178,7 +179,7 @@ export class ActiveScorecardComponent {
       !this.courseData.courseDetails['nineHoleGolfCourse'];
 
     await this.courseService.updateColumn(
-      this.courseId,
+      this.courseData.googleDetails.reference,
       this.courseData.courseDetails,
       'courseDetails'
     );

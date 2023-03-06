@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
 import { ROOT_URL } from '../../utilities/enviroment';
 import { CourseDetailsService } from '../../services/course-details.service';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { LoadingService } from 'src/app/services/loading.service';
 
@@ -13,6 +13,7 @@ import { LoadingService } from 'src/app/services/loading.service';
   styleUrls: ['./search-bar.component.scss'],
 })
 export class SearchBarComponent {
+  subscriptions: Subscription = new Subscription();
   userData: any;
   search!: string;
   courses: any = [];
@@ -30,7 +31,7 @@ export class SearchBarComponent {
   ngOnInit() {
     this.isLoading = true;
     this.setBorder();
-    this.authService.user.asObservable().subscribe(async (value) => {
+    this.subscriptions.add(this.authService.user.asObservable().subscribe(async (value) => {
       if (value) {
         this.userData = value;
         const items = Object.keys(this.userData.favCourses).map((key) => {
@@ -46,7 +47,11 @@ export class SearchBarComponent {
         this.isLoading = false;
         this.setBorder();
       }
-    });
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   async resetSession(data: any) {
@@ -119,12 +124,14 @@ export class SearchBarComponent {
   }
 
   setBorder() {
-    if (this.courses.length > 0 || this.isLoading) {
-      document.getElementById('homepageSearch')!.style.borderRadius =
-        '10px 10px 0px 0px';
-    } else {
-      document.getElementById('homepageSearch')!.style.borderRadius = '10px';
-    }
+    try {
+      if (this.courses.length > 0 || this.isLoading) {
+        document.getElementById('homepageSearch')!.style.borderRadius =
+          '10px 10px 0px 0px';
+      } else {
+        document.getElementById('homepageSearch')!.style.borderRadius = '10px';
+      }
+    } catch (error) {}
   }
 
   showMore() {

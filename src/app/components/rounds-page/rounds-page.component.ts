@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
@@ -12,6 +13,7 @@ import { ScoreService } from 'src/app/services/score.service';
   styleUrls: ['./rounds-page.component.scss'],
 })
 export class RoundsPageComponent {
+  subscriptions: Subscription = new Subscription();
   @Input() selectedUser: any;
   userData: any;
   selectedScore: any;
@@ -43,7 +45,7 @@ export class RoundsPageComponent {
 
   async ngOnInit() {
     this.loadingService.loading.next(true);
-    this.authService.user.asObservable().subscribe(async (value) => {
+    this.subscriptions.add(this.authService.user.asObservable().subscribe(async (value) => {
       if (value) {
         this.userData = value;
         try {
@@ -86,7 +88,16 @@ export class RoundsPageComponent {
           console.log(error);
         }
       }
-    });
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
+  showOverview(score: any) {
+    console.log(score);
+    this.selectedScore = score;
   }
 
   async deleteRound(s: any, event: any) {
@@ -147,11 +158,5 @@ export class RoundsPageComponent {
       )!.style.transform = `translateX(0px)`;
       document.getElementById(`roundItem${i}`)!.style.borderRadius = `8px`;
     }
-  }
-
-  showOverview(score: any) {
-    console.log(score);
-    this.selectedScore = score;
-    localStorage.setItem('selectedScore', JSON.stringify(score));
   }
 }

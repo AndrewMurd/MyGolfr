@@ -13,30 +13,16 @@
   id="openScorecard"
 />
 
-<edit-score-card
-  *ngIf="!roundInProgress"
-  [ngStyle]="
-    showScorecard ? { display: '' } : { display: 'none' }
-  "
-></edit-score-card>
-
 <app-active-scorecard
-  *ngIf="roundInProgress"
-  [ngStyle]="
-    showScorecard ? { display: '' } : { display: 'none' }
-  "
+  [ngStyle]="showScorecard ? { display: '' } : { display: 'none' }"
   (refreshPage)="getScore()"
 ></app-active-scorecard>
 
-<div *ngIf="popUp" id="startRoundPopUpContainer">
-
-</div>
-<div *ngIf="popUp" id="startRoundPopUp">
-  
-</div>
+<div *ngIf="popUp" id="startRoundPopUpContainer"></div>
+<div *ngIf="popUp" id="startRoundPopUp"></div>
 
 <div id="scoreInput" (clickOutside)="clickedOutside()">
-  <div *ngIf="!roundInProgress">
+  <div>
     <nav id="selectTeeBtn">
       <label for="touch"><span id="startRoundSpan">Start Round</span></label>
       <input
@@ -54,7 +40,7 @@
       </div>
     </nav>
   </div>
-  <div *ngIf="roundInProgress && !show10Input && currentHole != 'course'">
+  <div *ngIf="!show10Input && currentHole != 'course'">
     <nav id="selectScoreBtn">
       <label for="touch"
         ><span id="scoreSpan">{{ selectedScore }}</span></label

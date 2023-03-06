@@ -35,7 +35,7 @@
     <div id="roundContainer" class="underline">
       <a
         *ngIf="signedIn && scoreData"
-        routerLink="/start_round"
+        (click)="navigateToStartRound()"
         id="roundLink"
         class="headerLink"
         >Continue Round</a

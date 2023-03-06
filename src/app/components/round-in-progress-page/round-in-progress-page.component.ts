@@ -1,22 +1,18 @@
-import {
-  Component,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
-import { CourseDetailsService } from '../../services/course-details.service';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-import { ScoreService } from '../../services/score.service';
-import { AuthenticationService } from '../../services/authentication.service';
-import { createRange } from '../../utilities/functions';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { ScoreService } from 'src/app/services/score.service';
+import { createRange } from 'src/app/utilities/functions';
 
 @Component({
-  selector: 'app-start-round-page',
-  templateUrl: './start-round-page.component.html',
-  styleUrls: ['./start-round-page.component.scss'],
+  selector: 'app-round-in-progress-page',
+  templateUrl: './round-in-progress-page.component.html',
+  styleUrls: ['./round-in-progress-page.component.scss']
 })
-export class StartRoundPageComponent {
+export class RoundInProgressPageComponent {
   subscriptions: Subscription = new Subscription();
   userData: any;
   changeView: Subject<any> = new Subject<any>();
@@ -33,7 +29,7 @@ export class StartRoundPageComponent {
   openTeeDropdown: Boolean = false;
   popUp: boolean = false;
   createRange: Function = createRange;
-
+  
   constructor(
     private courseService: CourseDetailsService,
     private authService: AuthenticationService,

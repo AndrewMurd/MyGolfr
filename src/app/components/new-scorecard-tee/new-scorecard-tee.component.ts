@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { ScoreService } from '../../services/score.service';
 import { CourseDetailsService } from '../../services/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
@@ -12,6 +12,7 @@ import { AlertService } from 'src/app/services/alert.service';
   host: { '[id]': 'id' },
 })
 export class NewScorecardTeeComponent {
+  subscriptions: Subscription = new Subscription();
   @Input() id!: string;
   @Input() teeData: any;
   @Input() isFrontNine: boolean = true;
@@ -22,7 +23,6 @@ export class NewScorecardTeeComponent {
   editing: boolean = false;
   showCopySI!: boolean;
   showCopyPar!: boolean;
-  courseId!: string;
   color!: string;
   nameColor!: string;
   displayColorPicker: boolean = false;
@@ -44,19 +44,15 @@ export class NewScorecardTeeComponent {
   ) {}
 
   ngOnInit() {
-    this.courseId = JSON.parse(
-      localStorage.getItem('selectedCourse')!
-    ).reference;
-
     this.color = this.teeData.Color;
     this.nameColor = this.teeData.ColorName;
 
-    this.courseService.courseData.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.courseService.courseData.asObservable().subscribe((value) => {
       if (value) {
         this.courseData = value;
         this.scorecard = value.scorecard;
       }
-    });
+    }));
 
     let key, value: any;
     let countPar = 0,
@@ -108,7 +104,7 @@ export class NewScorecardTeeComponent {
       this.displayInputSelector = true;
     }
 
-    this.submitInput.subscribe((value) => {
+    this.subscriptions.add(this.submitInput.subscribe((value) => {
       if (this.teeData.id == value.id[0] && 'Color' == value.id[1]) {
         this.teeData.Color = value.value;
         if (this.teeData.ColorName) {
@@ -127,11 +123,15 @@ export class NewScorecardTeeComponent {
         this.displayInputSelector = false;
         this.displayColorName = true;
       }
-    });
+    }));
 
-    this.courseService.editingScoreCard.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.courseService.editingScoreCard.asObservable().subscribe((value) => {
       this.editing = value;
-    });
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -160,7 +160,7 @@ export class NewScorecardTeeComponent {
     }
 
     await this.courseService.updateColumn(
-      this.courseId,
+      this.courseData.googleDetails.reference,
       this.scorecard,
       'scorecard'
     );
@@ -209,7 +209,7 @@ export class NewScorecardTeeComponent {
     }
 
     await this.courseService.updateColumn(
-      this.courseId,
+      this.courseData.googleDetails.reference,
       this.scorecard,
       'scorecard'
     );
@@ -254,7 +254,7 @@ export class NewScorecardTeeComponent {
     }
 
     await this.courseService.updateColumn(
-      this.courseId,
+      this.courseData.googleDetails.reference,
       this.scorecard,
       'scorecard'
     );
@@ -321,7 +321,7 @@ export class NewScorecardTeeComponent {
         this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
 
       const response: any = await this.courseService.setScorecardValue(
-        JSON.parse(localStorage.getItem('selectedCourse')!).reference,
+        this.courseData.googleDetails.reference,
         { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
       );
 
@@ -350,7 +350,7 @@ export class NewScorecardTeeComponent {
 
     // set Color in database
     const response: any = await this.courseService.setScorecardValue(
-      JSON.parse(localStorage.getItem('selectedCourse')!).reference,
+      this.courseData.googleDetails.reference,
       { id: [this.teeData.id, 'Color'], value: this.color }
     );
     this.courseData.scorecard = response.scorecard;

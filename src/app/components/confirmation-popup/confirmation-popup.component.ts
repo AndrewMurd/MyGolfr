@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
@@ -7,6 +8,7 @@ import { AlertService } from 'src/app/services/alert.service';
   styleUrls: ['./confirmation-popup.component.scss'],
 })
 export class ConfirmationPopupComponent {
+  subscriptions: Subscription = new Subscription();
   confirmBtnConfig: any;
   msg!: string;
   showPopUp: boolean = false;
@@ -17,7 +19,7 @@ export class ConfirmationPopupComponent {
   constructor(private alertService: AlertService) {}
 
   ngOnInit() {
-    this.alertService.subject.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.alertService.subject.asObservable().subscribe((value) => {
       if (value) {
         this.hover = false;
         this.showPopUp = true;
@@ -26,7 +28,11 @@ export class ConfirmationPopupComponent {
         this.msg = value.msg;
         this.type = value.type;
       }
-    });
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   confirm() {

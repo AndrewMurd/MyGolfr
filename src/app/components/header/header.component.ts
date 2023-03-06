@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
 
@@ -9,6 +10,7 @@ import { AuthenticationService } from '../../services/authentication.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
+  subscriptions: Subscription = new Subscription();
   signedIn: boolean = false;
   userDropdown: boolean = false;
   userData: any = { name: 'Guest' };
@@ -29,23 +31,29 @@ export class HeaderComponent {
       this.isPhone = false;
     }
 
-    this.authService.token.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.authService.token.asObservable().subscribe((value) => {
       if (value) {
         this.signedIn = true;
       } else {
         this.signedIn = false;
       }
-    });
+    }));
 
-    this.authService.user.asObservable().subscribe(async (value) => {
+    this.subscriptions.add(this.authService.user.asObservable().subscribe(async (value) => {
       if (value) {
         this.userData = value;
       }
-    });
+    }));
 
-    this.scoreService.scoreData.asObservable().subscribe((value) => {
-      this.scoreData = value;
-    });
+    this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
+      if (value) {
+        this.scoreData = value;
+      }
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   signOut() {
@@ -65,6 +73,10 @@ export class HeaderComponent {
       document.getElementById('userArrow')!.className = 'arrow down';
       document.getElementById('selectUserDropdown')!.style.height = '0px';
     }
+  }
+
+  navigateToStartRound() {
+    this.router.navigate(['/start_round', this.scoreData.id]);
   }
 
   closeBox() {

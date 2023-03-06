@@ -30,6 +30,7 @@ import { StatsPageComponent } from './components/stats-page/stats-page.component
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { RoundsPageComponent } from './components/rounds-page/rounds-page.component';
 import { ConfirmationPopupComponent } from './components/confirmation-popup/confirmation-popup.component';
+import { RoundInProgressPageComponent } from './components/round-in-progress-page/round-in-progress-page.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { ConfirmationPopupComponent } from './components/confirmation-popup/conf
     ClickOutsideDirective,
     RoundsPageComponent,
     ConfirmationPopupComponent,
+    RoundInProgressPageComponent,
   ],
   imports: [
     BrowserModule,

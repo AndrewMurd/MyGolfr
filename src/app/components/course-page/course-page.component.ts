@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CourseDetailsService } from '../../services/course-details.service';
-import { Subject } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from 'src/app/services/loading.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-course-page',
@@ -9,21 +10,26 @@ import { LoadingService } from 'src/app/services/loading.service';
   styleUrls: ['./course-page.component.scss'],
 })
 export class CoursePageComponent {
-  selectedCourse: any;
+  subscriptions: Subscription = new Subscription();
 
   constructor(
     private courseService: CourseDetailsService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private route: ActivatedRoute
   ) {}
 
   async ngOnInit() {
     this.loadingService.loading.next(true);
-    this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
+    this.subscriptions.add(this.route.params.subscribe(async (params) => {
+      const response: any = await this.courseService.get(
+        params['id']
+      );
+      this.courseService.courseData.next(response.course);
+      this.loadingService.loading.next(false);
+    }));
+  }
 
-    const response: any = await this.courseService.get(
-      this.selectedCourse.reference
-    );
-    this.courseService.courseData.next(response.course);
-    this.loadingService.loading.next(false);
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

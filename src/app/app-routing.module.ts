@@ -12,11 +12,11 @@ const routes: Routes = [
   { path: '', component: HomePageComponent},
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterPageComponent },
-  { path: 'course', component: CoursePageComponent },
+  { path: 'course/:id', component: CoursePageComponent },
   { path: 'stats', component: StatsPageComponent },
   { path: 'rounds', component: RoundsPageComponent },
-  { path: 'round', component: RoundsPageComponent }, // when clicking on a round in rounds not implemented
-  { path: 'start_round', component: StartRoundPageComponent }
+  { path: 'round/:id', component: RoundsPageComponent }, // when clicking on a round in rounds not implemented
+  { path: 'start_round/:id', component: StartRoundPageComponent }
 ];
 
 @NgModule({

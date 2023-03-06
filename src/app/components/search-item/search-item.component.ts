@@ -3,6 +3,7 @@ import { CourseDetailsService } from '../../services/course-details.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search-item',
@@ -10,6 +11,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./search-item.component.scss'],
 })
 export class SearchItemComponent {
+  subscriptions: Subscription = new Subscription();
   signedIn: boolean = false;
   userData: any;
   @Input() data!: any;
@@ -34,19 +36,19 @@ export class SearchItemComponent {
     }
     this.name = this.data.name;
 
-    this.authService.token.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.authService.token.asObservable().subscribe((value) => {
       if (value) {
         this.signedIn = true;
       } else {
         this.signedIn = false;
       }
-    });
+    }));
 
-    this.authService.user.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.authService.user.asObservable().subscribe((value) => {
       if (value) {
         this.userData = value;
       }
-    });
+    }));
 
     let stringArray = this.data.plus_code.compound_code.split(/(\s+)/);
     this.addressInfo = '';
@@ -55,12 +57,15 @@ export class SearchItemComponent {
       this.addressInfo += stringArray[i];
     }
   }
+  
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 
   clickItem() {
     if (this.disable) return;
     this.onClickItem.emit(this.data);
-    localStorage.setItem('selectedCourse', JSON.stringify(this.data));
-    this.router.navigate(['/course']);
+    this.router.navigate(['/course', this.data.reference]);
     this.addClickToUser();
   }
 
@@ -71,8 +76,7 @@ export class SearchItemComponent {
     }
     this.disable = true;
     this.onClickItem.emit(this.data);
-    localStorage.setItem('selectedCourse', JSON.stringify(this.data));
-    this.router.navigate(['/start_round']);
+    this.router.navigate(['/start_round', this.data.reference]);
     this.addClickToUser();
   }
 

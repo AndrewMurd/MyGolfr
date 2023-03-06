@@ -28,6 +28,7 @@ export class AppComponent {
   ) {
     router.events.subscribe((value) => {
       this.courseService.editingScoreCard.next(false);
+      this.courseService.courseData.next(null);
     });
   }
 
@@ -41,7 +42,7 @@ export class AppComponent {
       const userData: any = jwt_decode(this.authService.token.getValue());
       this.authService.user.next(userData);
       const response: any = await this.scoreService.getUser(userData.id, 0);
-      this.scoreService.scoreData.next(response.scores[0]);
+      this.scoreService.inProgressScoreData.next(response.scores[0]);
     } catch (error) {}
     this.loadingService.loading.asObservable().subscribe((value) => {
       const body = document.getElementsByTagName('body')[0];

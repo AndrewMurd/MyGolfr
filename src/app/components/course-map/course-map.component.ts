@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { faFlag, faMapPin, faCircle } from '@fortawesome/free-solid-svg-icons';
-import { Observable, take } from 'rxjs';
+import { Observable, Subscription, take } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { CourseDetailsService } from '../../services/course-details.service';
@@ -19,13 +19,13 @@ import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
   styleUrls: ['./course-map.component.scss'],
 })
 export class CourseMapComponent {
+  subscriptions: Subscription = new Subscription();
   @Input() changeView!: Observable<any>;
   @Input() mapHeight: string = '400px';
   @Output() changedView: EventEmitter<any> = new EventEmitter();
   courseData: any;
   scoreData: any;
   signedIn: boolean = false;
-  selectedCourse: any;
   display: any;
   center: google.maps.LatLngLiteral = {
     lat: 0,
@@ -59,25 +59,23 @@ export class CourseMapComponent {
   ) {}
 
   async ngOnInit() {
-    this.selectedCourse = JSON.parse(localStorage.getItem('selectedCourse')!);
-
-    this.authService.token.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.authService.token.asObservable().subscribe((value) => {
       if (value) {
         this.signedIn = true;
       } else {
         this.signedIn = false;
       }
-    });
+    }));
 
-    this.courseService.courseData.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.courseService.courseData.asObservable().subscribe((value) => {
       if (value) {
         this.courseData = value;
         this.reload();
       }
-    });
+    }));
 
-    this.scoreService.scoreData.asObservable().subscribe((value) => {
-      if (this.router.url == '/course') {
+    this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
+      if (this.router.url.split('/')[1] == 'course') {
         this.scoreData = null;
         this.roundInProgress = false;
         return;
@@ -91,18 +89,24 @@ export class CourseMapComponent {
         this.scoreData = null;
         this.roundInProgress = false;
       }
-    });
+    }));
 
     if (this.changeView) {
-      this.changeView.subscribe((value) => {
+      this.subscriptions.add(this.changeView.subscribe((value) => {
         this.setMapView(value);
-      });
+      }));
     }
   }
 
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   async reload() {
-    this.center.lat = this.selectedCourse.geometry.location.lat;
-    this.center.lng = this.selectedCourse.geometry.location.lng;
+    if (!this.courseData) return;
+
+    this.center.lat = this.courseData.googleDetails.geometry.location.lat;
+    this.center.lng = this.courseData.googleDetails.geometry.location.lng;
 
     this.map = new google.maps.Map(
       document.getElementById('map') as HTMLElement,

@@ -7,7 +7,8 @@ import { ROOT_URL } from '../utilities/enviroment';
   providedIn: 'root',
 })
 export class ScoreService {
-  scoreData = new BehaviorSubject<any>(null);
+  selectedScoreData = new BehaviorSubject<any>(null);
+  inProgressScoreData = new BehaviorSubject<any>(null);
 
   constructor(private http: HttpClient) {}
 

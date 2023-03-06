@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
@@ -11,6 +12,7 @@ import { ScoreService } from 'src/app/services/score.service';
   styleUrls: ['./stats-page.component.scss'],
 })
 export class StatsPageComponent {
+  subscriptions: Subscription = new Subscription();
   userData: any;
   scores: any;
 
@@ -23,7 +25,7 @@ export class StatsPageComponent {
   ) {}
 
   async ngOnInit() {
-    this.authService.user.asObservable().subscribe(async (value) => {
+    this.subscriptions.add(this.authService.user.asObservable().subscribe(async (value) => {
       if (value) {
         this.userData = value;
         try {
@@ -38,6 +40,10 @@ export class StatsPageComponent {
           console.log(error);
         }
       }
-    });
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

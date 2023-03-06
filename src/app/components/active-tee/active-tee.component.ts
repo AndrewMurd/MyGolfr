@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { ScoreService } from '../../services/score.service';
 import { CourseDetailsService } from '../../services/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
@@ -11,6 +11,7 @@ import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
   host: { '[id]': 'id' },
 })
 export class ActiveTeeComponent {
+  subscriptions: Subscription = new Subscription();
   @Input() id!: string;
   @Input() teeData: any;
   @Input() isFrontNine: boolean = true;
@@ -20,7 +21,6 @@ export class ActiveTeeComponent {
   courseData: any;
   scoreData: any;
   editing: boolean = false;
-  courseId!: string;
   color!: string;
   nameColor!: string;
   displayColorPicker: boolean = false;
@@ -40,14 +40,10 @@ export class ActiveTeeComponent {
   ) {}
 
   ngOnInit() {
-    this.courseId = JSON.parse(
-      localStorage.getItem('selectedCourse')!
-    ).reference;
-
     this.color = this.teeData.Color;
     this.nameColor = this.teeData.ColorName;
 
-    this.scoreService.scoreData.asObservable().subscribe((value) => {
+    this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
       if (value) {
         this.scoreData = value;
       }
@@ -58,7 +54,7 @@ export class ActiveTeeComponent {
       this.displayInputSelector = true;
     }
 
-    this.submitInput.subscribe((value) => {
+    this.subscriptions.add(this.submitInput.subscribe((value) => {
       if (this.teeData.id == value.id[0] && 'Color' == value.id[1]) {
         this.teeData.Color = value.value;
         if (this.teeData.ColorName) {
@@ -77,11 +73,15 @@ export class ActiveTeeComponent {
         this.displayInputSelector = false;
         this.displayColorName = true;
       }
-    });
+    }));
 
-    this.courseService.editingScoreCard.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.courseService.editingScoreCard.asObservable().subscribe((value) => {
       this.editing = value;
-    });
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -112,7 +112,7 @@ export class ActiveTeeComponent {
         this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
 
       const response: any = await this.courseService.setScorecardValue(
-        JSON.parse(localStorage.getItem('selectedCourse')!).reference,
+        this.courseData.googleDetails.reference,
         { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
       );
 
@@ -141,7 +141,7 @@ export class ActiveTeeComponent {
 
     // set Color in database
     const response: any = await this.courseService.setScorecardValue(
-      JSON.parse(localStorage.getItem('selectedCourse')!).reference,
+      this.courseData.googleDetails.reference,
       { id: [this.teeData.id, 'Color'], value: this.color }
     );
     this.courseData.scorecard = response.scorecard;

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CourseDetailsService } from '../../services/course-details.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
 
 @Component({
@@ -9,6 +9,7 @@ import { ScoreService } from 'src/app/services/score.service';
   styleUrls: ['./scorecard-input.component.scss'],
 })
 export class ScorecardInputComponent {
+  subscriptions: Subscription = new Subscription();
   @Input() id!: string;
   @Input() placeholder!: string;
   @Input() data: any;
@@ -20,7 +21,6 @@ export class ScorecardInputComponent {
   value!: string;
   arrId: any;
   isWhite: boolean = false;
-  courseId!: string;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -28,10 +28,6 @@ export class ScorecardInputComponent {
   ) {}
 
   ngOnInit() {
-    this.courseId = JSON.parse(
-      localStorage.getItem('selectedCourse')!
-    ).reference;
-
     this.whiteEvent.subscribe((value: boolean) => {
       this.isWhite = value;
     });
@@ -48,18 +44,22 @@ export class ScorecardInputComponent {
       }
     }
 
-    this.courseService.editingScoreCard.asObservable().subscribe((value) => {
+    this.subscriptions.add(this.courseService.editingScoreCard.asObservable().subscribe((value) => {
       this.editing = value;
-    });
+    }));
 
     if (this.submitInput) {
-      this.submitInput.subscribe((value) => {
+      this.subscriptions.add(this.submitInput.subscribe((value) => {
         if (this.data.id == value.id[0] && this.arrId[1] == value.id[1]) {
           this.showField = false;
           this.value = value.value;
         }
-      });
+      }));
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   async submit() {
