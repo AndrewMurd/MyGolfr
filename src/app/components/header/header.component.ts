@@ -76,7 +76,10 @@ export class HeaderComponent {
   }
 
   navigateToStartRound() {
-    this.router.navigate(['/start_round', this.scoreData.id]);
+    this.router.navigate(['/round/in-progress', this.scoreData.id]);
+    setTimeout(() => {
+      this.scoreService.inProgressScoreData.next(this.scoreData);
+    });
   }
 
   closeBox() {

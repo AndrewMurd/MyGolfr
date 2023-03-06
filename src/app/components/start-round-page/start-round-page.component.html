@@ -2,7 +2,6 @@
 
 <app-course-map
   [mapHeight]="'100vh'"
-  [changeView]="changeView"
   (changedView)="setCurrentHole($event)"
 ></app-course-map>
 
@@ -14,75 +13,30 @@
 />
 
 <edit-score-card
-  *ngIf="!roundInProgress"
-  [ngStyle]="
-    showScorecard ? { display: '' } : { display: 'none' }
-  "
+  [ngStyle]="showScorecard ? { display: '' } : { display: 'none' }"
 ></edit-score-card>
 
-<app-active-scorecard
-  *ngIf="roundInProgress"
-  [ngStyle]="
-    showScorecard ? { display: '' } : { display: 'none' }
-  "
-  (refreshPage)="getScore()"
-></app-active-scorecard>
+<div *ngIf="popUp" id="startRoundPopUpContainer"></div>
+<div *ngIf="popUp" id="startRoundPopUp"></div>
 
-<div *ngIf="popUp" id="startRoundPopUpContainer">
-
-</div>
-<div *ngIf="popUp" id="startRoundPopUp">
-  
-</div>
-
-<div id="scoreInput" (clickOutside)="clickedOutside()">
-  <div *ngIf="!roundInProgress">
-    <nav id="selectTeeBtn">
-      <label for="touch"><span id="startRoundSpan">Start Round</span></label>
-      <input
-        type="checkbox"
-        (click)="teeDropdown(!this.openTeeDropdown)"
-        id="touch"
-      />
-      <div id="selectTeeBtnSlide" class="slide">
-        <a
-          *ngFor="let tee of completedTees?.scorecard"
-          (click)="startRound(tee)"
-          id="{{ tee.id }}"
-          >{{ tee.ColorName }}</a
-        >
-      </div>
-    </nav>
-  </div>
-  <div *ngIf="roundInProgress && !show10Input && currentHole != 'course'">
-    <nav id="selectScoreBtn">
-      <label for="touch"
-        ><span id="scoreSpan">{{ selectedScore }}</span></label
-      >
-      <input
-        type="checkbox"
-        (click)="scoreDropdown(!this.openScoreDropdown)"
-        id="touch"
-      />
-      <div id="selectScoreBtnSlide" class="slide">
-        <a
-          (click)="updateScore(num); scoreDropdown(false)"
-          *ngFor="let num of createRange(9)"
-          >{{ num }}</a
-        >
-        <a (click)="show10Input = true">10+</a>
-      </div>
-    </nav>
-  </div>
+<nav id="selectTeeBtn" (clickOutside)="clickedOutside()">
+  <label for="touch"><span id="startRoundSpan">Start Round</span></label>
   <input
-    *ngIf="show10Input"
-    id="strokesInput"
-    type="number"
-    min="1"
-    [(ngModel)]="strokesInputValue"
-    max="20"
-    oninput="validity.valid || (value='');"
-    step="0.01"
-    (keyup.enter)="updateScore(strokesInputValue); show10Input = false"
+    type="checkbox"
+    (click)="teeDropdown(!this.openTeeDropdown)"
+    id="touch"
   />
-</div>
+  <div id="selectTeeBtnSlide" class="slide">
+    <a
+      *ngFor="let tee of completedTees"
+      [ngStyle]="
+        getColorWhite(getRGB(tee.Color))
+          ? { 'background-color': tee.Color, color: '#252525' }
+          : { 'background-color': tee.Color, color: 'White' }
+      "
+      (click)="startRound(tee)"
+      id="{{ tee.id }}"
+      >{{ tee.ColorName }}</a
+    >
+  </div>
+</nav>

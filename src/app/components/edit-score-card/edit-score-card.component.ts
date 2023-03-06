@@ -17,6 +17,7 @@ export class EditScoreCardComponent {
   signedIn: boolean = false;
   title!: string;
   courseData: any;
+  scoreData: any;
   currentRound: any;
   onSubmitInput: Subject<any> = new Subject<any>();
   removedBackNine!: boolean;
@@ -45,6 +46,12 @@ export class EditScoreCardComponent {
         this.signedIn = false;
       }
     }));
+
+    this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
+      if (value) {
+        this.scoreData = value;
+      }
+    });
   }
 
   async ngAfterViewInit() {
@@ -105,7 +112,18 @@ export class EditScoreCardComponent {
       this.courseData.googleDetails.reference,
       this.courseData.scorecard,
       'scorecard'
-    );
+    ); 
+    if (!this.scoreData) return;
+    this.scoreData.scorecard = JSON.parse(JSON.stringify(this.courseData.scorecard));
+    for (let tee of this.scoreData.scorecard) {
+      if (
+        tee.id == this.scoreData.teeData.id
+      ) {
+        await this.scoreService.update(this.scoreData.id, tee, 'teeData');
+        this.scoreData.teeData = tee;
+      }
+    }
+    this.scoreService.inProgressScoreData.next(this.scoreData);
   }
 
   edit() {

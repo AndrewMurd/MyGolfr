@@ -15,31 +15,9 @@
 
 <app-active-scorecard
   [ngStyle]="showScorecard ? { display: '' } : { display: 'none' }"
-  (refreshPage)="getScore()"
 ></app-active-scorecard>
 
-<div *ngIf="popUp" id="startRoundPopUpContainer"></div>
-<div *ngIf="popUp" id="startRoundPopUp"></div>
-
 <div id="scoreInput" (clickOutside)="clickedOutside()">
-  <div>
-    <nav id="selectTeeBtn">
-      <label for="touch"><span id="startRoundSpan">Start Round</span></label>
-      <input
-        type="checkbox"
-        (click)="teeDropdown(!this.openTeeDropdown)"
-        id="touch"
-      />
-      <div id="selectTeeBtnSlide" class="slide">
-        <a
-          *ngFor="let tee of completedTees?.scorecard"
-          (click)="startRound(tee)"
-          id="{{ tee.id }}"
-          >{{ tee.ColorName }}</a
-        >
-      </div>
-    </nav>
-  </div>
   <div *ngIf="!show10Input && currentHole != 'course'">
     <nav id="selectScoreBtn">
       <label for="touch"

@@ -18,7 +18,6 @@ export class ActiveTeeComponent {
   @Input() submitInput!: Observable<any>;
   @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
   scorecard: any;
-  courseData: any;
   scoreData: any;
   editing: boolean = false;
   color!: string;
@@ -112,12 +111,12 @@ export class ActiveTeeComponent {
         this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
 
       const response: any = await this.courseService.setScorecardValue(
-        this.courseData.googleDetails.reference,
+        this.scoreData.googleDetails.reference,
         { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
       );
 
-      this.courseData.scorecard = response.scorecard;
-      this.courseService.courseData.next(this.courseData);
+      this.scoreData.scorecard = response.scorecard;
+      this.scoreService.inProgressScoreData.next(this.scoreData);
 
       this.onSubmitofInput.emit({
         id: [this.teeData.id, 'ColorName'],
@@ -141,11 +140,11 @@ export class ActiveTeeComponent {
 
     // set Color in database
     const response: any = await this.courseService.setScorecardValue(
-      this.courseData.googleDetails.reference,
+      this.scoreData.googleDetails.reference,
       { id: [this.teeData.id, 'Color'], value: this.color }
     );
-    this.courseData.scorecard = response.scorecard;
-    this.courseService.courseData.next(this.courseData);
+    this.scoreData.scorecard = response.scorecard;
+    this.scoreService.inProgressScoreData.next(this.scoreData);
 
     this.onSubmitofInput.emit({
       id: [this.teeData.id, 'Color'],

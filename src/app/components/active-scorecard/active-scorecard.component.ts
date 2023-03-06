@@ -22,11 +22,10 @@ export class ActiveScorecardComponent {
   subscriptions: Subscription = new Subscription();
   signedIn: boolean = false;
   title!: string;
-  courseData: any;
+  // courseData: any;
   scoreData: any;
   teeData: any;
   onSubmitInput: Subject<any> = new Subject<any>();
-  @Output() refreshPage: EventEmitter<any> = new EventEmitter();
   removedBackNine!: boolean;
   isLoading: boolean = false;
   editing: boolean = false;
@@ -52,15 +51,6 @@ export class ActiveScorecardComponent {
         this.signedIn = false;
       }
     });
-
-    this.subscriptions.add(this.courseService.courseData.asObservable().subscribe((value) => {
-      if (value) {
-        this.courseData = value;
-        this.title = this.courseData.name;
-        this.removedBackNine = this.courseData.courseDetails.nineHoleGolfCourse;
-        this.reload();
-      }
-    }));
   }
 
   async ngAfterViewInit() {
@@ -69,6 +59,8 @@ export class ActiveScorecardComponent {
         if (value) {
           this.scoreData = value;
           this.teeData = value.teeData;
+          this.title = this.scoreData.name;
+          this.removedBackNine = this.scoreData.courseDetails.nineHoleGolfCourse;
           this.reload();
         }
       }));
@@ -96,7 +88,7 @@ export class ActiveScorecardComponent {
 
   async submitScore() {
     let factor = 0;
-    this.courseData.courseDetails.nineHoleGolfCourse
+    this.scoreData.courseDetails.nineHoleGolfCourse
       ? (factor = 10)
       : (factor = 20);
 
@@ -137,8 +129,8 @@ export class ActiveScorecardComponent {
       async () => {
         try {
           await this.scoreService.delete(this.scoreData.id);
+          this.router.navigate(['/start-round', this.scoreData.googleDetails.reference]);
           this.scoreService.inProgressScoreData.next(null);
-          this.refreshPage.emit();
         } catch (error) {}
       },
       () => {}
@@ -147,22 +139,32 @@ export class ActiveScorecardComponent {
 
   onSubmit(data: any) {
     this.onSubmitInput.next(data);
-    for (let tee of this.courseData.scorecard) {
+    for (let tee of this.scoreData.scorecard) {
       if (tee.id == data.id[0]) {
         tee[data.id[1]] = data.value;
       }
     }
+    this.scoreData.teeData[data.id[1]] = data.value;
   }
 
   async finishEdit() {
     this.editing = false;
     this.courseService.editingScoreCard.next(this.editing);
-    this.courseService.courseData.next(this.courseData);
     await this.courseService.updateColumn(
-      this.courseData.googleDetails.reference,
-      this.courseData.scorecard,
+      this.scoreData.googleDetails.reference,
+      this.scoreData.scorecard,
       'scorecard'
     );
+    for (let tee of this.scoreData.scorecard) {
+      if (
+        tee.id == this.scoreData.teeData.id &&
+        JSON.stringify(tee) != JSON.stringify(this.scoreData.teeData)
+      ) {
+        await this.scoreService.update(this.scoreData.id, tee, 'teeData');
+        this.scoreData.teeData = tee;
+      }
+    }
+    this.scoreService.inProgressScoreData.next(this.scoreData);
   }
 
   edit() {
@@ -175,15 +177,15 @@ export class ActiveScorecardComponent {
   }
 
   async removebacknine() {
-    this.courseData.courseDetails['nineHoleGolfCourse'] =
-      !this.courseData.courseDetails['nineHoleGolfCourse'];
+    this.scoreData.courseDetails['nineHoleGolfCourse'] =
+      !this.scoreData.courseDetails['nineHoleGolfCourse'];
 
     await this.courseService.updateColumn(
-      this.courseData.googleDetails.reference,
-      this.courseData.courseDetails,
+      this.scoreData.googleDetails.reference,
+      this.scoreData.courseDetails,
       'courseDetails'
     );
-    this.courseService.courseData.next(this.courseData);
+    this.scoreService.inProgressScoreData.next(this.scoreData);
   }
 
   createTeeComponents(teeData: any) {

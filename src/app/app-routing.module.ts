@@ -7,6 +7,7 @@ import { CoursePageComponent } from './components/course-page/course-page.compon
 import { StartRoundPageComponent } from './components/start-round-page/start-round-page.component';
 import { StatsPageComponent } from './components/stats-page/stats-page.component';
 import { RoundsPageComponent } from './components/rounds-page/rounds-page.component';
+import { RoundInProgressPageComponent } from './components/round-in-progress-page/round-in-progress-page.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent},
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'stats', component: StatsPageComponent },
   { path: 'rounds', component: RoundsPageComponent },
   { path: 'round/:id', component: RoundsPageComponent }, // when clicking on a round in rounds not implemented
-  { path: 'start_round/:id', component: StartRoundPageComponent }
+  { path: 'start-round/:id', component: StartRoundPageComponent },
+  { path: 'round/in-progress/:id', component: RoundInProgressPageComponent }
 ];
 
 @NgModule({

@@ -1,7 +1,6 @@
 @import "../../utilities/variables.scss";
 
-edit-score-card,
-app-active-scorecard {
+edit-score-card {
   top: 85px;
   margin-left: auto;
   margin-right: auto;
@@ -61,12 +60,6 @@ app-active-scorecard {
   width: 70%;
 }
 
-#scoreInput {
-  position: absolute;
-  left: 10px;
-  z-index: 100;
-}
-
 #submitHole {
   height: 40px;
   margin-top: 40px;
@@ -75,6 +68,9 @@ app-active-scorecard {
 }
 
 #selectTeeBtn {
+  position: absolute;
+  top: 70px;
+  left: 10px;
   width: 200px;
   z-index: 100;
 }
@@ -105,9 +101,9 @@ span {
     display: block;
     font-size: 1em;
     cursor: pointer;
+    transition: transform 0.2s;
     &:hover {
-      font-weight: bold;
-      background-color: rgb(196, 196, 196);
+      font-weight: bolder;
     }
   }
 }

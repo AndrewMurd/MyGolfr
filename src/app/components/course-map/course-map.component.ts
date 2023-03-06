@@ -67,27 +67,29 @@ export class CourseMapComponent {
       }
     }));
 
-    this.subscriptions.add(this.courseService.courseData.asObservable().subscribe((value) => {
-      if (value) {
-        this.courseData = value;
-        this.reload();
-      }
-    }));
-
     this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
       if (this.router.url.split('/')[1] == 'course') {
-        this.scoreData = null;
+        this.scoreData = value;
         this.roundInProgress = false;
         return;
       }
       if (value) {
         this.roundInProgress = true;
         this.scoreData = value;
-        this.selectedTeeView = value.teeData;
+        this.courseData = JSON.parse(JSON.stringify(this.scoreData));
+        this.courseData.id = this.courseData.googleDetails.reference;
+        this.selectedTeeView = this.scoreData.teeData;
         this.reload();
       } else {
         this.scoreData = null;
         this.roundInProgress = false;
+      }
+    }));
+
+    this.subscriptions.add(this.courseService.courseData.asObservable().subscribe((value) => {
+      if (value && this.roundInProgress == false) {
+        this.courseData = value;
+        this.reload();
       }
     }));
 
@@ -102,9 +104,7 @@ export class CourseMapComponent {
     this.subscriptions.unsubscribe();
   }
 
-  async reload() {
-    if (!this.courseData) return;
-
+  reload() {
     this.center.lat = this.courseData.googleDetails.geometry.location.lat;
     this.center.lng = this.courseData.googleDetails.geometry.location.lng;
 
@@ -135,7 +135,7 @@ export class CourseMapComponent {
 
   clearOverlays() {
     for (var i = 0; i < this.markers.length; i++) {
-      this.markers[i].setMap(null);
+      this.markers[i][0].setMap(null);
     }
     this.markers.length = 0;
 
@@ -163,11 +163,11 @@ export class CourseMapComponent {
     }
     if (value) {
       for (const marker of this.markers) {
-        marker.setDraggable(true);
+        marker[0].setDraggable(true);
       }
     } else {
       for (const marker of this.markers) {
-        marker.setDraggable(false);
+        marker[0].setDraggable(false);
       }
     }
   }
@@ -213,12 +213,14 @@ export class CourseMapComponent {
       if (this.roundInProgress && teeLoc.id != this.scoreData.teeData.id) break;
 
       let color;
+      let colorName;
       for (let tee of this.scorecard) {
         if (tee.id == teeLoc.id) {
           if (!tee.Color) {
             color = '';
           } else {
             color = tee.Color;
+            colorName = tee.ColorName;
           }
         }
       }
@@ -264,7 +266,7 @@ export class CourseMapComponent {
       }
 
       // tee markers
-      this.markers.push(
+      this.markers.push([
         new google.maps.Marker({
           position: { lat: teeLoc.lat, lng: lng },
           map,
@@ -281,8 +283,8 @@ export class CourseMapComponent {
             scale: 0.06,
           },
           draggable: this.editOn,
-          title: `${teeLoc.id}`,
-        })
+          title: `${colorName}`
+        }), teeLoc.id]
       );
     }
 
@@ -367,7 +369,7 @@ export class CourseMapComponent {
       this.mapLabels[0].setLabel({
         text:
           Math.round(
-            this.haversine_distance(this.distanceMarker[0], this.markers[0]) *
+            this.haversine_distance(this.distanceMarker[0], this.markers[0][0]) *
               1760
           ) + '',
         color: 'white',
@@ -408,7 +410,7 @@ export class CourseMapComponent {
                 Math.round(
                   this.haversine_distance(
                     this.distanceMarker[0],
-                    this.markers[0]
+                    this.markers[0][0]
                   ) * 1760
                 ) + '',
               color: 'white',
@@ -499,9 +501,9 @@ export class CourseMapComponent {
       const layoutData = this.courseData.mapLayout[this.selectedMapView];
       for (let teeLoc of layoutData.teeLocations) {
         for (let marker of this.markers) {
-          if (teeLoc.id == marker.title) {
-            teeLoc.lat = marker.getPosition().lat();
-            teeLoc.lng = marker.getPosition().lng();
+          if (teeLoc.id == marker[1]) {
+            teeLoc.lat = marker[0].getPosition().lat();
+            teeLoc.lng = marker[0].getPosition().lng();
           }
         }
       }
@@ -511,6 +513,10 @@ export class CourseMapComponent {
 
     await this.courseService.update(this.courseData);
     this.courseService.courseData.next(this.courseData);
+    if (this.scoreData) {
+      this.scoreData.mapLayout = JSON.parse(JSON.stringify(this.courseData.mapLayout));
+      this.scoreService.inProgressScoreData.next(this.scoreData);
+    }
   }
 
   @HostListener('window:resize', ['$event'])

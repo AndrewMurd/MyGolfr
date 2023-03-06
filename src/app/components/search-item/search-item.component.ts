@@ -76,7 +76,7 @@ export class SearchItemComponent {
     }
     this.disable = true;
     this.onClickItem.emit(this.data);
-    this.router.navigate(['/start_round', this.data.reference]);
+    this.router.navigate(['/start-round', this.data.reference]);
     this.addClickToUser();
   }
 

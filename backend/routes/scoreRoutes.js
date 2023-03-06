@@ -84,12 +84,17 @@ router.post("/add", async (req, res) => {
   const { userId, courseId, teeData, dateTime } = req.body;
 
   try {
-    await Score.save(userId, courseId, JSON.stringify(teeData), dateTime);
+    const response = await Score.save(
+      userId,
+      courseId,
+      JSON.stringify(teeData),
+      dateTime
+    );
     console.log(`Added new score for user ${userId}`);
+    res.json({ id: response.insertId });
   } catch (error) {
     console.log(error);
   }
-  res.end();
 });
 
 // @desc Update Score Data
