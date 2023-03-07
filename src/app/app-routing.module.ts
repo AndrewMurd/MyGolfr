@@ -8,6 +8,7 @@ import { StartRoundPageComponent } from './components/start-round-page/start-rou
 import { StatsPageComponent } from './components/stats-page/stats-page.component';
 import { RoundsPageComponent } from './components/rounds-page/rounds-page.component';
 import { RoundInProgressPageComponent } from './components/round-in-progress-page/round-in-progress-page.component';
+import { RoundPageComponent } from './components/round-page/round-page.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent},
@@ -16,7 +17,7 @@ const routes: Routes = [
   { path: 'course/:id', component: CoursePageComponent },
   { path: 'stats', component: StatsPageComponent },
   { path: 'rounds', component: RoundsPageComponent },
-  { path: 'round/:id', component: RoundsPageComponent }, // when clicking on a round in rounds not implemented
+  { path: 'round/:id', component: RoundPageComponent }, // when clicking on a round in rounds not implemented
   { path: 'start-round/:id', component: StartRoundPageComponent },
   { path: 'round/in-progress/:id', component: RoundInProgressPageComponent }
 ];

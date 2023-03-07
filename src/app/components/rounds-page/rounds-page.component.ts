@@ -16,7 +16,6 @@ export class RoundsPageComponent {
   subscriptions: Subscription = new Subscription();
   @Input() selectedUser: any;
   userData: any;
-  selectedScore: any;
   scores: any;
   datedScores: any = {};
   amountOfRoundsThisYear: number = 0;
@@ -40,7 +39,8 @@ export class RoundsPageComponent {
     private alertService: AlertService,
     private authService: AuthenticationService,
     private scoreService: ScoreService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private router: Router
   ) {}
 
   async ngOnInit() {
@@ -96,8 +96,7 @@ export class RoundsPageComponent {
   }
 
   showOverview(score: any) {
-    console.log(score);
-    this.selectedScore = score;
+    this.router.navigate(['/round', score.id]);
   }
 
   async deleteRound(s: any, event: any) {

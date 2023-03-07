@@ -2,13 +2,17 @@ const executeQuery = require("../util/database");
 
 module.exports = class Score {
   static find(scoreId) {
-    return executeQuery("SELECT * FROM scores WHERE id = ?", [scoreId]);
+    return executeQuery(
+      "SELECT * FROM courses INNER JOIN scores ON courses.id = scores.courseId WHERE scores.id = ?",
+      [scoreId]
+    );
   }
 
-  static findStatus(status) {
-    return executeQuery("SELECT * FROM courses INNER JOIN scores ON courses.id = scores.courseId WHERE statusComplete = ?", [
-      status,
-    ]);
+  static findStatus(courseId, status) {
+    return executeQuery(
+      "SELECT * FROM courses INNER JOIN scores ON ? = scores.courseId WHERE statusComplete = ?",
+      [courseId, status]
+    );
   }
 
   static findUser(userId, status) {
@@ -18,10 +22,10 @@ module.exports = class Score {
     );
   }
 
-  static save(userId, courseId, teeData, dateTime) {
+  static save(userId, courseId, teeData, hdcpType, dateTime) {
     return executeQuery(
-      "INSERT INTO scores (userId, courseId, teeData, score, statusComplete, dateTime) VALUES (?, ?, ?, ?, ?, ?)",
-      [userId, courseId, teeData, JSON.stringify({}), 0, dateTime]
+      "INSERT INTO scores (userId, courseId, teeData, score, statusComplete, hdcpType, dateTime) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [userId, courseId, teeData, JSON.stringify({}), 0, hdcpType, dateTime]
     );
   }
 

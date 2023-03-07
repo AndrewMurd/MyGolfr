@@ -1,9 +1,5 @@
 @import "../../utilities/variables.scss";
 
-$color1: #2caf04;
-$color2: #1d7702;
-$color3: #0f3f00;
-
 * {
   user-select: none;
 }
@@ -256,12 +252,3 @@ a {
     left: 0%;
   }
 }
-
-// @media (max-width: 830px) {
-//   .hamburger-menu {
-//     display: block;
-//   }
-//   #linkContainer {
-//     display: none;
-//   }
-// }

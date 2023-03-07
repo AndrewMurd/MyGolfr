@@ -86,6 +86,7 @@ export class ScoreService {
     userId: string,
     courseId: string,
     teeData: any,
+    hdcpType: string,
     dateTime: any
   ) {
     return await new Promise((resolve, reject) => {
@@ -94,6 +95,7 @@ export class ScoreService {
           userId: userId,
           courseId: courseId,
           teeData: teeData,
+          hdcpType: hdcpType,
           dateTime: dateTime,
         })
         .subscribe({

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CourseDetailsService } from '../../services/course-details.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ScoreService } from '../../services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { createRange, getColorWhite, getRGB } from '../../utilities/functions';
@@ -16,9 +16,11 @@ export class StartRoundPageComponent {
   subscriptions: Subscription = new Subscription();
   userData: any;
   courseData: any;
-  completedTees: any;
+  completedTees: any = [];
   showScorecard: boolean = false;
   openTeeDropdown: Boolean = false;
+  selectedTee: any;
+  hdcpType: string = 'none';
   popUp: boolean = false;
   createRange: Function = createRange;
   getRGB: Function = getRGB;
@@ -54,7 +56,9 @@ export class StartRoundPageComponent {
       this.courseService.courseData.asObservable().subscribe(async (value) => {
         if (value) {
           this.courseData = value;
-          this.completedTees = JSON.parse(JSON.stringify(this.courseData.scorecard));
+          this.completedTees = JSON.parse(
+            JSON.stringify(this.courseData.scorecard)
+          );
           this.checkCompleteTees();
         }
       })
@@ -66,16 +70,26 @@ export class StartRoundPageComponent {
     this.subscriptions.unsubscribe();
   }
 
-  async startRound(tee: any) {
+  selectTee(tee: any) {
+    this.popUp = true;
+    this.teeDropdown(false);
+    this.selectedTee = tee;
+  }
+
+  async startRound() {
     try {
       await this.scoreService.newScore(
         this.userData.id,
         this.courseData.id,
-        tee,
+        this.selectedTee,
+        this.hdcpType,
         this.convertDateToMySql()
       );
       // navigate to round in progress page
-      const response: any = await this.scoreService.getUser(this.userData.id, 0);
+      const response: any = await this.scoreService.getUser(
+        this.userData.id,
+        0
+      );
       this.router.navigate(['/round/in-progress', response.scores[0].id]);
       setTimeout(() => {
         this.scoreService.inProgressScoreData.next(response.scores[0]);

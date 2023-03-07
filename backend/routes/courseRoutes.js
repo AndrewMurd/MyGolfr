@@ -4,6 +4,14 @@ const { v4: uuidv4 } = require("uuid");
 
 const router = Router();
 
+function parseData(course) {
+  course.googleDetails = JSON.parse(course.googleDetails);
+  course.courseDetails = JSON.parse(course.courseDetails);
+  course.scorecard = JSON.parse(course.scorecard);
+  course.mapLayout = JSON.parse(course.mapLayout);
+  return course;
+}
+
 // @desc Search Courses table
 // @route GET /courses/search_courses
 // @access Public
@@ -34,10 +42,7 @@ router.get("/course", async (req, res) => {
     if (courses.length == 0) {
       res.status(404).send({ error: "Course does not exist!" });
     } else {
-      courses[0].googleDetails = JSON.parse(courses[0].googleDetails);
-      courses[0].courseDetails = JSON.parse(courses[0].courseDetails);
-      courses[0].scorecard = JSON.parse(courses[0].scorecard);
-      courses[0].mapLayout = JSON.parse(courses[0].mapLayout);
+      parseData(courses[0]);
       res.status(200).send({ course: courses[0] });
     }
   } catch (error) {
@@ -60,10 +65,7 @@ router.post("/courses", async (req, res) => {
       if (course.length == 0) {
         res.status(404).send({ error: "Course does not exist!" });
       } else {
-        course[0].googleDetails = JSON.parse(course[0].googleDetails);
-        course[0].courseDetails = JSON.parse(course[0].courseDetails);
-        course[0].scorecard = JSON.parse(course[0].scorecard);
-        course[0].mapLayout = JSON.parse(course[0].mapLayout);
+        parseData(course[0]);
         courses.push(course[0]);
       }
     } catch (error) {

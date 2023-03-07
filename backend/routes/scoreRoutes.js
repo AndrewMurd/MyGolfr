@@ -3,6 +3,16 @@ const Score = require("../models/score");
 
 const router = Router();
 
+function parseData(score) {
+  score.score = JSON.parse(score.score);
+  score.teeData = JSON.parse(score.teeData);
+  score.googleDetails = JSON.parse(score.googleDetails);
+  score.courseDetails = JSON.parse(score.courseDetails);
+  score.scorecard = JSON.parse(score.scorecard);
+  score.mapLayout = JSON.parse(score.mapLayout);
+  return score;
+}
+
 // @desc Get a score
 // @route GET /scores/score
 // @access Private
@@ -15,8 +25,7 @@ router.get("/score", async (req, res) => {
     if (scores.length == 0) {
       res.status(404).send({ error: "Score does not exist!" });
     } else {
-      scores[0].score = JSON.parse(scores[0].score);
-      scores[0].teeData = JSON.parse(scores[0].teeData);
+      parseData(scores[0]);
       res.status(200).send({ score: scores[0] });
     }
   } catch (error) {
@@ -25,22 +34,23 @@ router.get("/score", async (req, res) => {
   }
 });
 
-// @desc Get scores with certain status
+// @desc Get scores for a golf course with a status
 // @route GET /scores/score_status
 // @access Private
 router.get("/score_status", async (req, res) => {
   const status = req.query.status;
-  const userId = req.query.userId;
+  const courseId = req.query.courseId;
 
   try {
-    const scores = await Score.findStatus(user, status);
+    const scores = await Score.findStatus(courseId, status);
 
     if (scores.length == 0) {
       res.status(404).send({ error: "Score does not exist!" });
     } else {
-      scores[0].score = JSON.parse(scores[0].score);
-      scores[0].teeData = JSON.parse(scores[0].teeData);
-      res.status(200).send({ score: scores[0] });
+      for (const score of scores) {
+        parseData(score);
+      }
+      res.status(200).send({ scores: scores });
     }
   } catch (error) {
     console.log(error);
@@ -62,12 +72,7 @@ router.get("/score_user", async (req, res) => {
       res.status(404).send({ error: "Score does not exist!" });
     } else {
       for (const score of scores) {
-        score.score = JSON.parse(score.score);
-        score.teeData = JSON.parse(score.teeData);
-        score.googleDetails = JSON.parse(score.googleDetails);
-        score.courseDetails = JSON.parse(score.courseDetails);
-        score.scorecard = JSON.parse(score.scorecard);
-        score.mapLayout = JSON.parse(score.mapLayout);
+        parseData(score);
       }
       res.status(200).send({ scores: scores });
     }
@@ -81,13 +86,14 @@ router.get("/score_user", async (req, res) => {
 // @route POST /scores/add
 // @access Private
 router.post("/add", async (req, res) => {
-  const { userId, courseId, teeData, dateTime } = req.body;
+  const { userId, courseId, teeData, hdcpType, dateTime } = req.body;
 
   try {
     const response = await Score.save(
       userId,
       courseId,
       JSON.stringify(teeData),
+      hdcpType,
       dateTime
     );
     console.log(`Added new score for user ${userId}`);

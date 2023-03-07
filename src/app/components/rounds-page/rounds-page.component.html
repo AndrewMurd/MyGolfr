@@ -1,7 +1,7 @@
 <app-header></app-header>
 
 <div id="roundsPageContainer">
-  <div *ngIf="!selectedScore">
+  <div>
     <h1 *ngIf="selectedUser" id="title">{{ userData?.name }}'s Rounds</h1>
     <h1 *ngIf="!selectedUser" id="title">Rounds</h1>
     <h2 id="numberInfo">
@@ -57,5 +57,4 @@
       </div>
     </div>
   </div>
-  <div *ngIf="selectedScore"></div>
 </div>

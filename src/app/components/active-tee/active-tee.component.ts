@@ -15,6 +15,7 @@ export class ActiveTeeComponent {
   @Input() id!: string;
   @Input() teeData: any;
   @Input() isFrontNine: boolean = true;
+  @Input() selectedScore!: boolean;
   @Input() submitInput!: Observable<any>;
   @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
   scorecard: any;
@@ -42,41 +43,64 @@ export class ActiveTeeComponent {
     this.color = this.teeData.Color;
     this.nameColor = this.teeData.ColorName;
 
-    this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
-      if (value) {
-        this.scoreData = value;
-      }
-    });
+    if (this.selectedScore) {
+      this.subscriptions.add(
+        this.scoreService.selectedScoreData
+          .asObservable()
+          .subscribe((value) => {
+            if (value) {
+              this.scoreData = value;
+            }
+          })
+      );
+    } else {
+      this.subscriptions.add(
+        this.scoreService.inProgressScoreData
+          .asObservable()
+          .subscribe((value) => {
+            if (value) {
+              this.scoreData = value;
+            }
+          })
+      );
+    }
 
     if (!this.teeData.ColorName) {
       this.displayColorName = false;
       this.displayInputSelector = true;
     }
 
-    this.subscriptions.add(this.submitInput.subscribe((value) => {
-      if (this.teeData.id == value.id[0] && 'Color' == value.id[1]) {
-        this.teeData.Color = value.value;
-        if (this.teeData.ColorName) {
+    this.subscriptions.add(
+      this.submitInput.subscribe((value) => {
+        if (this.teeData.id == value.id[0] && 'Color' == value.id[1]) {
+          this.teeData.Color = value.value;
+          if (this.teeData.ColorName) {
+            this.displayInputSelector = false;
+            this.displayColorName = true;
+          }
+
+          this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
+          if (this.isWhite) {
+            this.colorEventsSubject.next(true);
+          } else {
+            this.colorEventsSubject.next(false);
+          }
+        } else if (
+          this.teeData.id == value.id[0] &&
+          'ColorName' == value.id[1]
+        ) {
+          this.teeData.ColorName = value.value;
           this.displayInputSelector = false;
           this.displayColorName = true;
         }
+      })
+    );
 
-        this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
-        if (this.isWhite) {
-          this.colorEventsSubject.next(true);
-        } else {
-          this.colorEventsSubject.next(false);
-        }
-      } else if (this.teeData.id == value.id[0] && 'ColorName' == value.id[1]) {
-        this.teeData.ColorName = value.value;
-        this.displayInputSelector = false;
-        this.displayColorName = true;
-      }
-    }));
-
-    this.subscriptions.add(this.courseService.editingScoreCard.asObservable().subscribe((value) => {
-      this.editing = value;
-    }));
+    this.subscriptions.add(
+      this.courseService.editingScoreCard.asObservable().subscribe((value) => {
+        this.editing = value;
+      })
+    );
   }
 
   ngOnDestroy() {

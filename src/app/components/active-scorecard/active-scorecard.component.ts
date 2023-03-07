@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Output,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
@@ -20,9 +14,9 @@ import { ActiveTeeComponent } from '../active-tee/active-tee.component';
 })
 export class ActiveScorecardComponent {
   subscriptions: Subscription = new Subscription();
+  @Input() selectedScore: boolean = false;
   signedIn: boolean = false;
   title!: string;
-  // courseData: any;
   scoreData: any;
   teeData: any;
   onSubmitInput: Subject<any> = new Subject<any>();
@@ -55,15 +49,37 @@ export class ActiveScorecardComponent {
 
   async ngAfterViewInit() {
     setTimeout(() => {
-      this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
-        if (value) {
-          this.scoreData = value;
-          this.teeData = value.teeData;
-          this.title = this.scoreData.name;
-          this.removedBackNine = this.scoreData.courseDetails.nineHoleGolfCourse;
-          this.reload();
-        }
-      }));
+      if (this.selectedScore) {
+        this.subscriptions.add(
+          this.scoreService.selectedScoreData
+            .asObservable()
+            .subscribe((value) => {
+              if (value) {
+                this.scoreData = value;
+                this.teeData = value.teeData;
+                this.title = this.scoreData.name;
+                this.removedBackNine =
+                  this.scoreData.courseDetails.nineHoleGolfCourse;
+                this.reload();
+              }
+            })
+        );
+      } else {
+        this.subscriptions.add(
+          this.scoreService.inProgressScoreData
+            .asObservable()
+            .subscribe((value) => {
+              if (value) {
+                this.scoreData = value;
+                this.teeData = value.teeData;
+                this.title = this.scoreData.name;
+                this.removedBackNine =
+                  this.scoreData.courseDetails.nineHoleGolfCourse;
+                this.reload();
+              }
+            })
+        );
+      }
     });
   }
 
@@ -105,17 +121,27 @@ export class ActiveScorecardComponent {
               'statusComplete'
             );
             this.scoreService.inProgressScoreData.next(null);
-            this.router.navigate(['/stats']);
+            this.router.navigate(['/round', this.scoreData.id]);
           } catch (error) {}
         },
         () => {}
       );
     } else {
       this.alertService.confirm(
-        'This scorecard is incomplete!',
-        { color: 'green', content: 'Ok' },
-        'alert',
-        () => {},
+        'This score is incomplete! Are you sure you want to submit this score?',
+        { color: 'green', content: 'Confirm' },
+        'confirm',
+        async () => {
+          try {
+            await this.scoreService.update(
+              this.scoreData.id,
+              1,
+              'statusComplete'
+            );
+            this.scoreService.inProgressScoreData.next(null);
+            this.router.navigate(['/round', this.scoreData.id]);
+          } catch (error) {}
+        },
         () => {}
       );
     }
@@ -129,7 +155,10 @@ export class ActiveScorecardComponent {
       async () => {
         try {
           await this.scoreService.delete(this.scoreData.id);
-          this.router.navigate(['/start-round', this.scoreData.googleDetails.reference]);
+          this.router.navigate([
+            '/start-round',
+            this.scoreData.googleDetails.reference,
+          ]);
           this.scoreService.inProgressScoreData.next(null);
         } catch (error) {}
       },
@@ -194,6 +223,7 @@ export class ActiveScorecardComponent {
     frontNineTee.setInput('id', teeData.id);
     frontNineTee.setInput('teeData', teeData);
     frontNineTee.setInput('isFrontNine', true);
+    this.selectedScore ? frontNineTee.setInput('selectedScore', true) : frontNineTee.setInput('selectedScore', false);
     frontNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });
@@ -205,6 +235,7 @@ export class ActiveScorecardComponent {
     backNineTee.setInput('id', teeData.id);
     backNineTee.setInput('teeData', teeData);
     backNineTee.setInput('isFrontNine', false);
+    this.selectedScore ? backNineTee.setInput('selectedScore', true) : backNineTee.setInput('selectedScore', false);
     backNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });

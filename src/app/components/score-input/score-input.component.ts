@@ -14,6 +14,7 @@ export class ScoreInputComponent {
   @Input() data: any;
   @Input() submitInput!: Observable<any>;
   @Input() whiteEvent!: Observable<any>;
+  @Input() selectedScore: boolean = false;
   @Output() onSubmitInput: EventEmitter<any> = new EventEmitter();
   showField: boolean = true;
   editing: boolean = false;
@@ -58,7 +59,7 @@ export class ScoreInputComponent {
       'score'
     );
     this.data.score = response.data;
-    this.scoreService.inProgressScoreData.next(this.data);
+    this.selectedScore ? this.scoreService.selectedScoreData.next(this.data) : this.scoreService.inProgressScoreData.next(this.data);
 
     this.setBorder();
   }

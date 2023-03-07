@@ -150,11 +150,12 @@
       placeholder="strks"
       id="{{ isFrontNine ? a : a + 9 }}"
       [data]="scoreData"
+      [selectedScore]="true"
       [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-score-input>
   </div>
   <div [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }">
-    {{ isFrontNine ? scoreData.score.Out: scoreData.score.In }}
+    {{ isFrontNine ? scoreData.score.Out : scoreData.score.In }}
   </div>
   <div></div>
   <div></div>

@@ -210,7 +210,7 @@ export class CourseMapComponent {
 
     var offsetTee = this.offsetFactor;
     for (const teeLoc of holeLayout.teeLocations) {
-      if (this.roundInProgress && teeLoc.id != this.scoreData.teeData.id) break;
+      if (this.roundInProgress && teeLoc.id != this.scoreData.teeData.id) continue;
 
       let color;
       let colorName;
