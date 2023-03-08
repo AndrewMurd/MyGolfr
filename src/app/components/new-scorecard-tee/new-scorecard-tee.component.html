@@ -69,14 +69,14 @@
       [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
-  <div [ngStyle]="{ 'background-color': teeData.Color }">
-    <app-scorecard-input
-      (onSubmitInput)="onSubmit($event)"
-      placeholder="sum"
-      id="{{ teeData.id }},{{ isFrontNine ? 'SumOut' : 'SumIn' }}"
-      [data]="teeData"
-      [whiteEvent]="colorEventsSubject.asObservable()"
-    ></app-scorecard-input>
+  <div
+    [ngStyle]="
+      isWhite
+        ? { 'background-color': teeData.Color, color: '#252525' }
+        : { 'background-color': teeData.Color, color: 'White' }
+    "
+  >
+    {{ teeData[isFrontNine ? "SumOut" : "SumIn"] }}
   </div>
   <div [ngStyle]="{ 'background-color': teeData.Color }">
     <app-scorecard-input
@@ -111,15 +111,8 @@
       [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
-  <div>
-    <app-scorecard-input
-      (onSubmitInput)="onSubmit($event)"
-      placeholder="sum"
-      class="colorInput"
-      id="{{ teeData.id }},{{ isFrontNine ? 'SumOutPar' : 'SumInPar' }}"
-      [data]="teeData"
-      [whiteEvent]="colorEventsSubject.asObservable()"
-    ></app-scorecard-input>
+  <div [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }">
+    {{ teeData[isFrontNine ? "SumOutPar" : "SumInPar"] }}
   </div>
   <div>
     <button *ngIf="showCopyPar && editing" (click)="copyParData()" id="copyPar">

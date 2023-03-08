@@ -46,7 +46,7 @@
     [(ngModel)]="strokesInputValue"
     max="20"
     oninput="validity.valid || (value='');"
-    step="0.01"
+    step="1"
     (keyup.enter)="updateScore(strokesInputValue); show10Input = false"
   />
 </div>

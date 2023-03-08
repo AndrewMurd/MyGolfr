@@ -171,6 +171,36 @@ export class ActiveScorecardComponent {
     for (let tee of this.scoreData.scorecard) {
       if (tee.id == data.id[0]) {
         tee[data.id[1]] = data.value;
+
+        if (data.id[1].charAt(0) == 'H') {
+          let inNum = 0;
+          let outNum = 0;
+          for (let [key, value] of Object.entries(tee)) {
+            if (key.charAt(0) == 'H' && key.length == 2) {
+              outNum += Number(value);
+            } else if (key.charAt(0) == 'H' && key.length == 3) {
+              inNum += Number(value);
+            }
+          }
+          tee['SumOut'] = outNum;
+          tee['SumIn'] = inNum;
+          this.scoreData.teeData['SumOut'] = outNum;
+          this.scoreData.teeData['SumIn'] = inNum;
+        } else if (data.id[1].charAt(0) == 'P') {
+          let inNum = 0;
+          let outNum = 0;
+          for (let [key, value] of Object.entries(tee)) {
+            if (key.charAt(0) == 'P' && key.length == 2) {
+              outNum += Number(value);
+            } else if (key.charAt(0) == 'P' && key.length == 3) {
+              inNum += Number(value);
+            }
+          }
+          tee['SumOutPar'] = outNum;
+          tee['SumInPar'] = inNum;
+          this.scoreData.teeData['SumOutPar'] = outNum;
+          this.scoreData.teeData['SumInPar'] = inNum;
+        }
       }
     }
     this.scoreData.teeData[data.id[1]] = data.value;
@@ -223,7 +253,9 @@ export class ActiveScorecardComponent {
     frontNineTee.setInput('id', teeData.id);
     frontNineTee.setInput('teeData', teeData);
     frontNineTee.setInput('isFrontNine', true);
-    this.selectedScore ? frontNineTee.setInput('selectedScore', true) : frontNineTee.setInput('selectedScore', false);
+    this.selectedScore
+      ? frontNineTee.setInput('selectedScore', true)
+      : frontNineTee.setInput('selectedScore', false);
     frontNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });
@@ -235,7 +267,9 @@ export class ActiveScorecardComponent {
     backNineTee.setInput('id', teeData.id);
     backNineTee.setInput('teeData', teeData);
     backNineTee.setInput('isFrontNine', false);
-    this.selectedScore ? backNineTee.setInput('selectedScore', true) : backNineTee.setInput('selectedScore', false);
+    this.selectedScore
+      ? backNineTee.setInput('selectedScore', true)
+      : backNineTee.setInput('selectedScore', false);
     backNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });

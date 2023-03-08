@@ -39,13 +39,15 @@ export class EditScoreCardComponent {
   async ngOnInit() {
     this.isLoading = true;
 
-    this.subscriptions.add(this.authService.token.asObservable().subscribe((value) => {
-      if (value) {
-        this.signedIn = true;
-      } else {
-        this.signedIn = false;
-      }
-    }));
+    this.subscriptions.add(
+      this.authService.token.asObservable().subscribe((value) => {
+        if (value) {
+          this.signedIn = true;
+        } else {
+          this.signedIn = false;
+        }
+      })
+    );
 
     this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
       if (value) {
@@ -56,12 +58,14 @@ export class EditScoreCardComponent {
 
   async ngAfterViewInit() {
     setTimeout(() => {
-      this.subscriptions.add(this.courseService.courseData.asObservable().subscribe((value) => {
-        if (value) {
-          this.courseData = value;
-          this.reload();
-        }
-      }));
+      this.subscriptions.add(
+        this.courseService.courseData.asObservable().subscribe((value) => {
+          if (value) {
+            this.courseData = value;
+            this.reload();
+          }
+        })
+      );
     });
   }
 
@@ -99,6 +103,32 @@ export class EditScoreCardComponent {
     for (let tee of this.courseData.scorecard) {
       if (tee.id == data.id[0]) {
         tee[data.id[1]] = data.value;
+
+        if (data.id[1].charAt(0) == 'H') {
+          let inNum = 0;
+          let outNum = 0;
+          for (let [key, value] of Object.entries(tee)) {
+            if (key.charAt(0) == 'H' && key.length == 2) {
+              outNum += Number(value);
+            } else if (key.charAt(0) == 'H' && key.length == 3) {
+              inNum += Number(value);
+            }
+          }
+          tee['SumOut'] = outNum;
+          tee['SumIn'] = inNum;
+        } else if (data.id[1].charAt(0) == 'P') {
+          let inNum = 0;
+          let outNum = 0;
+          for (let [key, value] of Object.entries(tee)) {
+            if (key.charAt(0) == 'P' && key.length == 2) {
+              outNum += Number(value);
+            } else if (key.charAt(0) == 'P' && key.length == 3) {
+              inNum += Number(value);
+            }
+          }
+          tee['SumOutPar'] = outNum;
+          tee['SumInPar'] = inNum;
+        }
       }
     }
   }
@@ -112,13 +142,13 @@ export class EditScoreCardComponent {
       this.courseData.googleDetails.reference,
       this.courseData.scorecard,
       'scorecard'
-    ); 
+    );
     if (!this.scoreData) return;
-    this.scoreData.scorecard = JSON.parse(JSON.stringify(this.courseData.scorecard));
+    this.scoreData.scorecard = JSON.parse(
+      JSON.stringify(this.courseData.scorecard)
+    );
     for (let tee of this.scoreData.scorecard) {
-      if (
-        tee.id == this.scoreData.teeData.id
-      ) {
+      if (tee.id == this.scoreData.teeData.id) {
         await this.scoreService.update(this.scoreData.id, tee, 'teeData');
         this.scoreData.teeData = tee;
       }
