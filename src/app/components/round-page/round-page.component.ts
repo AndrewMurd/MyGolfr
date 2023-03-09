@@ -14,6 +14,7 @@ import { ScoreService } from 'src/app/services/score.service';
 export class RoundPageComponent {
   subscriptions: Subscription = new Subscription();
   scoreData: any;
+  addressInfo: string = '';
 
   constructor(
     private courseService: CourseDetailsService,
@@ -32,7 +33,28 @@ export class RoundPageComponent {
         this.scoreData = response.score;
         this.scoreService.selectedScoreData.next(this.scoreData);
         this.loadingService.loading.next(false);
+
+        console.log(this.scoreData);
+
+        let stringArray = this.scoreData.googleDetails.plus_code.compound_code.split(/(\s+)/);
+        this.addressInfo = '';
+
+        for (let i = 1; i < stringArray.length; i++) {
+          this.addressInfo += stringArray[i];
+        }
       })
     );
+  }
+
+  calculateShotsToPar() {
+    const scoreToPar = (this.scoreData?.score.In + this.scoreData?.score.Out) - (this.scoreData?.teeData.SumInPar + this.scoreData?.teeData.SumOutPar);
+    if (scoreToPar < 0) {
+      return `-${scoreToPar}`;
+    } else if (scoreToPar > 0) {
+      return `+${scoreToPar}`;
+    } else if (scoreToPar == 0) {
+      return `${scoreToPar}`;
+    }
+    return '';
   }
 }

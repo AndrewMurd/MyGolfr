@@ -8,14 +8,28 @@ module.exports = class Score {
     );
   }
 
-  static findStatus(courseId, status) {
+  static findCourse(courseId) {
+    return executeQuery(
+      "SELECT * FROM courses INNER JOIN scores ON ? = scores.courseId",
+      [courseId]
+    );
+  }
+
+  static findCourseWithStatus(courseId, status) {
     return executeQuery(
       "SELECT * FROM courses INNER JOIN scores ON ? = scores.courseId WHERE statusComplete = ?",
       [courseId, status]
     );
   }
 
-  static findUser(userId, status) {
+  static findUser(userId) {
+    return executeQuery(
+      "SELECT * FROM courses INNER JOIN scores ON courses.id = scores.courseId WHERE userId = ?",
+      [userId]
+    );
+  }
+
+  static findUserWithStatus(userId, status) {
     return executeQuery(
       "SELECT * FROM courses INNER JOIN scores ON courses.id = scores.courseId WHERE userId = ? AND statusComplete = ?",
       [userId, status]

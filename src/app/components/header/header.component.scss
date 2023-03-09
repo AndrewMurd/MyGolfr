@@ -22,14 +22,13 @@
 }
 
 .header {
-  height: 60px;
   display: flex;
-  align-items: center;
   background-color: #303030;
   position: fixed;
   z-index: 100000;
   width: 110%;
   top: 0px;
+  height: 60px;
 }
 
 .logo {
@@ -37,6 +36,7 @@
   width: 55px;
   position: absolute;
   left: 15%;
+  top: 5px;
   cursor: pointer;
   transition: transform 0.3s;
   &:hover {
@@ -70,7 +70,7 @@
     transition: all 0.2s;
   }
   &:hover {
-    background-position: 0
+    background-position: 0;
   }
   &:hover::before {
     width: 100%;
@@ -138,7 +138,7 @@ a {
     transition: all 0.2s;
   }
   &:hover {
-    background-position: 0
+    background-position: 0;
   }
   &:hover::before {
     width: 100%;
@@ -153,7 +153,7 @@ a {
 }
 
 #roundsLink {
- margin-right: 40px;
+  margin-right: 40px;
 }
 
 #roundContainer {
@@ -170,6 +170,11 @@ a {
   margin-right: 40px;
 }
 
+.hamburger-menu {
+  z-index: 100001;
+  position: fixed;
+  top: 25px;
+}
 #menu__toggle {
   opacity: 0;
 }
@@ -189,7 +194,6 @@ a {
 }
 .menu__btn {
   position: fixed;
-  top: 25px;
   right: 20px;
   width: 30px;
   height: 30px;
@@ -204,14 +208,14 @@ a {
   width: 100%;
   height: 3px;
   background-color: white;
-  transition-duration: .25s;
+  transition-duration: 0.25s;
 }
 .menu__btn > span::before {
-  content: '';
+  content: "";
   top: -8px;
 }
 .menu__btn > span::after {
-  content: '';
+  content: "";
   top: 8px;
 }
 .menu__box {
@@ -225,27 +229,37 @@ a {
   padding: 80px 0;
   list-style: none;
   background-color: $theme;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, .4);
-  transition-duration: .25s;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+  transition-duration: 0.25s;
 }
+
 .menu__item {
   display: block;
   padding: 12px 24px;
   color: #333;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
   font-weight: 600;
   text-decoration: none;
-  transition-duration: .25s;
+  transition-duration: 0.25s;
 }
 .menu__item:hover {
-  background-color: #CFD8DC;
+  background-color: #cfd8dc;
 }
 
 .menu__item i {
   margin-top: 7px;
   margin-right: 50px;
 }
+
+// #test {
+//   top: 0px;
+//   position: absolute;
+//   height: 500px;
+//   width: 500px;
+//   background-color: blue;
+//   z-index: 100000000000000000000000000000000000000000000;
+// }
 
 @media (max-width: 1000px) {
   .logo {

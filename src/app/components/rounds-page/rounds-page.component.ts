@@ -14,7 +14,7 @@ import { ScoreService } from 'src/app/services/score.service';
 })
 export class RoundsPageComponent {
   subscriptions: Subscription = new Subscription();
-  @Input() selectedUser: any;
+  selectedUser: any;
   userData: any;
   scores: any;
   datedScores: any = {};
@@ -45,50 +45,51 @@ export class RoundsPageComponent {
 
   async ngOnInit() {
     this.loadingService.loading.next(true);
-    this.subscriptions.add(this.authService.user.asObservable().subscribe(async (value) => {
-      if (value) {
-        this.userData = value;
-        try {
-          const response: any = await this.scoreService.getUser(
-            this.userData.id,
-            1
-          );
-          this.scores = response.scores;
-
-          const currentDate = new Date();
-          for (let score of this.scores) {
-            const dateParts = score.dateTime.split('-');
-            const newDate = new Date(
-              dateParts[0],
-              dateParts[1] - 1,
-              dateParts[2].substr(0, 2)
+    this.subscriptions.add(
+      this.authService.user.asObservable().subscribe(async (value) => {
+        if (value) {
+          this.userData = value;
+          try {
+            const response: any = await this.scoreService.getUser(
+              this.userData.id
             );
-            if (newDate.getFullYear() == currentDate.getFullYear()) {
-              this.amountOfRoundsThisYear += 1;
+            this.scores = response.scores;
+
+            const currentDate = new Date();
+            for (let score of this.scores) {
+              const dateParts = score.dateTime.split('-');
+              const newDate = new Date(
+                dateParts[0],
+                dateParts[1] - 1,
+                dateParts[2].substr(0, 2)
+              );
+              if (newDate.getFullYear() == currentDate.getFullYear()) {
+                this.amountOfRoundsThisYear += 1;
+              }
+              score.formattedDate = newDate.toLocaleDateString();
             }
-            score.formattedDate = newDate.toLocaleDateString();
-          }
 
-          this.scores.sort((a: any, b: any) => {
-            return (
-              new Date(
-                b.dateTime.split('-')[0],
-                b.dateTime.split('-')[1] - 1,
-                b.dateTime.split('-')[2].substr(0, 2)
-              ).getTime() -
-              new Date(
-                a.dateTime.split('-')[0],
-                a.dateTime.split('-')[1] - 1,
-                a.dateTime.split('-')[2].substr(0, 2)
-              ).getTime()
-            );
-          });
-          this.loadingService.loading.next(false);
-        } catch (error) {
-          console.log(error);
+            this.scores.sort((a: any, b: any) => {
+              return (
+                new Date(
+                  b.dateTime.split('-')[0],
+                  b.dateTime.split('-')[1] - 1,
+                  b.dateTime.split('-')[2].substr(0, 2)
+                ).getTime() -
+                new Date(
+                  a.dateTime.split('-')[0],
+                  a.dateTime.split('-')[1] - 1,
+                  a.dateTime.split('-')[2].substr(0, 2)
+                ).getTime()
+              );
+            });
+            this.loadingService.loading.next(false);
+          } catch (error) {
+            console.log(error);
+          }
         }
-      }
-    }));
+      })
+    );
   }
 
   ngOnDestroy() {
@@ -96,7 +97,14 @@ export class RoundsPageComponent {
   }
 
   showOverview(score: any) {
-    this.router.navigate(['/round', score.id]);
+    if (score.statusComplete == 0) {
+      this.router.navigate(['/round/in-progress', score.id]);
+      setTimeout(() => {
+        this.scoreService.inProgressScoreData.next(score);
+      });
+    } else {
+      this.router.navigate(['/round' , score.id]);
+    }
   }
 
   async deleteRound(s: any, event: any) {
@@ -118,7 +126,7 @@ export class RoundsPageComponent {
   }
 
   onPan(event: any, index: number) {
-    if (event.additionalEvent == 'panleft') {
+    if (event.additionalEvent == 'panleft' && window.innerWidth < 830) {
       // event.target.style.right = `${-event.deltaX}px`;
       // event.target.style.transform = `translateX(${event.deltaX}px)`;
       if (event.deltaX < -50 || event.deltaX > 0) return;

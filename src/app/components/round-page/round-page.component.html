@@ -1,3 +1,24 @@
-<app-header></app-header>
+<app-header [height]="'200px'"></app-header>
+
+<div class="headerContent">
+  <div>
+    <h1 id="title">{{ scoreData?.name }}</h1>
+    <h2>{{ addressInfo }}</h2>
+  </div>
+  <div id="info">
+    <div id="total">
+      <h1>{{ scoreData?.score.In + scoreData?.score.Out }}</h1>
+      <h2>Total</h2>
+    </div>
+    <div id="toPar">
+      <h1>{{ calculateShotsToPar() }}</h1>
+      <h2>To Par</h2>
+    </div>
+  </div>
+</div>
 
 <app-active-scorecard [selectedScore]="true"></app-active-scorecard>
+
+<div id="roundPageContainer">
+
+</div>

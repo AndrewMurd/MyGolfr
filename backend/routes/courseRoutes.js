@@ -76,6 +76,24 @@ router.post("/courses", async (req, res) => {
   res.status(200).send({ courses: courses });
 });
 
+// @desc Get an array of courses sorted by clicks
+// @route GET /courses/courses_clicks
+// @access Private
+router.post("/courses_clicks", async (req, res) => {
+  const limit = req.body.limit;
+
+  try {
+    const courses = await Course.findByClicks(limit);
+    for (const course of courses) {
+      parseData(course);
+    }
+    res.status(200).send({ courses: courses });
+  } catch (error) {
+    console.log(error);
+    res.status(404).end();
+  }
+});
+
 // @desc Add a course
 // @route POST /courses/add
 // @access Private

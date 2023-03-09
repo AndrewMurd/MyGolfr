@@ -2,10 +2,10 @@ const mysql = require("mysql");
 const config = require("../config/config.json");
 
 const pool = mysql.createPool({
-  connectionLimit : 1000,
-  connectTimeout  : 60 * 60 * 1000,
-  acquireTimeout  : 60 * 60 * 1000,
-  timeout         : 60 * 60 * 1000,
+  connectionLimit: 1000,
+  connectTimeout: 60 * 60 * 1000,
+  acquireTimeout: 60 * 60 * 1000,
+  timeout: 60 * 60 * 1000,
   host: config.host,
   user: config.user,
   password: config.password,
@@ -14,12 +14,16 @@ const pool = mysql.createPool({
 
 const executeQuery = (query, arr) => {
   return new Promise((resolve, reject) => {
-    pool.query(query, arr, (error, elements) => {
-      if (error) {
-        return reject(error);
-      }
-      return resolve(elements);
-    });
+    try {
+      pool.query(query, arr, (error, elements) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(elements);
+      });
+    } catch (error) {
+      console.log(error);
+    }
   });
 };
 

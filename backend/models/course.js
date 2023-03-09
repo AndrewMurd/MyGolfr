@@ -11,6 +11,10 @@ module.exports = class Course {
     return executeQuery("SELECT * FROM courses WHERE id = ?", [courseId]);
   }
 
+  static findByClicks(limit) {
+    return executeQuery("SELECT * FROM courses ORDER BY clicks desc limit ?", [limit]);
+  }
+
   static save(course) {
     return executeQuery(
       "INSERT INTO courses (id, name, googleDetails, courseDetails, clicks, scorecard, mapLayout) VALUES (?, ?, ?, ?, ?, ?, ?)",

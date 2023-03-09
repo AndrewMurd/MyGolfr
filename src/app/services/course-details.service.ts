@@ -99,6 +99,23 @@ export class CourseDetailsService {
     });
   }
 
+  async getCoursesByClicks(limit: number) {
+    return await new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'courses/courses_clicks', {
+          limit: limit
+        })
+        .subscribe({
+          next: (data: any) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
   async setScorecardValue(courseId: string, data: any) {
     return await new Promise((resolve, reject) => {
       this.http

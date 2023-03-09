@@ -43,7 +43,9 @@ export class AppComponent {
       this.authService.user.next(userData);
       const response: any = await this.scoreService.getUser(userData.id, 0);
       this.scoreService.inProgressScoreData.next(response.scores[0]);
-    } catch (error) {}
+    } catch (error) {
+      this.authService.token.next('');
+    }
     this.loadingService.loading.asObservable().subscribe((value) => {
       const body = document.getElementsByTagName('body')[0];
       if (!value) {

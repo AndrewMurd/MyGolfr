@@ -1,7 +1,93 @@
 @import "../../utilities/variables.scss";
 
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  height: auto;
+  top: 110px;
+  color: white;
+  position: fixed;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, 0%);
+  width: 90%;
+  max-width: 1300px;
+  z-index: 100000;
+  #title {
+    position: relative;
+    font-weight: bold;
+    font-size: 40px;
+    margin-bottom: 0px;
+  }
+  h2 {
+    color: rgb(228, 228, 228);
+  }
+  #info {
+    display: flex;
+    height: 80px;
+    border-radius: 10px;
+    #total {
+      color: black;
+      border-radius: 10px 0px 0px 10px;
+      border: none;
+      width: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 90px;
+      background-color: $theme;
+      color: white;
+      h1 {
+        font-weight: bold;
+        font-size: 35px;
+        margin-top: 10px;
+        margin-bottom: 8px;
+      }
+      h2 {
+        font-weight: 400;
+        margin-top: 0px;
+        font-size: 15px;
+        color: white;
+        line-height: 20px;
+      }
+    }
+    #toPar {
+      color: black;
+      border-radius: 0px 10px 10px 0px;
+      border: none;
+      width: 80px;
+      background-color: lightgrey;
+      text-align: center;
+      h1 {
+        font-weight: bold;
+        font-size: 35px;
+        margin-top: 10px;
+        margin-bottom: 8px;
+      }
+      h2 {
+        font-weight: 400;
+        margin-top: 0px;
+        font-size: 15px;
+        color: black;
+        line-height: 20px;
+      }
+    }
+  }
+}
+
+#roundPageContainer {
+  height: 100%;
+  top: 100px;
+  position: relative;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, 0%);
+  width: 90%;
+  max-width: 1300px;
+}
+
 app-active-scorecard {
-  top: 85px;
+  top: 220px;
   margin-left: auto;
   margin-right: auto;
   position: absolute;
@@ -9,4 +95,53 @@ app-active-scorecard {
   right: 0;
   z-index: 10;
   width: 738px;
+}
+
+@media (max-width: 830px) {
+  app-active-scorecard {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .headerContent {
+    top: 60px;
+    #title {
+      font-size: 30px;
+      margin-bottom: 0px;
+    }
+    h2 {
+      font-size: 18px;
+    }
+    #info {
+      flex-direction: column;
+      #total {
+        width: 80px;
+        border-radius: 10px 10px 0px 0px;
+        h1 {
+          font-size: 30px;
+          margin-top: 0px;
+          margin-bottom: 0px;
+        }
+        h2 {
+          margin-top: 0px;
+          font-size: 15px;
+          margin-bottom: 5px;
+        }
+      }
+      #toPar {
+        border-radius: 0px 0px 10px 10px;
+        width: 80px;
+        h1 {
+          font-size: 30px;
+          margin-top: 0px;
+          margin-bottom: 0px;
+        }
+        h2 {
+          margin-top: 0px;
+          font-size: 15px;
+          margin-bottom: 5px;
+        }
+      }
+    }
+  }
 }

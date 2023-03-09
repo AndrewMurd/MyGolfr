@@ -29,11 +29,11 @@ export class ScoreService {
     });
   }
 
-  async getStatus(status: boolean) {
+  async getCourse(courseId: string, status: number = 2) {
     return await new Promise((resolve, reject) => {
       this.http
         .get(ROOT_URL + 'scores/score_status', {
-          params: new HttpParams().set('status', status),
+          params: new HttpParams().set('courseId', courseId).set('status', status),
         })
         .subscribe({
           next: (data: any) => {
@@ -46,7 +46,7 @@ export class ScoreService {
     });
   }
 
-  async getUser(userId: any, status: number) {
+  async getUser(userId: any, status: number = 2) {
     return await new Promise((resolve, reject) => {
       this.http
         .get(ROOT_URL + 'scores/score_user', {

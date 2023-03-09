@@ -1,17 +1,18 @@
-<app-header></app-header>
+<app-header [height]="'200px'"></app-header>
+
+<div class="headerContent">
+  <h1 *ngIf="selectedUser" id="title">{{ userData?.name }}'s Rounds</h1>
+  <h1 *ngIf="!selectedUser" id="title">Rounds</h1>
+  <h2 id="numberInfo">
+    2023:
+    <span [ngStyle]="{ 'font-weight': 500 }">{{ amountOfRoundsThisYear }}</span
+    >, Total:
+    <span [ngStyle]="{ 'font-weight': 500 }">{{ scores?.length }}</span>
+  </h2>
+</div>
 
 <div id="roundsPageContainer">
   <div>
-    <h1 *ngIf="selectedUser" id="title">{{ userData?.name }}'s Rounds</h1>
-    <h1 *ngIf="!selectedUser" id="title">Rounds</h1>
-    <h2 id="numberInfo">
-      2023:
-      <span [ngStyle]="{ 'font-weight': 500 }">{{
-        amountOfRoundsThisYear
-      }}</span
-      >, Total:
-      <span [ngStyle]="{ 'font-weight': 500 }">{{ scores?.length }}</span>
-    </h2>
     <div id="roundsContainer">
       <div
         id="roundItemContainer"
@@ -25,15 +26,23 @@
           (panmove)="onPan($event, index)"
           (click)="showOverview(score)"
         >
-          <div id="info">
-            <h1>{{ score.name }}</h1>
-            <h2>
-              {{ score.formattedDate }} •
-              {{
-                score.courseDetails.nineHoleGolfCourse ? "9 Holes" : "18 Holes"
-              }}
-              • {{ score.teeData.ColorName }}
-            </h2>
+          <div id="displayFlex">
+            <div id="info">
+              <h1>{{ score.name }}</h1>
+              <h2>
+                {{ score.formattedDate }} •
+                {{
+                  score.courseDetails.nineHoleGolfCourse
+                    ? "9 Holes"
+                    : "18 Holes"
+                }}
+                • {{ score.teeData.ColorName }}
+              </h2>
+            </div>
+            <div *ngIf="score.statusComplete == 0" id="inProgressIndicator">
+              <span>IN PROGRESS</span>
+              <div class="dot"></div>
+            </div>
           </div>
           <div class="total" id="total{{ index }}">
             <h1>{{ score.score.In + score.score.Out }}</h1>

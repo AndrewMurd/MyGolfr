@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
@@ -11,6 +11,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 })
 export class HeaderComponent {
   subscriptions: Subscription = new Subscription();
+  @Input() height: string = '60px';
   signedIn: boolean = false;
   userDropdown: boolean = false;
   userData: any = { name: 'Guest' };

@@ -28,26 +28,44 @@ export class SearchBarComponent {
     private authService: AuthenticationService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.isLoading = true;
     this.setBorder();
-    this.subscriptions.add(this.authService.user.asObservable().subscribe(async (value) => {
-      if (value) {
-        this.userData = value;
-        const items = Object.keys(this.userData.favCourses).map((key) => {
-          return [key, this.userData.favCourses[key]];
-        });
-        items.sort((first, second) => {
-          return second[1] - first[1];
-        });
-        const response: any = await this.courseService.getCourses(items);
-        for (let course of response.courses) {
-          this.courses.push(course.googleDetails);
+
+    this.subscriptions.add(
+      this.authService.user.asObservable().subscribe(async (value) => {
+        if (value) {
+          this.isLoading = true;
+          this.userData = value;
+          const items = Object.keys(this.userData.favCourses).map((key) => {
+            return [key, this.userData.favCourses[key]];
+          });
+          items.sort((first, second) => {
+            return second[1] - first[1];
+          });
+          items.slice(0, this.amountToDisplay * 3);
+          const response: any = await this.courseService.getCourses(items);
+          for (let course of response.courses) {
+            this.courses.push(course.googleDetails);
+          }
+          this.isLoading = false;
+          this.setBorder();
         }
-        this.isLoading = false;
-        this.setBorder();
-      }
-    }));
+      })
+    );
+
+    this.subscriptions.add(
+      this.authService.token.asObservable().subscribe(async (value) => {
+        if (value == '') {
+          const response: any = await this.courseService.getCoursesByClicks(15);
+          for (let course of response.courses) {
+            this.courses.push(course.googleDetails);
+          }
+          this.isLoading = false;
+          this.setBorder();
+        }
+      })
+    );
   }
 
   ngOnDestroy() {

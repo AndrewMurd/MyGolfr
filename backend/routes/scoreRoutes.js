@@ -42,7 +42,12 @@ router.get("/score_status", async (req, res) => {
   const courseId = req.query.courseId;
 
   try {
-    const scores = await Score.findStatus(courseId, status);
+    let scores;
+    if (status == 2) {
+      scores = await Score.findCourse(courseId);
+    } else {
+      scores = await Score.findCourseWithStatus(courseId, status);
+    }
 
     if (scores.length == 0) {
       res.status(404).send({ error: "Score does not exist!" });
@@ -66,7 +71,12 @@ router.get("/score_user", async (req, res) => {
   const userId = req.query.userId;
 
   try {
-    const scores = await Score.findUser(userId, status);
+    let scores;
+    if (status == 2) {
+      scores = await Score.findUser(userId);
+    } else {
+      scores = await Score.findUserWithStatus(userId, status);
+    }
 
     if (scores.length == 0) {
       res.status(404).send({ error: "Score does not exist!" });
