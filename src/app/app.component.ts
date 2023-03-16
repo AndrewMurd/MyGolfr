@@ -38,14 +38,14 @@ export class AppComponent {
       const res: any = await this.authService.refresh();
       if (res.accessToken) {
         this.authService.token.next(res.accessToken);
+      } else {
+        this.authService.token.next('');
       }
       const userData: any = jwt_decode(this.authService.token.getValue());
       this.authService.user.next(userData);
       const response: any = await this.scoreService.getUser(userData.id, 0);
       this.scoreService.inProgressScoreData.next(response.scores[0]);
-    } catch (error) {
-      this.authService.token.next('');
-    }
+    } catch (error) {}
     this.loadingService.loading.asObservable().subscribe((value) => {
       const body = document.getElementsByTagName('body')[0];
       if (!value) {

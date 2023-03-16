@@ -4,7 +4,7 @@
     <strong>{{ name }}</strong>
     <a>{{ addressInfo }}</a>
   </div>
-  <div (click)="startRound()" id="startBtnContainer">
+  <div *ngIf="!scoreData" (click)="startRound()" id="startBtnContainer">
     <button class="startRoundBtn">
       <span class="circle" aria-hidden="true">
         <span class="icon arrow"></span>

@@ -96,7 +96,7 @@ router.get("/score_user", async (req, res) => {
 // @route POST /scores/add
 // @access Private
 router.post("/add", async (req, res) => {
-  const { userId, courseId, teeData, hdcpType, dateTime } = req.body;
+  const { userId, courseId, teeData, hdcpType, startTime } = req.body;
 
   try {
     const response = await Score.save(
@@ -104,7 +104,7 @@ router.post("/add", async (req, res) => {
       courseId,
       JSON.stringify(teeData),
       hdcpType,
-      dateTime
+      startTime
     );
     console.log(`Added new score for user ${userId}`);
     res.json({ id: response.insertId });
@@ -135,8 +135,11 @@ router.post("/update", async (req, res) => {
     }
     data["Out"] = outNum;
     data["In"] = inNum;
+  } else if (type == "statusComplete") {
+    const endTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    await Score.update(endTime, 'endTime', id);
   }
-
+  
   console.log(`Updating ${type} for ${id}`);
 
   await Score.update(JSON.stringify(data), type, id);

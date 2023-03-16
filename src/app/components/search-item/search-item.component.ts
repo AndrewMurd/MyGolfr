@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CourseDetailsService } from '../../services/course-details.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
 import { Subscription } from 'rxjs';
+import { ScoreService } from 'src/app/services/score.service';
 
 @Component({
   selector: 'app-search-item',
@@ -14,6 +14,7 @@ export class SearchItemComponent {
   subscriptions: Subscription = new Subscription();
   signedIn: boolean = false;
   userData: any;
+  scoreData: any;
   @Input() data!: any;
   @Output() onClickItem: EventEmitter<any> = new EventEmitter();
   src: string =
@@ -24,7 +25,7 @@ export class SearchItemComponent {
   isPhone: boolean = false;
 
   constructor(
-    private courseService: CourseDetailsService,
+    private scoreService: ScoreService,
     private authService: AuthenticationService,
     private userService: UserService,
     private router: Router
@@ -47,6 +48,12 @@ export class SearchItemComponent {
     this.subscriptions.add(this.authService.user.asObservable().subscribe((value) => {
       if (value) {
         this.userData = value;
+      }
+    }));
+
+    this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
+      if (value) {
+        this.scoreData = value;
       }
     }));
 
@@ -81,14 +88,9 @@ export class SearchItemComponent {
   }
 
   async addClickToUser() {
-    if (this.userData.favCourses) {
-      if (this.userData.favCourses[this.data.reference]) {
-        this.userData.favCourses[this.data.reference] += 1;
-      } else {
-        this.userData.favCourses[this.data.reference] = 1;
-      }
+    if (this.userData.favCourses[this.data.reference]) {
+      this.userData.favCourses[this.data.reference] += 1;
     } else {
-      this.userData.favCourses = {};
       this.userData.favCourses[this.data.reference] = 1;
     }
     this.authService.user.next(this.userData);

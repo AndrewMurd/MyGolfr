@@ -35,12 +35,14 @@ export class ConfirmationPopupComponent {
     this.subscriptions.unsubscribe();
   }
 
-  confirm() {
+  confirm(e: any) {
+    e.stopPropagation();
     this.showPopUp = false;
     this.alert.yesFn();
   }
 
-  cancel() {
+  cancel(e: any) {
+    e.stopPropagation();
     this.showPopUp = false;
     this.alert.noFn();
   }

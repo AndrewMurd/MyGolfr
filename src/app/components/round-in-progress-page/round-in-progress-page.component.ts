@@ -46,10 +46,10 @@ export class RoundInProgressPageComponent {
             } else {
               this.selectedScore = 'Strokes';
             }
+            this.loadingService.loading.next(false);
           }
         })
     );
-    this.loadingService.loading.next(false);
   }
 
   ngOnDestroy() {
@@ -96,31 +96,8 @@ export class RoundInProgressPageComponent {
 
   getCurrentHoleInProgress(score: any) {
     const ln = Object.keys(score).length;
-    if (ln < 1) return 1;
+    if (ln == 2) return 1;
     return ln - 2;
-  }
-
-  checkCompleteTees(data: any) {
-    let courseData = data;
-    if (courseData.courseDetails.nineHoleGolfCourse) {
-      courseData.scorecard = courseData.scorecard.filter((tee: any) => {
-        return Object.keys(tee).length >= 31;
-      });
-    } else {
-      courseData.scorecard = courseData.scorecard.filter((tee: any) => {
-        return Object.keys(tee).length === 32 * 2;
-      });
-    }
-    return courseData;
-  }
-
-  convertDateToMySql() {
-    var date = new Date();
-    return date.toISOString().slice(0, 19).replace('T', ' ');
-  }
-
-  clickedOutside() {
-    this.scoreDropdown(false);
   }
 
   scoreDropdown(set: boolean) {

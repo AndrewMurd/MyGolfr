@@ -36,10 +36,10 @@ module.exports = class Score {
     );
   }
 
-  static save(userId, courseId, teeData, hdcpType, dateTime) {
+  static save(userId, courseId, teeData, hdcpType, startTime) {
     return executeQuery(
-      "INSERT INTO scores (userId, courseId, teeData, score, statusComplete, hdcpType, dateTime) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [userId, courseId, teeData, JSON.stringify({}), 0, hdcpType, dateTime]
+      "INSERT INTO scores (userId, courseId, teeData, score, statusComplete, hdcpType, startTime, endTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [userId, courseId, teeData, JSON.stringify({In: 0, Out: 0}), 0, hdcpType, startTime, null]
     );
   }
 

@@ -45,12 +45,9 @@ export class ScoreInputComponent {
   }
 
   async submit() {
-    if (!this.value) {
-      alert('Must enter value!');
-      return;
+    if (this.value) {
+      this.showField = false;
     }
-
-    this.showField = false;
 
     this.data.score[this.id] = this.value;
     const response: any = await this.scoreService.update(

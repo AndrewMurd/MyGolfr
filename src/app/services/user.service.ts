@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { ROOT_URL } from '../utilities/enviroment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  favCourses = new BehaviorSubject<any>(null);
 
   constructor(private http: HttpClient) {}
 

@@ -17,7 +17,7 @@
   [ngStyle]="showScorecard ? { display: '' } : { display: 'none' }"
 ></app-active-scorecard>
 
-<div id="scoreInput" (clickOutside)="clickedOutside()">
+<div id="scoreInput" (clickOutside)="scoreDropdown(false)">
   <div *ngIf="!show10Input && currentHole != 'course'">
     <nav id="selectScoreBtn">
       <label for="touch"

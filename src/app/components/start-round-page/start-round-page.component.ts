@@ -6,6 +6,7 @@ import { ScoreService } from '../../services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { createRange, getColorWhite, getRGB } from '../../utilities/functions';
 import { LoadingService } from 'src/app/services/loading.service';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-start-round-page',
@@ -31,6 +32,7 @@ export class StartRoundPageComponent {
     private authService: AuthenticationService,
     private scoreService: ScoreService,
     private loadingService: LoadingService,
+    private alertService: AlertService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -77,13 +79,14 @@ export class StartRoundPageComponent {
   }
 
   async startRound() {
+    this.loadingService.loading.next(true);
     try {
       await this.scoreService.newScore(
         this.userData.id,
         this.courseData.id,
         this.selectedTee,
         this.hdcpType,
-        this.convertDateToMySql()
+        this.sqlDate()
       );
       // navigate to round in progress page
       const response: any = await this.scoreService.getUser(
@@ -97,6 +100,7 @@ export class StartRoundPageComponent {
     } catch (error) {
       console.log(error);
     }
+    this.loadingService.loading.next(false);
   }
 
   async setCurrentHole(a: any) {
@@ -122,13 +126,18 @@ export class StartRoundPageComponent {
     });
   }
 
-  convertDateToMySql() {
-    var date = new Date();
+  sqlDate() {
+    const date = new Date();
     return date.toISOString().slice(0, 19).replace('T', ' ');
   }
 
-  clickedOutside() {
-    this.teeDropdown(false);
+  alertUserOfTees() {
+    if (this.completedTees.length == 0) {
+      this.alertService.alert(
+        'You must complete a tee in the scorecard to start a round.',
+        { color: 'green', content: 'Accept' }
+      );
+    }
   }
 
   teeDropdown(set: boolean) {

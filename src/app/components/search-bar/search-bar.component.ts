@@ -6,6 +6,7 @@ import { CourseDetailsService } from '../../services/course-details.service';
 import { Subject, Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -25,6 +26,7 @@ export class SearchBarComponent {
   constructor(
     private http: HttpClient,
     private courseService: CourseDetailsService,
+    private userService: UserService,
     private authService: AuthenticationService
   ) {}
 
@@ -37,16 +39,30 @@ export class SearchBarComponent {
         if (value) {
           this.isLoading = true;
           this.userData = value;
-          const items = Object.keys(this.userData.favCourses).map((key) => {
-            return [key, this.userData.favCourses[key]];
-          });
-          items.sort((first, second) => {
-            return second[1] - first[1];
-          });
-          items.slice(0, this.amountToDisplay * 3);
-          const response: any = await this.courseService.getCourses(items);
-          for (let course of response.courses) {
-            this.courses.push(course.googleDetails);
+          if (value.favCourses) {
+            if (Object.keys(this.userData.favCourses).length == 0) {
+              const response: any = await this.courseService.getCoursesByClicks(
+                15
+              );
+              for (let course of response.courses) {
+                this.courses.push(course.googleDetails);
+              }
+            } else {
+              const items = Object.keys(this.userData.favCourses).map((key) => {
+                return [key, this.userData.favCourses[key]];
+              });
+              items.sort((first, second) => {
+                return second[1] - first[1];
+              });
+              items.slice(0, this.amountToDisplay * 3);
+              const response: any = await this.courseService.getCourses(items);
+              for (let course of response.courses) {
+                this.courses.push(course.googleDetails);
+              }
+            }
+          } else {
+            this.userData.favCourses = {};
+            await this.userService.update(this.userData);
           }
           this.isLoading = false;
           this.setBorder();

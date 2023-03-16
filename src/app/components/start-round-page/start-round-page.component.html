@@ -38,11 +38,11 @@
   </div>
 </div>
 
-<nav id="selectTeeBtn" (clickOutside)="clickedOutside()">
+<nav id="selectTeeBtn" (clickOutside)="teeDropdown(false)">
   <label for="touch"><span id="startRoundSpan">Start Round</span></label>
   <input
     type="checkbox"
-    (click)="teeDropdown(!this.openTeeDropdown)"
+    (click)="teeDropdown(!this.openTeeDropdown); alertUserOfTees()"
     id="touch"
   />
   <div id="selectTeeBtnSlide" class="slide">

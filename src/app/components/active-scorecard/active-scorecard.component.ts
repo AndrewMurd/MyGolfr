@@ -4,6 +4,7 @@ import { Subject, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
+import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { ActiveTeeComponent } from '../active-tee/active-tee.component';
 
@@ -34,6 +35,7 @@ export class ActiveScorecardComponent {
     private authService: AuthenticationService,
     private scoreService: ScoreService,
     private alertService: AlertService,
+    private loadingService: LoadingService,
     private router: Router
   ) {}
 
@@ -108,12 +110,19 @@ export class ActiveScorecardComponent {
       ? (factor = 10)
       : (factor = 20);
 
-    if (Object.keys(this.scoreData.score).length >= factor) {
+    let count = 0;
+    for (let value of Object.values(this.scoreData.score)) {
+      if (value != '') {
+        count++;
+      }
+    }
+
+    if (Object.keys(this.scoreData.score).length >= factor && count == factor) {
       this.alertService.confirm(
         'Are you sure you want to submit this score?',
         { color: 'green', content: 'Confirm' },
-        'confirm',
         async () => {
+          this.loadingService.loading.next(true);
           try {
             await this.scoreService.update(
               this.scoreData.id,
@@ -123,15 +132,21 @@ export class ActiveScorecardComponent {
             this.scoreService.inProgressScoreData.next(null);
             this.router.navigate(['/round', this.scoreData.id]);
           } catch (error) {}
+          this.loadingService.loading.next(false);
         },
         () => {}
+      );
+    } else if (this.scoreData.hdcpType == 'basic') {
+      this.alertService.alert(
+        'This score is incomplete! You must complete 18 holes when calculating handicap.',
+        { color: 'green', content: 'Accept' }
       );
     } else {
       this.alertService.confirm(
         'This score is incomplete! Are you sure you want to submit this score?',
         { color: 'green', content: 'Confirm' },
-        'confirm',
         async () => {
+          this.loadingService.loading.next(true);
           try {
             await this.scoreService.update(
               this.scoreData.id,
@@ -141,6 +156,7 @@ export class ActiveScorecardComponent {
             this.scoreService.inProgressScoreData.next(null);
             this.router.navigate(['/round', this.scoreData.id]);
           } catch (error) {}
+          this.loadingService.loading.next(false);
         },
         () => {}
       );
@@ -151,8 +167,8 @@ export class ActiveScorecardComponent {
     this.alertService.confirm(
       'Are you sure you want to delete this score? (Cannot be undone)',
       { color: 'red', content: 'Delete' },
-      'confirm',
       async () => {
+        this.loadingService.loading.next(true);
         try {
           await this.scoreService.delete(this.scoreData.id);
           this.router.navigate([
@@ -161,6 +177,7 @@ export class ActiveScorecardComponent {
           ]);
           this.scoreService.inProgressScoreData.next(null);
         } catch (error) {}
+        this.loadingService.loading.next(false);
       },
       () => {}
     );

@@ -31,11 +31,7 @@
               <h1>{{ score.name }}</h1>
               <h2>
                 {{ score.formattedDate }} •
-                {{
-                  score.courseDetails.nineHoleGolfCourse
-                    ? "9 Holes"
-                    : "18 Holes"
-                }}
+                {{ score.holes + " Holes" }}
                 • {{ score.teeData.ColorName }}
               </h2>
             </div>

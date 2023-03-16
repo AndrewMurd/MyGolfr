@@ -47,9 +47,7 @@ export class HeaderComponent {
     }));
 
     this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
-      if (value) {
-        this.scoreData = value;
-      }
+      this.scoreData = value;
     }));
   }
 

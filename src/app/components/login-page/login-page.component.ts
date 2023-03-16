@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
+import { ScoreService } from 'src/app/services/score.service';
 
 @Component({
   selector: 'app-login-page',
@@ -20,6 +21,7 @@ export class LoginPageComponent {
 
   constructor(
     private authService: AuthenticationService,
+    private scoreService: ScoreService,
     private router: Router
   ) {}
 
@@ -62,7 +64,7 @@ export class LoginPageComponent {
 
     this.authService
       .login(this.email, this.password)
-      .then((data: any) => {
+      .then(async (data: any) => {
         this.btn!.classList.remove('onclic');
         this.btn!.classList.add('validate');
         this.resetInnerText();
@@ -71,6 +73,11 @@ export class LoginPageComponent {
         this.authService.token.next(data.accessToken);
         const userData: any = jwt_decode(data.accessToken);
         this.authService.user.next(userData);
+
+        try {
+          const response: any = await this.scoreService.getUser(userData.id, 0);
+          this.scoreService.inProgressScoreData.next(response.scores[0]);
+        } catch (error) {}
 
         setTimeout(() => {
           this.router.navigate(['/']);

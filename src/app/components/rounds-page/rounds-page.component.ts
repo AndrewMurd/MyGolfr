@@ -57,7 +57,7 @@ export class RoundsPageComponent {
 
             const currentDate = new Date();
             for (let score of this.scores) {
-              const dateParts = score.dateTime.split('-');
+              const dateParts = score.startTime.split('-');
               const newDate = new Date(
                 dateParts[0],
                 dateParts[1] - 1,
@@ -67,25 +67,34 @@ export class RoundsPageComponent {
                 this.amountOfRoundsThisYear += 1;
               }
               score.formattedDate = newDate.toLocaleDateString();
+
+              let count = 0;
+              for (let [key, value] of Object.entries(score.score)) {
+                if (value != '' && key != 'In' && key != 'Out') {
+                  count++;
+                }
+              }
+              score['holes'] = count;
             }
 
             this.scores.sort((a: any, b: any) => {
               return (
                 new Date(
-                  b.dateTime.split('-')[0],
-                  b.dateTime.split('-')[1] - 1,
-                  b.dateTime.split('-')[2].substr(0, 2)
+                  b.startTime.split('-')[0],
+                  b.startTime.split('-')[1] - 1,
+                  b.startTime.split('-')[2].substr(0, 2)
                 ).getTime() -
                 new Date(
-                  a.dateTime.split('-')[0],
-                  a.dateTime.split('-')[1] - 1,
-                  a.dateTime.split('-')[2].substr(0, 2)
+                  a.startTime.split('-')[0],
+                  a.startTime.split('-')[1] - 1,
+                  a.startTime.split('-')[2].substr(0, 2)
                 ).getTime()
               );
             });
             this.loadingService.loading.next(false);
           } catch (error) {
             console.log(error);
+            this.loadingService.loading.next(false);
           }
         }
       })
@@ -112,14 +121,18 @@ export class RoundsPageComponent {
     this.alertService.confirm(
       'Deleting this round will make it disappear forever and will not be retrievable. Are you sure you want to delete it?',
       { color: 'red', content: 'Delete' },
-      'confirm',
       async () => {
         try {
+          this.loadingService.loading.next(true);
           this.scores = this.scores.filter((score: any) => {
             return s.id != score.id;
           });
           await this.scoreService.delete(s.id);
+          if (s.statusComplete == 0) {
+            this.scoreService.inProgressScoreData.next(null);
+          }
         } catch (error) {}
+        this.loadingService.loading.next(false);
       },
       () => {}
     );

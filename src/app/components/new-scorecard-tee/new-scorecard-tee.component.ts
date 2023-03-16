@@ -266,7 +266,6 @@ export class NewScorecardTeeComponent {
     this.alertService.confirm(
       'Deleting this Tee Box will delete it in the database forever. Are you sure you want to delete it?',
       { color: 'red', content: 'Delete' },
-      'confirm',
       async () => {
         try {
           document.getElementById(this.teeData.id)?.remove();

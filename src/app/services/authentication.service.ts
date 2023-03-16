@@ -50,7 +50,7 @@ export class AuthenticationService {
         )
         .subscribe({
           next: (data) => {
-            this.token.next(null);
+            this.token.next('');
             return resolve(data);
           },
           error: (error) => {
