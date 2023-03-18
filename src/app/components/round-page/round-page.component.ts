@@ -37,8 +37,6 @@ export class RoundPageComponent {
         this.scoreService.selectedScoreData.next(this.scoreData);
         this.loadingService.loading.next(false);
 
-        console.log(this.scoreData);
-
         let count = 0;
         for (let [key, value] of Object.entries(this.scoreData.score)) {
           if (value != '' && key != 'In' && key != 'Out') {
@@ -50,8 +48,6 @@ export class RoundPageComponent {
         this.date = this.convertSqlDateTime(this.scoreData.startTime);
 
         this.timeDifference = new Date(this.convertSqlDateTime(this.scoreData.endTime) - this.date).toISOString().slice(11, 19);
-
-        console.log(this.timeDifference)
 
         let stringArray =
           this.scoreData.googleDetails.plus_code.compound_code.split(/(\s+)/);

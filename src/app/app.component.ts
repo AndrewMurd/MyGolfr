@@ -18,6 +18,7 @@ import {
 })
 export class AppComponent {
   loading: boolean = false;
+  userData: any;
 
   constructor(
     private authService: AuthenticationService,
@@ -38,14 +39,18 @@ export class AppComponent {
       const res: any = await this.authService.refresh();
       if (res.accessToken) {
         this.authService.token.next(res.accessToken);
-      } else {
-        this.authService.token.next('');
       }
-      const userData: any = jwt_decode(this.authService.token.getValue());
-      this.authService.user.next(userData);
-      const response: any = await this.scoreService.getUser(userData.id, 0);
+      this.userData = jwt_decode(this.authService.token.getValue());
+      this.authService.user.next(this.userData);
+    } catch (error) {
+      this.authService.token.next('');
+    }
+
+    try {
+      const response: any = await this.scoreService.getUser(this.userData.id, 0);
       this.scoreService.inProgressScoreData.next(response.scores[0]);
     } catch (error) {}
+    
     this.loadingService.loading.asObservable().subscribe((value) => {
       const body = document.getElementsByTagName('body')[0];
       if (!value) {

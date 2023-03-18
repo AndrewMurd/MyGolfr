@@ -74,9 +74,8 @@
     <li>
       <a
         *ngIf="signedIn && scoreData"
-        routerLink="/start_round"
         class="menu__item"
-        (click)="closeBox()"
+        (click)="closeBox(); navigateToStartRound()"
         >Continue Round</a
       >
     </li>

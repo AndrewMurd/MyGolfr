@@ -7,7 +7,6 @@ import { ROOT_URL } from '../utilities/enviroment';
   providedIn: 'root'
 })
 export class UserService {
-  favCourses = new BehaviorSubject<any>(null);
 
   constructor(private http: HttpClient) {}
 

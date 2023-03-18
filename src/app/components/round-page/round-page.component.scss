@@ -188,4 +188,27 @@ app-active-scorecard {
       }
     }
   }
+
+  #roundPageContainer {
+    width: 97%;
+    #roundInfoContainer {
+      height: 150px;
+      #topBlock {
+        font-size: 22px;
+      }
+      #bottomBlock {
+        .infoContainer {
+          position: relative;
+          top: 10px;
+          h1 {
+            font-size: 20px;
+          }
+          h2 {
+            line-height: 15px;
+            font-size: 13px;
+          }
+        }
+      }
+    }
+  }
 }

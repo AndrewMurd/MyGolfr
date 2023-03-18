@@ -33,9 +33,9 @@ export class ScoreInputComponent {
 
     if (this.data.score[this.id]) {
       this.value = this.data.score[this.id];
-      this.par = this.data.teeData['P' + this.id];
       this.showField = false;
     }
+    this.par = this.data.teeData['P' + this.id];
 
     this.setBorder();
   }

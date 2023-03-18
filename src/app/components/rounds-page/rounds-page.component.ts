@@ -17,6 +17,7 @@ export class RoundsPageComponent {
   selectedUser: any;
   userData: any;
   scores: any;
+  numberOfScores: number = 0;
   datedScores: any = {};
   amountOfRoundsThisYear: number = 0;
   monthNames = [
@@ -54,6 +55,7 @@ export class RoundsPageComponent {
               this.userData.id
             );
             this.scores = response.scores;
+            this.numberOfScores = this.scores.length;
 
             const currentDate = new Date();
             for (let score of this.scores) {
