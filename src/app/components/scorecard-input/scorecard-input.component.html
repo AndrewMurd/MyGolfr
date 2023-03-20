@@ -10,7 +10,8 @@
     [(ngModel)]="value"
     placeholder="{{ placeholder }}"
     type="number"
-    min="1"
+    min="{{ arrId[1].charAt(0) == 'P'? '3':'1' }}"
+    max="{{ arrId[1].charAt(0) == 'P'? '6':'' }}"
     oninput="validity.valid || (value='');"
     step="0.01"
   />

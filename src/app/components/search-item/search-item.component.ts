@@ -88,6 +88,7 @@ export class SearchItemComponent {
   }
 
   async addClickToUser() {
+    if (!this.userData) return;
     if (this.userData.favCourses[this.data.reference]) {
       this.userData.favCourses[this.data.reference] += 1;
     } else {

@@ -84,12 +84,18 @@ export class RoundsPageComponent {
                 new Date(
                   b.startTime.split('-')[0],
                   b.startTime.split('-')[1] - 1,
-                  b.startTime.split('-')[2].substr(0, 2)
+                  b.startTime.split('-')[2].substr(0, 2),
+                  b.startTime.split('T')[1].split('.')[0].split(':')[0],
+                  b.startTime.split('T')[1].split('.')[0].split(':')[1],
+                  b.startTime.split('T')[1].split('.')[0].split(':')[2],
                 ).getTime() -
                 new Date(
                   a.startTime.split('-')[0],
                   a.startTime.split('-')[1] - 1,
-                  a.startTime.split('-')[2].substr(0, 2)
+                  a.startTime.split('-')[2].substr(0, 2),
+                  a.startTime.split('T')[1].split('.')[0].split(':')[0],
+                  a.startTime.split('T')[1].split('.')[0].split(':')[1],
+                  a.startTime.split('T')[1].split('.')[0].split(':')[2],
                 ).getTime()
               );
             });

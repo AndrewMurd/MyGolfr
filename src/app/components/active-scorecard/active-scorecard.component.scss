@@ -38,7 +38,6 @@ app-loading-animation {
   width: 738px;
   height: auto;
   border: 1px solid;
-  border-radius: 2px;
   background-color: grey;
   border-radius: 5px;
 }
@@ -134,8 +133,8 @@ h1 {
     width: 100%;
     height: auto;
     border: 1px solid;
-    border-radius: 2px;
     background-color: grey;
+    border-radius: 1px;
   }
 
   #doneBtn, #submitBtn {

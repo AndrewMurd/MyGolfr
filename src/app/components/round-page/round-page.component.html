@@ -19,8 +19,8 @@
 
 <div id="roundPageContainer">
   <div id="roundInfoContainer">
-    <div id="topBlock">Round Info</div>
-    <div id="bottomBlock">
+    <div class="topBlock">Round Info</div>
+    <div class="bottomBlock">
       <div class="infoContainer">
         <h1>{{ date?.toLocaleDateString().toString() }}</h1>
         <h2>Date</h2>
@@ -45,4 +45,17 @@
     </div>
   </div>
   <app-active-scorecard [selectedScore]="true"></app-active-scorecard>
+  <div id="statsInfoContainer">
+    <div class="topBlock">Stats</div>
+    <div class="bottomBlock">
+      <div id="scoreLineChartContainer">
+        <h1>Score To Par</h1>
+        <canvas id="scoreLineChart"></canvas>
+      </div>
+      <div id="scoreDoughnutChartContainer">
+        <h1>Scoring Summary</h1>
+        <canvas id="scoreDoughnutChart"></canvas>
+      </div>
+    </div>
+  </div>
 </div>

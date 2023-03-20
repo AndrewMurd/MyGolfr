@@ -277,4 +277,13 @@ span {
       transform: scale(1);
     }
   }
+
+  #startRoundPopUp {
+    width: calc(100% - 100px);
+    select {
+      option {
+        zoom: 1;
+      }
+    }
+  }
 }
