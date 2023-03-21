@@ -1,8 +1,9 @@
 <app-header [height]="'200px'"></app-header>
 
 <div class="headerContent">
-  <h1 *ngIf="selectedUser" id="title">{{ userData?.name }}'s Rounds</h1>
-  <h1 *ngIf="!selectedUser" id="title">Rounds</h1>
+  <h1 id="title">
+    {{ selectedUser ? userName + "'s Rounds" : "Rounds" }}
+  </h1>
   <h2 id="numberInfo">
     2023:
     <span [ngStyle]="{ 'font-weight': 500 }">{{ amountOfRoundsThisYear }}</span
@@ -28,7 +29,7 @@
         >
           <div id="displayFlex">
             <div id="info">
-              <h1>{{ score.name }}</h1>
+              <h1>{{ score.googleDetails.name }}</h1>
               <h2>
                 {{ score.formattedDate }} •
                 {{ score.holes + " Holes" }}

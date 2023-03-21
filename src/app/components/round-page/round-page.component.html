@@ -2,7 +2,7 @@
 
 <div class="headerContent">
   <div>
-    <h1 id="title">{{ scoreData?.name }}</h1>
+    <h1 id="title">{{ scoreData?.courseName }}</h1>
     <h2>{{ addressInfo }}</h2>
   </div>
   <div id="headerScoreinfo">
@@ -19,7 +19,7 @@
 
 <div id="roundPageContainer">
   <div id="roundInfoContainer">
-    <div class="topBlock">Round Info</div>
+    <div class="topBlock">{{ scoreData?.username + "'s Round" }}</div>
     <div class="bottomBlock">
       <div class="infoContainer">
         <h1>{{ date?.toLocaleDateString().toString() }}</h1>

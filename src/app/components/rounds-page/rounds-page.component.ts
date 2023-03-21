@@ -1,11 +1,12 @@
 import { Component, ElementRef, HostListener, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
+import { convertSqlDateTime } from '../../utilities/functions';
 
 @Component({
   selector: 'app-rounds-page',
@@ -14,9 +15,10 @@ import { ScoreService } from 'src/app/services/score.service';
 })
 export class RoundsPageComponent {
   subscriptions: Subscription = new Subscription();
-  selectedUser: any;
+  selectedUser: boolean = true;
   userData: any;
   scores: any;
+  userName: string = 'Guest';
   numberOfScores: number = 0;
   datedScores: any = {};
   amountOfRoundsThisYear: number = 0;
@@ -41,70 +43,59 @@ export class RoundsPageComponent {
     private authService: AuthenticationService,
     private scoreService: ScoreService,
     private loadingService: LoadingService,
+    private route: ActivatedRoute,
     private router: Router
   ) {}
 
   async ngOnInit() {
     this.loadingService.loading.next(true);
     this.subscriptions.add(
-      this.authService.user.asObservable().subscribe(async (value) => {
-        if (value) {
-          this.userData = value;
-          try {
-            const response: any = await this.scoreService.getUser(
-              this.userData.id
-            );
-            this.scores = response.scores;
-            this.numberOfScores = this.scores.length;
+      this.route.params.subscribe(async (params) => {
+        try {
+          const response: any = await this.scoreService.getUser(params['id']);
+          this.scores = response.scores;
+          this.numberOfScores = this.scores.length;
 
-            const currentDate = new Date();
-            for (let score of this.scores) {
-              const dateParts = score.startTime.split('-');
-              const newDate = new Date(
-                dateParts[0],
-                dateParts[1] - 1,
-                dateParts[2].substr(0, 2)
-              );
-              if (newDate.getFullYear() == currentDate.getFullYear()) {
-                this.amountOfRoundsThisYear += 1;
-              }
-              score.formattedDate = newDate.toLocaleDateString();
+          this.userName = this.scores[0].username;
 
-              let count = 0;
-              for (let [key, value] of Object.entries(score.score)) {
-                if (value != '' && key != 'In' && key != 'Out') {
-                  count++;
-                }
-              }
-              score['holes'] = count;
+          const currentDate = new Date();
+          for (let score of this.scores) {
+            const newDate = convertSqlDateTime(score.startTime);
+            if (newDate.getFullYear() == currentDate.getFullYear()) {
+              this.amountOfRoundsThisYear += 1;
             }
+            score.formattedDate = newDate.toLocaleDateString();
 
-            this.scores.sort((a: any, b: any) => {
-              return (
-                new Date(
-                  b.startTime.split('-')[0],
-                  b.startTime.split('-')[1] - 1,
-                  b.startTime.split('-')[2].substr(0, 2),
-                  b.startTime.split('T')[1].split('.')[0].split(':')[0],
-                  b.startTime.split('T')[1].split('.')[0].split(':')[1],
-                  b.startTime.split('T')[1].split('.')[0].split(':')[2],
-                ).getTime() -
-                new Date(
-                  a.startTime.split('-')[0],
-                  a.startTime.split('-')[1] - 1,
-                  a.startTime.split('-')[2].substr(0, 2),
-                  a.startTime.split('T')[1].split('.')[0].split(':')[0],
-                  a.startTime.split('T')[1].split('.')[0].split(':')[1],
-                  a.startTime.split('T')[1].split('.')[0].split(':')[2],
-                ).getTime()
-              );
-            });
-            this.loadingService.loading.next(false);
-          } catch (error) {
-            console.log(error);
-            this.loadingService.loading.next(false);
+            let count = 0;
+            for (let [key, value] of Object.entries(score.score)) {
+              if (value != '' && key != 'In' && key != 'Out') {
+                count++;
+              }
+            }
+            score['holes'] = count;
           }
+
+          this.scores.sort((a: any, b: any) => {
+            return (
+              convertSqlDateTime(b.endTime).getTime() -
+              convertSqlDateTime(a.endTime).getTime()
+            );
+          });
+          this.loadingService.loading.next(false);
+        } catch (error) {
+          console.log(error);
+          this.loadingService.loading.next(false);
         }
+        this.subscriptions.add(
+          this.authService.user.asObservable().subscribe(async (value) => {
+            if (value) {
+              this.userData = value;
+              this.selectedUser = true;
+              if (this.scores[0]?.userId == this.userData.id)
+                this.selectedUser = false;
+            }
+          })
+        );
       })
     );
   }
@@ -120,7 +111,7 @@ export class RoundsPageComponent {
         this.scoreService.inProgressScoreData.next(score);
       });
     } else {
-      this.router.navigate(['/round' , score.id]);
+      this.router.navigate(['/round', score.id]);
     }
   }
 

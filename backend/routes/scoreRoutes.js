@@ -4,12 +4,12 @@ const Score = require("../models/score");
 const router = Router();
 
 function parseData(score) {
-  score.score = JSON.parse(score.score);
-  score.teeData = JSON.parse(score.teeData);
-  score.googleDetails = JSON.parse(score.googleDetails);
-  score.courseDetails = JSON.parse(score.courseDetails);
-  score.scorecard = JSON.parse(score.scorecard);
-  score.mapLayout = JSON.parse(score.mapLayout);
+  if (score.score) score.score = JSON.parse(score.score);
+  if (score.teeData) score.teeData = JSON.parse(score.teeData);
+  if (score.googleDetails) score.googleDetails = JSON.parse(score.googleDetails);
+  if (score.courseDetails) score.courseDetails = JSON.parse(score.courseDetails);
+  if (score.scorecard) score.scorecard = JSON.parse(score.scorecard);
+  if (score.mapLayout) score.mapLayout = JSON.parse(score.mapLayout);
   return score;
 }
 
@@ -42,7 +42,7 @@ router.get("/score_status", async (req, res) => {
   const courseId = req.query.courseId;
 
   try {
-    let scores;
+    let scores = [];
     if (status == 2) {
       scores = await Score.findCourse(courseId);
     } else {

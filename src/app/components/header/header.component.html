@@ -26,7 +26,7 @@
     <a *ngIf="!signedIn" routerLink="/login" id="loginLink" class="headerLink"
       >Login</a
     >
-    <a *ngIf="signedIn" routerLink="/rounds" id="roundsLink" class="headerLink"
+    <a *ngIf="signedIn" (click)="navigateToRounds()" id="roundsLink" class="headerLink"
       >Rounds</a
     >
     <a *ngIf="signedIn" routerLink="/stats" id="statsLink" class="headerLink"
@@ -82,7 +82,7 @@
     <li>
       <a
         *ngIf="signedIn"
-        routerLink="/rounds"
+        (click)="navigateToRounds()"
         class="menu__item"
         (click)="closeBox()"
         >Rounds</a

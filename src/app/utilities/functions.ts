@@ -25,3 +25,18 @@ export function getColorWhite(rgb: any) {
     return false;
   }
 }
+
+export function convertSqlDateTime(sqlDateTime: any): any {
+  return convertUTCDateToLocalDate(new Date(sqlDateTime));
+}
+
+function convertUTCDateToLocalDate(date: any) {
+  var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+
+  var offset = date.getTimezoneOffset() / 60;
+  var hours = date.getHours();
+
+  newDate.setHours(hours - offset);
+
+  return newDate;
+}

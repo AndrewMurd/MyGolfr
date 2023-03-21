@@ -1,7 +1,37 @@
+@import "../../utilities/variables.scss";
+
 edit-score-card {
-  margin-top: 40px;
   position: relative;
-  display: flex;
-  justify-content: center;
-  padding-bottom: 10vh;
+}
+
+#coursePageContainer {
+  position: relative;
+  margin-top: 40px;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, 0%);
+  height: 1000px;
+  width: 90%;
+  max-width: 1280px;
+  display: grid;
+  grid-template-columns: 840px auto;
+  .roundsContainer {
+    color: white;
+    margin-top: 40px;
+    h1 {
+      font-weight: bold;
+    }
+    a {
+      color: $green;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  .round {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
 }

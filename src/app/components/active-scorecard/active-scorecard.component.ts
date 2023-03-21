@@ -59,7 +59,7 @@ export class ActiveScorecardComponent {
               if (value) {
                 this.scoreData = value;
                 this.teeData = value.teeData;
-                this.title = this.scoreData.name;
+                this.title = this.scoreData.courseName;
                 this.removedBackNine =
                   this.scoreData.courseDetails.nineHoleGolfCourse;
                 this.reload();
@@ -74,7 +74,7 @@ export class ActiveScorecardComponent {
               if (value) {
                 this.scoreData = value;
                 this.teeData = value.teeData;
-                this.title = this.scoreData.name;
+                this.title = this.scoreData.courseName;
                 this.removedBackNine =
                   this.scoreData.courseDetails.nineHoleGolfCourse;
                 this.reload();

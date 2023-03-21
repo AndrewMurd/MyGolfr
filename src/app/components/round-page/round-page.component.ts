@@ -6,6 +6,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
+import { convertSqlDateTime } from '../../utilities/functions';
 
 @Component({
   selector: 'app-round-page',
@@ -49,10 +50,12 @@ export class RoundPageComponent {
         }
         this.scoreLn = count;
 
-        this.date = this.convertSqlDateTime(this.scoreData.startTime);
+        this.date = convertSqlDateTime(this.scoreData.startTime);
+
+        console.log(this.scoreData)
 
         this.timeDifference = new Date(
-          this.convertSqlDateTime(this.scoreData.endTime) - this.date
+          convertSqlDateTime(this.scoreData.endTime) - this.date
         )
           .toISOString()
           .slice(11, 19);
@@ -221,20 +224,6 @@ export class RoundPageComponent {
     for (let chart of this.charts) {
       chart.destroy();
     }
-  }
-
-  convertSqlDateTime(sqlDateTime: any): any {
-    const dateParts = sqlDateTime.split('-');
-    const timeParts = sqlDateTime.split('T')[1].split('.')[0].split(':');
-    const date = new Date(
-      dateParts[0],
-      dateParts[1] - 1,
-      dateParts[2].substr(0, 2),
-      timeParts[0],
-      timeParts[1],
-      timeParts[2]
-    );
-    return date;
   }
 
   calculateShotsToPar() {
