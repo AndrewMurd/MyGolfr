@@ -10,9 +10,9 @@ edit-score-card {
   left: 50%;
   margin-right: -50%;
   transform: translate(-50%, 0%);
-  height: 1000px;
+  height: auto;
   width: 90%;
-  max-width: 1280px;
+  max-width: 1400px;
   display: grid;
   grid-template-columns: 840px auto;
   .roundsContainer {
@@ -35,3 +35,26 @@ edit-score-card {
     margin-bottom: 8px;
   }
 }
+
+@media (max-width: 1370px) {
+  h1 {
+    display: none;
+  }
+  #coursePageContainer {
+    display: block;
+  }
+}
+
+@media (max-width: 830px) {
+  #coursePageContainer {
+    margin-top: 0px;
+    width: 98%;
+    display: block;
+    .round {
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+  }
+}
+

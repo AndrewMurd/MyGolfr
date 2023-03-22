@@ -52,8 +52,6 @@ export class RoundPageComponent {
 
         this.date = convertSqlDateTime(this.scoreData.startTime);
 
-        console.log(this.scoreData)
-
         this.timeDifference = new Date(
           convertSqlDateTime(this.scoreData.endTime) - this.date
         )

@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'course/:id', component: CoursePageComponent },
-  { path: 'stats', component: StatsPageComponent },
+  { path: 'stats/:id', component: StatsPageComponent },
   { path: 'rounds/:id', component: RoundsPageComponent },
   { path: 'round/:id', component: RoundPageComponent }, // when clicking on a round in rounds not implemented
   { path: 'start-round/:id', component: StartRoundPageComponent },

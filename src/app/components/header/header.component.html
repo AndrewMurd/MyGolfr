@@ -26,10 +26,18 @@
     <a *ngIf="!signedIn" routerLink="/login" id="loginLink" class="headerLink"
       >Login</a
     >
-    <a *ngIf="signedIn" (click)="navigateToRounds()" id="roundsLink" class="headerLink"
+    <a
+      *ngIf="signedIn"
+      (click)="navigateToRounds()"
+      id="roundsLink"
+      class="headerLink"
       >Rounds</a
     >
-    <a *ngIf="signedIn" routerLink="/stats" id="statsLink" class="headerLink"
+    <a
+      *ngIf="signedIn"
+      (click)="navigateToStats()"
+      id="statsLink"
+      class="headerLink"
       >Stats</a
     >
     <div id="roundContainer" class="underline">
@@ -91,7 +99,7 @@
     <li>
       <a
         *ngIf="signedIn"
-        routerLink="/stats"
+        (click)="navigateToStats()"
         class="menu__item"
         (click)="closeBox()"
         >Stats</a

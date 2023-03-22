@@ -74,13 +74,13 @@ export class CoursePageComponent {
     const currentDateTime: any = new Date();
     const diffTime = currentDateTime - convertSqlDateTime(score.endTime);
     const diffDays = diffTime / (1000 * 60 * 60 * 24);
-    // console.log(diffTime)
-    if (true) {
-
+    
+    if (Math.round(diffDays * 24) < 1) {
+      return `${Math.round(diffDays * 24 * 48)} mins`;
     } else if (diffDays <= 3) {
-      return `${Math.round(diffDays * 24)} hours`
+      return `${Math.round(diffDays * 24)} hours`;
     } else {
-      return `${Math.floor(diffDays)} days`
+      return `${Math.floor(diffDays)} days`;
     }
   }
 }

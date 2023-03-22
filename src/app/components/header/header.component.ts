@@ -87,6 +87,10 @@ export class HeaderComponent {
     this.router.navigate(['/rounds', this.userData.id]);
   }
 
+  navigateToStats() {
+    this.router.navigate(['/stats', this.userData.id]);
+  }
+
   closeBox() {
     this.isChecked = false;
     this.setDropdownUser(false);

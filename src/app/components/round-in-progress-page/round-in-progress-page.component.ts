@@ -40,12 +40,12 @@ export class RoundInProgressPageComponent {
         .subscribe((value) => {
           if (value) {
             this.scoreData = value;
-            this.reload();
             if (this.scoreData.score[this.currentHole]) {
               this.selectedScore = this.scoreData.score[this.currentHole];
             } else {
               this.selectedScore = 'Strokes';
             }
+            this.reload();
             this.loadingService.loading.next(false);
           }
         })
