@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { AlertService } from 'src/app/services/alert.service';
 import { ScoreService } from 'src/app/services/score.service';
 
 @Component({
@@ -24,12 +25,17 @@ export class ScoreInputComponent {
   arrId: any;
   isWhite: boolean = false;
 
-  constructor(private scoreService: ScoreService) {}
+  constructor(
+    private scoreService: ScoreService,
+    private alertService: AlertService
+  ) {}
 
   ngOnInit() {
-    this.subscriptions.add(this.whiteEvent.subscribe((value: boolean) => {
-      this.isWhite = value;
-    }));
+    this.subscriptions.add(
+      this.whiteEvent.subscribe((value: boolean) => {
+        this.isWhite = value;
+      })
+    );
 
     if (this.data.score[this.id]) {
       this.value = this.data.score[this.id];
@@ -45,18 +51,25 @@ export class ScoreInputComponent {
   }
 
   async submit() {
+    if (!this.value && this.data.statusComplete == 1) {
+      this.alertService.alert(
+        'Must Enter Strokes!',
+        { color: 'green', content: 'Accept' }
+      );
+      this.value = this.data.score[this.id];
+      this.showField = false;
+      return;
+    }
     if (this.value) {
       this.showField = false;
     }
 
     this.data.score[this.id] = this.value;
-    const response: any = await this.scoreService.update(
-      this.data.id,
-      this.data.score,
-      'score'
-    );
-    this.data.score = response.data;
-    this.selectedScore ? this.scoreService.selectedScoreData.next(this.data) : this.scoreService.inProgressScoreData.next(this.data);
+    const response: any = await this.scoreService.update(this.data, 'score');
+    this.data = response.scoreData;
+    this.selectedScore
+      ? this.scoreService.selectedScoreData.next(this.data)
+      : this.scoreService.inProgressScoreData.next(this.data);
 
     this.setBorder();
   }

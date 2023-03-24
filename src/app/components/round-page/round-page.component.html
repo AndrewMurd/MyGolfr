@@ -18,44 +18,49 @@
 </div>
 
 <div id="roundPageContainer">
-  <div id="roundInfoContainer">
-    <div class="topBlock">{{ scoreData?.username + "'s Round" }}</div>
-    <div class="bottomBlock">
-      <div class="infoContainer">
-        <h1>{{ date?.toLocaleDateString().toString() }}</h1>
-        <h2>Date</h2>
+  <div class="left">
+    <div id="roundInfoContainer">
+      <div class="topBlock">{{ scoreData?.username + "'s Round" }}</div>
+      <div class="bottomBlock">
+        <div class="infoContainer">
+          <h1>{{ date?.toLocaleDateString().toString() }}</h1>
+          <h2>Date</h2>
+        </div>
+        <div class="infoContainer">
+          <h1>{{ timeDifference }}</h1>
+          <h2>Time</h2>
+        </div>
+        <div class="infoContainer">
+          <h1>{{ scoreLn }}</h1>
+          <h2>Holes</h2>
+        </div>
+        <div class="infoContainer">
+          <h1>
+            {{
+              scoreData?.hdcpType.charAt(0).toUpperCase() +
+                scoreData?.hdcpType.slice(1)
+            }}
+          </h1>
+          <h2>Handicap</h2>
+        </div>
       </div>
-      <div class="infoContainer">
-        <h1>{{ timeDifference }}</h1>
-        <h2>Time</h2>
-      </div>
-      <div class="infoContainer">
-        <h1>{{ scoreLn }}</h1>
-        <h2>Holes</h2>
-      </div>
-      <div class="infoContainer">
-        <h1>
-          {{
-            scoreData?.hdcpType.charAt(0).toUpperCase() +
-              scoreData?.hdcpType.slice(1)
-          }}
-        </h1>
-        <h2>Handicap</h2>
+    </div>
+    <div id="statsInfoContainer">
+      <div class="topBlock">Stats</div>
+      <div class="bottomBlock">
+        <div id="scoreLineChartContainer">
+          <h1>Score To Par</h1>
+          <canvas id="scoreLineChart"></canvas>
+        </div>
+        <div id="scoreDoughnutChartContainer">
+          <h1>Scoring Summary</h1>
+          <canvas id="scoreDoughnutChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
+  <!-- <div class="right">
+    <app-active-scorecard [selectedScore]="true"></app-active-scorecard>
+  </div> -->
   <app-active-scorecard [selectedScore]="true"></app-active-scorecard>
-  <div id="statsInfoContainer">
-    <div class="topBlock">Stats</div>
-    <div class="bottomBlock">
-      <div id="scoreLineChartContainer">
-        <h1>Score To Par</h1>
-        <canvas id="scoreLineChart"></canvas>
-      </div>
-      <div id="scoreDoughnutChartContainer">
-        <h1>Scoring Summary</h1>
-        <canvas id="scoreDoughnutChart"></canvas>
-      </div>
-    </div>
-  </div>
 </div>

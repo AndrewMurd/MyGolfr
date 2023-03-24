@@ -17,7 +17,7 @@ export class RoundsPageComponent {
   subscriptions: Subscription = new Subscription();
   selectedUser: boolean = true;
   userData: any;
-  scores: any;
+  scores: any = [];
   userName: string = 'Guest';
   numberOfScores: number = 0;
   datedScores: any = {};

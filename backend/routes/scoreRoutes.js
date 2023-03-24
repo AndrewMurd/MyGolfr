@@ -1,13 +1,17 @@
+const { faC } = require("@fortawesome/free-solid-svg-icons");
 const { Router } = require("express");
 const Score = require("../models/score");
+const User = require("../models/user");
 
 const router = Router();
 
 function parseData(score) {
   if (score.score) score.score = JSON.parse(score.score);
   if (score.teeData) score.teeData = JSON.parse(score.teeData);
-  if (score.googleDetails) score.googleDetails = JSON.parse(score.googleDetails);
-  if (score.courseDetails) score.courseDetails = JSON.parse(score.courseDetails);
+  if (score.googleDetails)
+    score.googleDetails = JSON.parse(score.googleDetails);
+  if (score.courseDetails)
+    score.courseDetails = JSON.parse(score.courseDetails);
   if (score.scorecard) score.scorecard = JSON.parse(score.scorecard);
   if (score.mapLayout) score.mapLayout = JSON.parse(score.mapLayout);
   return score;
@@ -117,14 +121,13 @@ router.post("/add", async (req, res) => {
 // @route POST /scores/update
 // @access Private
 router.post("/update", async (req, res) => {
-  const id = req.body.id;
-  const data = req.body.data;
+  const scoreData = req.body.scoreData;
   const type = req.body.type;
 
-  if (type == "score") {
-    let inNum = 0;
+  function calcOutIn(score) {
     let outNum = 0;
-    for (let [key, value] of Object.entries(data)) {
+    let inNum = 0;
+    for (let [key, value] of Object.entries(score)) {
       if (key == "Out" || key == "In") {
         continue;
       } else if (key <= 9) {
@@ -133,18 +136,140 @@ router.post("/update", async (req, res) => {
         inNum += Number(value);
       }
     }
-    data["Out"] = outNum;
-    data["In"] = inNum;
-  } else if (type == "statusComplete") {
-    const endTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    await Score.update(endTime, 'endTime', id);
+    return { Out: outNum, In: inNum };
   }
-  
-  console.log(`Updating ${type} for ${id}`);
 
-  await Score.update(JSON.stringify(data), type, id);
+  async function calcHandicapIndex() {
+    const scores = await Score.findScoresForHdcp(scoreData.userId);
 
-  res.json({ data: data });
+    // see which scores contain a nineHole hole golf course
+    // for (const score of scores) {
+    //   if (score.courseDetails.nineHole)
+    // }
+
+    if (scores.length < 3) return;
+
+    const currentHdcp = scores[0].hdcp;
+    const HandicapDiffs = [];
+    for (const score of scores) {
+      parseData(score);
+      if (score.id == scoreData.id) {
+        score.score = JSON.parse(JSON.stringify(scoreData.score));
+      }
+      // score.teeData.Rating = 70.5
+      // score.teeData.Slope = 137
+      // await Score.update(JSON.stringify(score.teeData), 'teeData', score.id);
+      const courseHandicap = (currentHdcp * score.teeData.Slope) / 113;
+      if (!currentHdcp) {
+        for (let [key, value] of Object.entries(score.score)) {
+          if (
+            key != "In" &&
+            key != "Out" &&
+            value > Number(score.teeData["P" + key]) + 5
+          ) {
+            score.score[key] = `${Number(score.teeData["P" + key]) + 5}`;
+          }
+        }
+      } else if (courseHandicap <= 9) {
+        for (let [key, value] of Object.entries(score.score)) {
+          if (
+            key != "In" &&
+            key != "Out" &&
+            value > Number(score.teeData["P" + key]) + 2
+          ) {
+            score.score[key] = `${Number(score.teeData["P" + key]) + 2}`;
+          }
+        }
+      } else {
+        let maximumScoreFactor;
+        if (courseHandicap >= 10 && courseHandicap <= 19) {
+          maximumScoreFactor = 7;
+        } else if (courseHandicap >= 20 && courseHandicap <= 29) {
+          maximumScoreFactor = 8;
+        } else if (courseHandicap >= 30 && courseHandicap <= 39) {
+          maximumScoreFactor = 9;
+        } else if (courseHandicap >= 40) {
+          maximumScoreFactor = 10;
+        }
+        for (let [key, value] of Object.entries(score.score)) {
+          if (key != "In" && key != "Out" && value > maximumScoreFactor) {
+            score.score[key] = `${maximumScoreFactor}`;
+          }
+        }
+      }
+      const { Out, In } = calcOutIn(score.score);
+      const AGS = In + Out;
+      const HandicapDiff =
+        (113 / score.teeData.Slope) * (AGS - score.teeData.Rating);
+      HandicapDiffs.push(HandicapDiff);
+    }
+    let factor = 1;
+    let adjustment = 0;
+    const ln = HandicapDiffs.length;
+    if (ln == 3) {
+      adjustment = 2;
+    } else if (ln == 4) {
+      adjustment = 1;
+    } else if (ln == 6) {
+      adjustment = 1;
+      factor = 2;
+    } else if (ln >= 6 && ln <= 8) {
+      factor = 2;
+    } else if (ln >= 9 && ln <= 11) {
+      factor = 3;
+    } else if (ln >= 12 && ln <= 14) {
+      factor = 4;
+    } else if (ln >= 15 && ln <= 16) {
+      factor = 5;
+    } else if (ln >= 17 && ln <= 18) {
+      factor = 6;
+    } else if (ln == 19) {
+      factor = 7;
+    } else if (ln == 20) {
+      factor = 8;
+    }
+    const lowestDiffs = HandicapDiffs.sort((a, b) => a - b).slice(0, factor);
+    let sum = 0;
+    for (let diff of lowestDiffs) {
+      sum += diff;
+    }
+    let HandicapIndex = (
+      (sum / lowestDiffs.length - adjustment) *
+      0.96
+    ).toFixed(1);
+
+    const maxHdcpIndex = 54;
+    if (HandicapIndex > maxHdcpIndex) {
+      HandicapIndex = maxHdcpIndex;
+    }
+
+    await User.updateHdcp(scoreData.userId, HandicapIndex);
+
+    console.log(`Updating Handicap for User ${scoreData.userId}`);
+  }
+
+  if (type == "score") {
+    const { Out, In } = calcOutIn(scoreData.score);
+    scoreData.score.Out = Out;
+    scoreData.score.In = In;
+    if (scoreData.statusComplete == 1 && scoreData.hdcpType == "basic") {
+      calcHandicapIndex();
+    }
+  } else if (type == "statusComplete") {
+    const endTime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    await Score.update(endTime, "endTime", scoreData.id);
+
+    // calc and update hdcp for player on submission of new hdcp score (basic)
+    if (scoreData.hdcpType == "basic") {
+      calcHandicapIndex();
+    }
+  }
+
+  console.log(`Updating ${type} for ${scoreData.id}`);
+
+  await Score.update(JSON.stringify(scoreData[type]), type, scoreData.id);
+
+  res.json({ scoreData: scoreData });
 });
 
 // @desc Delete a score

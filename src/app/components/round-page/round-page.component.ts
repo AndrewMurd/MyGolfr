@@ -70,6 +70,8 @@ export class RoundPageComponent {
     this.subscriptions.add(
       this.scoreService.selectedScoreData.asObservable().subscribe((value) => {
         if (value) {
+          this.scoreData = value;
+
           for (let chart of this.charts) {
             chart.destroy();
           }

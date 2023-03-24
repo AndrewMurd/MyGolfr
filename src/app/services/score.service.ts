@@ -63,12 +63,11 @@ export class ScoreService {
     });
   }
 
-  async update(scoreId: string, data: any, type: string) {
+  async update(scoreData: string, type: string) {
     return await new Promise((resolve, reject) => {
       this.http
         .post(ROOT_URL + 'scores/update', {
-          id: scoreId,
-          data: data,
+          scoreData: scoreData,
           type: type,
         })
         .subscribe({

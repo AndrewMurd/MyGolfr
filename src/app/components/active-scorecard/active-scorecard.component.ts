@@ -124,9 +124,9 @@ export class ActiveScorecardComponent {
         async () => {
           this.loadingService.loading.next(true);
           try {
+            this.scoreData.statusComplete = 1;
             await this.scoreService.update(
-              this.scoreData.id,
-              1,
+              this.scoreData,
               'statusComplete'
             );
             this.scoreService.inProgressScoreData.next(null);
@@ -148,9 +148,9 @@ export class ActiveScorecardComponent {
         async () => {
           this.loadingService.loading.next(true);
           try {
+            this.scoreData.statusComplete = 1;
             await this.scoreService.update(
-              this.scoreData.id,
-              1,
+              this.scoreData,
               'statusComplete'
             );
             this.scoreService.inProgressScoreData.next(null);
@@ -236,8 +236,8 @@ export class ActiveScorecardComponent {
         tee.id == this.scoreData.teeData.id &&
         JSON.stringify(tee) != JSON.stringify(this.scoreData.teeData)
       ) {
-        await this.scoreService.update(this.scoreData.id, tee, 'teeData');
         this.scoreData.teeData = tee;
+        await this.scoreService.update(this.scoreData, 'teeData');
       }
     }
     this.scoreService.inProgressScoreData.next(this.scoreData);

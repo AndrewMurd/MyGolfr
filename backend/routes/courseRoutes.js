@@ -101,7 +101,7 @@ router.post("/add", async (req, res) => {
   for (let course of req.body.courses) {
     const res = await Course.find(course.reference);
 
-    if (res.length == 0 && course.plus_code.compound_code) {
+    if (res.length == 0 && course?.plus_code?.compound_code) {
       let initialLayout = {};
       for (let i = 0; i < 18; i++) {
         initialLayout[i + 1] = {

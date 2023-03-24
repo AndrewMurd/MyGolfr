@@ -24,6 +24,7 @@ router.post("/login", loginLimiter, async (req, res) => {
         name: result[0].name,
         email: result[0].email,
         favCourses: JSON.parse(result[0].favCourses),
+        hdcp: result[0].hdcp,
       };
 
       const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
@@ -70,10 +71,11 @@ router.get("/refresh", async (req, res) => {
           return res.status(401).json({ message: "Unauthorized" });
 
         const user = {
-          id: decoded.id,
-          name: decoded.name,
-          email: decoded.email,
+          id: result[0].id,
+          name: result[0].name,
+          email: result[0].email,
           favCourses: JSON.parse(result[0].favCourses),
+          hdcp: result[0].hdcp,
         };
 
         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {

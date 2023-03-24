@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
+import { UserService } from 'src/app/services/user.service';
 import { createRange } from 'src/app/utilities/functions';
 
 @Component({
@@ -26,13 +26,21 @@ export class RoundInProgressPageComponent {
   createRange: Function = createRange;
 
   constructor(
-    private courseService: CourseDetailsService,
+    private authService: AuthenticationService,
     private scoreService: ScoreService,
     private loadingService: LoadingService,
+    private router: Router
   ) {}
 
   async ngOnInit() {
     this.loadingService.loading.next(true);
+
+    this.subscriptions.add(this.authService.user.asObservable().subscribe((value) => {
+      if (!value) {
+        this.router.navigate(['']);
+        this.loadingService.loading.next(false);
+      }
+    }));
 
     this.subscriptions.add(
       this.scoreService.inProgressScoreData
@@ -69,11 +77,10 @@ export class RoundInProgressPageComponent {
     ) {
       this.scoreData.score[this.currentHole] = this.selectedScore;
       const response: any = await this.scoreService.update(
-        this.scoreData.id,
-        this.scoreData.score,
+        this.scoreData,
         'score'
       );
-      this.scoreData.score = response.data;
+      this.scoreData = response.scoreData;
       this.scoreService.inProgressScoreData.next(this.scoreData);
     }
   }

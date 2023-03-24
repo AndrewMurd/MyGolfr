@@ -23,6 +23,7 @@ export class StartRoundPageComponent {
   selectedTee: any;
   hdcpType: string = 'none';
   popUp: boolean = false;
+  hdcp: string = 'N/A';
   createRange: Function = createRange;
   getRGB: Function = getRGB;
   getColorWhite: Function = getColorWhite;
@@ -50,6 +51,9 @@ export class StartRoundPageComponent {
       this.authService.user.asObservable().subscribe((value) => {
         if (value) {
           this.userData = value;
+          if (this.userData.hdcp) {
+            this.hdcp = this.userData.hdcp;
+          }
         }
       })
     );
@@ -114,11 +118,23 @@ export class StartRoundPageComponent {
   checkCompleteTees() {
     if (this.courseData.courseDetails.nineHoleGolfCourse) {
       this.completedTees = this.completedTees.filter((tee: any) => {
-        return Object.keys(tee).length >= 31;
+        let count = 0;
+        for (let key of Object.keys(tee)) {
+          if (key.slice(0, 2) != 'S.I') {
+            count++;
+          }
+        }
+        return count == 28;
       });
     } else {
       this.completedTees = this.completedTees.filter((tee: any) => {
-        return Object.keys(tee).length === 32 * 2;
+        let count = 0;
+        for (let key of Object.keys(tee)) {
+          if (key.slice(0, 2) != 'S.I') {
+            count++;
+          }
+        }
+        return count === 64;
       });
     }
     this.completedTees = this.completedTees.sort((a: any, b: any) => {

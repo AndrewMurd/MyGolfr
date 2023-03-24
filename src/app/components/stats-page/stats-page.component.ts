@@ -6,6 +6,7 @@ import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { convertSqlDateTime } from 'src/app/utilities/functions';
+import { Chart, registerables } from 'chart.js';
 
 @Component({
   selector: 'app-stats-page',
@@ -15,13 +16,13 @@ import { convertSqlDateTime } from 'src/app/utilities/functions';
 export class StatsPageComponent {
   subscriptions: Subscription = new Subscription();
   userData: any;
-  scores: any;
+  scores: any = [];
   selectedUser: boolean = true;
   userName: string = 'Guest';
-  timePlayed: string = '';
-  lowestScore: any;
-  highestScore: any;
-  scoreAvg: string = '0';
+  timePlayed: string = '0d 0h 0m';
+  lowestScore: any = null;
+  highestScore: any = null;
+  scoreAvg: string = 'N/A';
 
   constructor(
     private courseService: CourseDetailsService,
@@ -45,7 +46,8 @@ export class StatsPageComponent {
           console.log(this.scores);
           this.userName = this.scores[0].username;
 
-          let sumTime = 0, scoreSum = 0;
+          let sumTime = 0,
+            scoreSum = 0;
           this.lowestScore = this.scores[0];
           this.highestScore = this.scores[0];
           for (let score of this.scores) {
@@ -69,11 +71,50 @@ export class StatsPageComponent {
               this.highestScore = score;
             }
           }
-          this.timePlayed = this.msToTime(sumTime);
+          this.timePlayed = this.dhm(sumTime);
           this.scoreAvg = (scoreSum / this.scores.length).toFixed(2);
 
+          // const canvas1: any = document.getElementById('scoreDoughnutChart');
+          // new Chart(canvas1, {
+          //   type: 'doughnut',
+          //   data: {
+          //     labels: typesOfScore.map(
+          //       (row) => `(${row.value}) ${row.label}`
+          //     ),
+          //     datasets: [
+          //       {
+          //         data: typesOfScore.map((row) => row.value),
+          //         backgroundColor: [
+          //           'green',
+          //           'white',
+          //           'yellow',
+          //           'red',
+          //           'black',
+          //         ],
+          //       },
+          //     ],
+          //   },
+          //   options: {
+          //     cutout: 40,
+          //     color: 'black',
+          //     borderColor: 'grey',
+          //     responsive: false,
+          //     plugins: {
+          //       legend: {
+          //         position: 'right',
+          //         maxWidth: 185,
+          //         labels: {
+          //           boxWidth: 15,
+          //         }
+          //       },
+          //     },
+          //   },
+          // })
+
           this.loadingService.loading.next(false);
-        } catch (error) {}
+        } catch (error) {
+          this.loadingService.loading.next(false);
+        }
         this.subscriptions.add(
           this.authService.user.asObservable().subscribe(async (value) => {
             if (value) {
@@ -97,6 +138,7 @@ export class StatsPageComponent {
   }
 
   calculateShotsToPar(score: any) {
+    if (!score) return 'N/A';
     const scoreToPar =
       score?.score.In +
       score?.score.Out -
@@ -106,22 +148,17 @@ export class StatsPageComponent {
     } else if (scoreToPar > 0) {
       return `+${scoreToPar}`;
     }
-    return '';
+    return 'N/A';
   }
 
-  msToTime(s: number) {
-    function pad(n: any, z: any = 0) {
-      z = z || 2;
-      return ('00' + n).slice(-z);
-    }
-
-    var ms = s % 1000;
-    s = (s - ms) / 1000;
-    var secs = s % 60;
-    s = (s - secs) / 60;
-    var mins = s % 60;
-    var hrs = (s - mins) / 60;
-
-    return pad(hrs) + ':' + pad(mins) + ':' + pad(secs);
+  dhm(ms: number) {
+    const days = Math.floor(ms / (24*60*60*1000));
+    const daysms = ms % (24*60*60*1000);
+    const hours = Math.floor(daysms / (60*60*1000));
+    const hoursms = ms % (60*60*1000);
+    const minutes = Math.floor(hoursms / (60*1000));
+    const minutesms = ms % (60*1000);
+    const sec = Math.floor(minutesms / 1000);
+    return days + "d " + hours + "h " + minutes + "m ";
   }
 }

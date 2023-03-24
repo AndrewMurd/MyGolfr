@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CourseDetailsService } from '../../services/course-details.service';
 import { Observable, Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-scorecard-input',
@@ -24,7 +25,7 @@ export class ScorecardInputComponent {
 
   constructor(
     private courseService: CourseDetailsService,
-    private scoreService: ScoreService
+    private alertService: AlertService
   ) {}
 
   ngOnInit() {
@@ -64,7 +65,10 @@ export class ScorecardInputComponent {
 
   async submit() {
     if (!this.value) {
-      alert('Must enter value!');
+      this.alertService.alert(
+        'Must Enter a Value!',
+        { color: 'green', content: 'Accept' }
+      );
       return;
     }
 

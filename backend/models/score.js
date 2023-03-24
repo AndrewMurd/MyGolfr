@@ -22,15 +22,22 @@ module.exports = class Score {
 
   static findUser(userId) {
     return executeQuery(
-      "SELECT score, teeData, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ?",
+      "SELECT score, hdcp, teeData, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ?",
       [userId]
     );
   }
 
   static findUserWithStatus(userId, status) {
     return executeQuery(
-      "SELECT score, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ? AND statusComplete = ?",
+      "SELECT score, hdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ? AND statusComplete = ?",
       [userId, status]
+    );
+  }
+
+  static findScoresForHdcp(userId) {
+    return executeQuery(
+      "SELECT score, hdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ? AND statusComplete = 1 AND hdcpType = 'basic' ORDER BY endTime desc limit 40",
+      [userId]
     );
   }
 

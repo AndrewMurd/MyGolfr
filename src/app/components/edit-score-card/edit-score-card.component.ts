@@ -149,8 +149,8 @@ export class EditScoreCardComponent {
     );
     for (let tee of this.scoreData.scorecard) {
       if (tee.id == this.scoreData.teeData.id) {
-        await this.scoreService.update(this.scoreData.id, tee, 'teeData');
         this.scoreData.teeData = tee;
+        await this.scoreService.update(this.scoreData, 'teeData');
       }
     }
     this.scoreService.inProgressScoreData.next(this.scoreData);

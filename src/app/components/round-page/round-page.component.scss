@@ -77,21 +77,26 @@
   }
 }
 
+.left {
+  width: 738px;
+}
+
 #roundPageContainer {
   top: 200px;
   position: relative;
   left: 50%;
   margin-right: -50%;
   transform: translate(-50%, 0%);
-  height: 1000px;
+  height: 600px;
   width: 90%;
-  max-width: 1100px;
+  display: flex;
+  justify-content: center;
   #roundInfoContainer {
     border-radius: 5px;
     position: relative;
     top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    // left: 50%;
+    // transform: translateX(-50%);
     width: 100%;
     max-width: 738px;
     height: 150px;
@@ -117,12 +122,7 @@
     height: 300px;
     background-color: grey;
     margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 610px;
+    position: relative;
     .bottomBlock {
       justify-content: normal;
       h1 {
@@ -155,14 +155,11 @@
 }
 
 app-active-scorecard {
-  margin-top: 20px;
-  margin-left: auto;
-  margin-right: auto;
-  position: absolute;
-  left: 0;
-  right: 0;
+  position: relative;
+  top: 17px;
+  left: 20px;
   z-index: 10;
-  width: 738px;
+  transform: scale(1.025);
 }
 
 #scoreLineChartContainer {
@@ -183,10 +180,31 @@ app-active-scorecard {
   }
 }
 
+@media (max-width: 1650px) {
+  #statsInfoContainer {
+    position: relative;
+    top: 460px;
+  }
+  app-active-scorecard {
+    position: relative;
+    top: 170px;
+    left: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    width: 738px;
+    transform: scale(1);
+  }
+}
+
 @media (max-width: 830px) {
   app-active-scorecard {
     margin-left: 0;
     width: 100%;
+    top: 140px;
   }
 
   .headerContent {
@@ -249,7 +267,7 @@ app-active-scorecard {
       }
     }
     #statsInfoContainer {
-      top: 375px;
+      top: 255px;
     }
   }
   .topBlock {

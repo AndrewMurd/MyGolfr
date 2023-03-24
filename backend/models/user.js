@@ -20,4 +20,10 @@ module.exports = class User {
         WHERE id = '${update.id}'`
     );
   }
+
+  static updateHdcp(id, hdcp) {
+    return executeQuery(
+      `UPDATE users SET hdcp = '${hdcp}' WHERE id = '${id}'`
+    );
+  }
 };

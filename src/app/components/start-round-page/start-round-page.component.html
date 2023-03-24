@@ -24,7 +24,7 @@
     <label>Selected Course</label>
     <div id="course" class="displayInfo"><h6>{{ courseData.name }}</h6></div>
     <label>Handicap</label>
-    <div id="hdcp" class="displayInfo"><h6>{{ 0 }}</h6></div>
+    <div id="hdcp" class="displayInfo"><h6>{{ userData?.hdcp }}</h6></div>
     <label>Handicap Type</label>
     <select id="hdcpType" [(ngModel)]="hdcpType">
       <option value="none">None - No handicap will be used</option>
