@@ -38,8 +38,8 @@ export class RoundInProgressPageComponent {
     this.subscriptions.add(this.authService.user.asObservable().subscribe((value) => {
       if (!value) {
         this.router.navigate(['']);
-        this.loadingService.loading.next(false);
       }
+      this.loadingService.loading.next(false);
     }));
 
     this.subscriptions.add(
@@ -54,7 +54,6 @@ export class RoundInProgressPageComponent {
               this.selectedScore = 'Strokes';
             }
             this.reload();
-            this.loadingService.loading.next(false);
           }
         })
     );

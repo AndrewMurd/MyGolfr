@@ -33,7 +33,11 @@
               <h2>
                 {{ score.formattedDate }} •
                 {{ score.holes + " Holes" }}
-                • {{ score.teeData.ColorName }}
+                • {{ score.teeData.ColorName }} •
+                {{
+                  score?.hdcpType.charAt(0).toUpperCase() +
+                    score?.hdcpType.slice(1)
+                }}
               </h2>
             </div>
             <div *ngIf="score.statusComplete == 0" id="inProgressIndicator">

@@ -36,12 +36,54 @@ edit-score-card {
   }
 }
 
+#roundsHeader {
+  display: flex;
+}
+
+#startRoundBtn {
+  // top: 450px;
+  // height: 30px;
+  // width: 100px;
+  height: 32px;
+  margin-left: 40px;
+  position: relative;
+  background-color: $green;
+  border: 1px solid #13aa52;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
+  box-sizing: border-box;
+  color: black;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  outline: none;
+  outline: 0;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 150ms, box-shadow 150ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
 @media (max-width: 1370px) {
   h1 {
     display: none;
   }
   #coursePageContainer {
     display: block;
+  }
+  #startRoundBtn {
+    margin-left: 45px;
+    top: -10px;
+  }
+  #coursePageContainer {
+    .round {
+      margin-left: 45px;
+    }
   }
 }
 
@@ -54,6 +96,16 @@ edit-score-card {
       font-size: 12px;
       font-weight: 500;
       margin-bottom: 8px;
+    }
+  }
+  #startRoundBtn {
+    margin-left: auto;
+    margin-right: auto;
+    top: -20px;
+  }
+  #coursePageContainer {
+    .round {
+      margin-left: 0px;
     }
   }
 }

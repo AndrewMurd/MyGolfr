@@ -64,13 +64,13 @@ export class ScorecardInputComponent {
   }
 
   async submit() {
-    if (!this.value) {
-      this.alertService.alert(
-        'Must Enter a Value!',
-        { color: 'green', content: 'Accept' }
-      );
-      return;
-    }
+    // if (!this.value) {
+    //   this.alertService.alert(
+    //     'Must Enter a Value!',
+    //     { color: 'green', content: 'Accept' }
+    //   );
+    //   return;
+    // }
 
     this.showField = false;
 

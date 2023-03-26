@@ -1,7 +1,7 @@
 <div
-  (click)="showField = true"
+  (click)="editing ? showField = true : showField = false"
   id="container"
-  [ngClass]="showField ? 'nohoverDiv' : 'hoverDiv'"
+  [ngClass]="showField || !editing ? 'nohoverDiv' : 'hoverDiv'"
 >
   <input
     *ngIf="showField"

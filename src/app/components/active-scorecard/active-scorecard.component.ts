@@ -125,10 +125,13 @@ export class ActiveScorecardComponent {
           this.loadingService.loading.next(true);
           try {
             this.scoreData.statusComplete = 1;
-            await this.scoreService.update(
+            const response: any = await this.scoreService.update(
               this.scoreData,
               'statusComplete'
             );
+            const userData = this.authService.user.getValue();
+            userData.hdcp = response.scoreData.hdcp;
+            this.authService.user.next(userData);
             this.scoreService.inProgressScoreData.next(null);
             this.router.navigate(['/round', this.scoreData.id]);
           } catch (error) {}
@@ -138,7 +141,7 @@ export class ActiveScorecardComponent {
       );
     } else if (this.scoreData.hdcpType == 'basic') {
       this.alertService.alert(
-        'This score is incomplete! You must complete 18 holes when calculating handicap.',
+        'This score is incomplete! You must complete every holes when calculating handicap.',
         { color: 'green', content: 'Accept' }
       );
     } else {

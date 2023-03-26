@@ -53,6 +53,8 @@ export class StartRoundPageComponent {
           this.userData = value;
           if (this.userData.hdcp) {
             this.hdcp = this.userData.hdcp;
+          } else {
+            this.hdcp = 'N/A';
           }
         }
       })
@@ -66,10 +68,10 @@ export class StartRoundPageComponent {
             JSON.stringify(this.courseData.scorecard)
           );
           this.checkCompleteTees();
+          this.loadingService.loading.next(false);
         }
       })
     );
-    this.loadingService.loading.next(false);
   }
 
   ngOnDestroy() {
@@ -85,22 +87,54 @@ export class StartRoundPageComponent {
   async startRound() {
     this.loadingService.loading.next(true);
     try {
-      await this.scoreService.newScore(
-        this.userData.id,
-        this.courseData.id,
-        this.selectedTee,
-        this.hdcpType,
-        this.sqlDate()
-      );
-      // navigate to round in progress page
-      const response: any = await this.scoreService.getUser(
-        this.userData.id,
-        0
-      );
-      this.router.navigate(['/round/in-progress', response.scores[0].id]);
-      setTimeout(() => {
-        this.scoreService.inProgressScoreData.next(response.scores[0]);
-      });
+      if (this.hdcpType == 'basic') {
+        console.log(this.selectedTee);
+        if (this.selectedTee.Rating != '' && this.selectedTee.Slope != '') {
+          await this.scoreService.newScore(
+            this.userData.id,
+            this.courseData.id,
+            this.selectedTee,
+            this.hdcpType,
+            this.sqlDate()
+          );
+          // navigate to round in progress page
+          const response: any = await this.scoreService.getUser(
+            this.userData.id,
+            0
+          );
+          this.router.navigate(['/round/in-progress', response.scores[0].id]);
+          setTimeout(() => {
+            this.scoreService.inProgressScoreData.next(response.scores[0]);
+          });
+        } else {
+          this.alertService.alert(
+            'Must enter Slope Rating and Course Rating for selected tee in Basic Mode (Needed for Handicap Calculation).',
+            {
+              color: 'green',
+              content: 'Accept',
+            }
+          );
+          this.popUp = false;
+          this.showScorecard = true;
+        }
+      } else {
+        await this.scoreService.newScore(
+          this.userData.id,
+          this.courseData.id,
+          this.selectedTee,
+          this.hdcpType,
+          this.sqlDate()
+        );
+        // navigate to round in progress page
+        const response: any = await this.scoreService.getUser(
+          this.userData.id,
+          0
+        );
+        this.router.navigate(['/round/in-progress', response.scores[0].id]);
+        setTimeout(() => {
+          this.scoreService.inProgressScoreData.next(response.scores[0]);
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -124,7 +158,7 @@ export class StartRoundPageComponent {
             count++;
           }
         }
-        return count == 28;
+        return count >= 26;
       });
     } else {
       this.completedTees = this.completedTees.filter((tee: any) => {
@@ -134,7 +168,7 @@ export class StartRoundPageComponent {
             count++;
           }
         }
-        return count === 64;
+        return count >= 62;
       });
     }
     this.completedTees = this.completedTees.sort((a: any, b: any) => {

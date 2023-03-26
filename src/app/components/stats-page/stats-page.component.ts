@@ -65,15 +65,19 @@ export class StatsPageComponent {
               this.lowestScore = score;
             }
             if (
-              Number(this.calculateShotsToPar(this.lowestScore)) <
+              Number(this.calculateShotsToPar(this.highestScore)) <
               Number(this.calculateShotsToPar(score))
             ) {
               this.highestScore = score;
             }
           }
           this.timePlayed = this.dhm(sumTime);
-          this.scoreAvg = (scoreSum / this.scores.length).toFixed(2);
-
+          const scoreAvg = Number((scoreSum / this.scores.length).toFixed(2));
+          if (scoreAvg < 0 || scoreAvg == 0) {
+            this.scoreAvg = `${scoreAvg}`;
+          } else if (scoreAvg > 0) {
+            this.scoreAvg = `+${scoreAvg}`;
+          }
           // const canvas1: any = document.getElementById('scoreDoughnutChart');
           // new Chart(canvas1, {
           //   type: 'doughnut',

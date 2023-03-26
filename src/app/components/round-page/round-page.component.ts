@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Chart, registerables } from 'chart.js';
 import { Subscription } from 'rxjs';
@@ -21,6 +21,10 @@ export class RoundPageComponent {
   timeDifference: any;
   scoreLn: any;
   charts: any = [];
+  nineHole: boolean = false;
+  top!: string;
+  popUp: boolean = false;
+  hdcpType!: string;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -41,6 +45,12 @@ export class RoundPageComponent {
         this.scoreData = response.score;
         this.scoreService.selectedScoreData.next(this.scoreData);
         this.loadingService.loading.next(false);
+
+        if (this.scoreData.courseDetails.nineHoleGolfCourse)
+          this.nineHole = true;
+        this.onResize();
+
+        this.hdcpType = this.scoreData.hdcpType;
 
         let count = 0;
         for (let [key, value] of Object.entries(this.scoreData.score)) {
@@ -154,7 +164,7 @@ export class RoundPageComponent {
             bogeys = 0,
             double = 0,
             triple = 0;
-          for (let i = 0; i < 18; i++) {
+          for (let i = 0; i < Object.keys(score).length; i++) {
             const diff = Number(score[i].value) - Number(scorecardPar[i].value);
             if (diff == 0) {
               par++;
@@ -208,7 +218,7 @@ export class RoundPageComponent {
                     maxWidth: 185,
                     labels: {
                       boxWidth: 15,
-                    }
+                    },
                   },
                 },
               },
@@ -226,6 +236,22 @@ export class RoundPageComponent {
     }
   }
 
+  editRound() {
+    this.popUp = true;
+  }
+
+  async submitEdit() {
+    this.loadingService.loading.next(true);
+    try {
+      this.scoreData.hdcpType = this.hdcpType;
+      await this.scoreService.update(this.scoreData, 'hdcpType');
+    } catch (error) {
+      console.log(error);
+    }
+    this.popUp = false;
+    this.loadingService.loading.next(false);
+  }
+
   calculateShotsToPar() {
     const scoreToPar =
       this.scoreData?.score.In +
@@ -237,5 +263,24 @@ export class RoundPageComponent {
       return `+${scoreToPar}`;
     }
     return '';
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    if (window.innerWidth < 830) {
+      if (this.nineHole) {
+        this.top = '155px';
+      } else {
+        this.top = '255px';
+      }
+    } else if (window.innerWidth < 1650) {
+      if (this.nineHole) {
+        this.top = '260px';
+      } else {
+        this.top = '460px';
+      }
+    } else {
+      this.top = '0px';
+    }
   }
 }

@@ -17,10 +17,24 @@
   </div>
 </div>
 
+<div *ngIf="popUp" id="startRoundPopUpContainer"></div>
+<div *ngIf="popUp" id="startRoundPopUp">
+  <div class="close" (click)="popUp = false"></div>
+  <h1>Edit Round</h1>
+  <div id="formContainer">
+    <label>Handicap Type</label>
+    <select id="hdcpType" [(ngModel)]="hdcpType">
+      <option value="none">None - No handicap will be used</option>
+      <option value="basic">Basic - Standard handicap calculations</option>
+    </select>
+    <button id="submitInfo" (click)="submitEdit()">Submit</button>
+  </div>
+</div>
+
 <div id="roundPageContainer">
   <div class="left">
     <div id="roundInfoContainer">
-      <div class="topBlock">{{ scoreData?.username + "'s Round" }}</div>
+      <div class="topBlock">{{ scoreData?.username + "'s Round" }}<a (click)="popUp = true">Edit Round</a></div>
       <div class="bottomBlock">
         <div class="infoContainer">
           <h1>{{ date?.toLocaleDateString().toString() }}</h1>
@@ -45,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div id="statsInfoContainer">
+    <div [ngStyle]="{ top: top }" id="statsInfoContainer">
       <div class="topBlock">Stats</div>
       <div class="bottomBlock">
         <div id="scoreLineChartContainer">

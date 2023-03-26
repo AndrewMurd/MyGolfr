@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ScoreService } from 'src/app/services/score.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class ScoreInputComponent {
   @Input() whiteEvent!: Observable<any>;
   @Input() selectedScore: boolean = false;
   @Output() onSubmitInput: EventEmitter<any> = new EventEmitter();
+  userData: any;
   showField: boolean = true;
   editing: boolean = false;
   value!: string;
@@ -27,6 +29,7 @@ export class ScoreInputComponent {
 
   constructor(
     private scoreService: ScoreService,
+    private authService: AuthenticationService,
     private alertService: AlertService
   ) {}
 
@@ -34,6 +37,16 @@ export class ScoreInputComponent {
     this.subscriptions.add(
       this.whiteEvent.subscribe((value: boolean) => {
         this.isWhite = value;
+      })
+    );
+
+    this.subscriptions.add(
+      this.authService.user.asObservable().subscribe(async (value) => {
+        if (value) {
+          this.userData = value;
+          this.editing = false;
+          if (this.data.userId == this.userData.id) this.editing = true;
+        }
       })
     );
 
@@ -52,10 +65,10 @@ export class ScoreInputComponent {
 
   async submit() {
     if (!this.value && this.data.statusComplete == 1) {
-      this.alertService.alert(
-        'Must Enter Strokes!',
-        { color: 'green', content: 'Accept' }
-      );
+      this.alertService.alert('Must Enter Strokes!', {
+        color: 'green',
+        content: 'Accept',
+      });
       this.value = this.data.score[this.id];
       this.showField = false;
       return;
@@ -70,6 +83,11 @@ export class ScoreInputComponent {
     this.selectedScore
       ? this.scoreService.selectedScoreData.next(this.data)
       : this.scoreService.inProgressScoreData.next(this.data);
+
+    const userData = this.authService.user.getValue();
+    console.log(this.data);
+    userData.hdcp = this.data.hdcp;
+    this.authService.user.next(userData);
 
     this.setBorder();
   }

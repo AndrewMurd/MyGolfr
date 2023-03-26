@@ -143,6 +143,14 @@
   font-size: 24px;
   font-weight: bold;
   line-height: 70px;
+  a {
+    position: absolute;
+    right: 0px;
+    text-decoration: underline;
+    font-weight: normal;
+    font-size: 18px;
+    cursor: pointer;
+  }
 }
 .bottomBlock {
   display: flex;
@@ -180,10 +188,117 @@ app-active-scorecard {
   }
 }
 
+#startRoundPopUpContainer {
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+  opacity: 0.5;
+  z-index: 1000000;
+  position: absolute;
+  top: 0px;
+}
+
+#startRoundPopUp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 45px;
+  height: auto;
+  width: 400px;
+  background-color: lightgrey;
+  border-radius: 16px;
+  z-index: 10000001;
+  opacity: 1;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  h1 {
+    font-weight: bold;
+  }
+  #formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .displayInfo {
+    margin-bottom: 10px;
+    height: calc(40px - 1.6px);
+    width: calc(100% - 1.6px);
+    background-color: lightgrey;
+    border: 1px solid grey;
+    outline: none;
+    border-radius: 5px;
+    h6 {
+      font-size: 15px;
+      position: relative;
+      top: 10px;
+      left: 13px;
+    }
+  }
+  label {
+    position: relative;
+    align-self: flex-start;
+  }
+  button {
+    height: 40px;
+    background-color: $green;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    &:hover {
+      background-color: rgb(0, 122, 0);
+    }
+  }
+  select {
+    padding-left: 10px;
+    margin-bottom: 10px;
+    height: 40px;
+    width: 100%;
+    font-size: 15px;
+    background-color: lightgrey;
+    border: 1px solid grey;
+    outline: none;
+    border-radius: 5px;
+    option {
+      zoom: 1.2;
+    }
+  }
+  form {
+    width: 100%;
+  }
+}
+.close {
+  background: lightgrey;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  top: 18px;
+  right: 10px;
+  cursor: pointer;
+  &::after {
+    content: '';
+    height: 25px;
+    border-left: 2px solid black;
+    position: absolute;
+    transform: rotate(45deg);
+    left: 28px;
+  }
+  &::before {
+    content: '';
+    height: 25px;
+    border-left: 2px solid black;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 28px;
+  }
+}
+
 @media (max-width: 1650px) {
   #statsInfoContainer {
     position: relative;
-    top: 460px;
   }
   app-active-scorecard {
     position: relative;
@@ -266,14 +381,14 @@ app-active-scorecard {
         }
       }
     }
-    #statsInfoContainer {
-      top: 255px;
-    }
   }
   .topBlock {
     height: 50px;
     font-size: 20px;
     line-height: 60px;
+    a {
+      font-size: 16px;
+    }
   }
 
   #statsInfoContainer {
@@ -303,6 +418,15 @@ app-active-scorecard {
       top: -80px;
       margin: 0px;
       width: 311px !important;
+    }
+  }
+
+  #startRoundPopUp {
+    width: calc(100% - 100px);
+    select {
+      option {
+        zoom: 1;
+      }
     }
   }
 }

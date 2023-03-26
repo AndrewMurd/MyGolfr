@@ -37,25 +37,33 @@ export class SearchItemComponent {
     }
     this.name = this.data.name;
 
-    this.subscriptions.add(this.authService.token.asObservable().subscribe((value) => {
-      if (value) {
-        this.signedIn = true;
-      } else {
-        this.signedIn = false;
-      }
-    }));
+    this.subscriptions.add(
+      this.authService.token.asObservable().subscribe((value) => {
+        if (value) {
+          this.signedIn = true;
+        } else {
+          this.signedIn = false;
+        }
+      })
+    );
 
-    this.subscriptions.add(this.authService.user.asObservable().subscribe((value) => {
-      if (value) {
-        this.userData = value;
-      }
-    }));
+    this.subscriptions.add(
+      this.authService.user.asObservable().subscribe((value) => {
+        if (value) {
+          this.userData = value;
+        }
+      })
+    );
 
-    this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
-      if (value) {
-        this.scoreData = value;
-      }
-    }));
+    this.subscriptions.add(
+      this.scoreService.inProgressScoreData
+        .asObservable()
+        .subscribe((value) => {
+          if (value) {
+            this.scoreData = value;
+          }
+        })
+    );
 
     let stringArray = this.data.plus_code.compound_code.split(/(\s+)/);
     this.addressInfo = '';
@@ -64,7 +72,7 @@ export class SearchItemComponent {
       this.addressInfo += stringArray[i];
     }
   }
-  
+
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
