@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
 import { convertSqlDateTime } from '../../utilities/functions';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { convertDateTime, numberOfHolesPlayed } from '../../utilities/functions';
 
 @Component({
   selector: 'app-course-page',
@@ -17,6 +18,8 @@ export class CoursePageComponent {
   courseData: any;
   scores: any;
   signedIn!: boolean;
+  convertDateTime: Function = convertDateTime;
+  numberOfHolesPlayed: Function = numberOfHolesPlayed;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -79,29 +82,5 @@ export class CoursePageComponent {
 
   navigateToRound(score: any) {
     this.router.navigate(['/round', score.id]);
-  }
-
-  numberOfHolesPlayed(score: any) {
-    let count = 0;
-    for (let [key, value] of Object.entries(score.score)) {
-      if (value != '' && key != 'In' && key != 'Out') {
-        count++;
-      }
-    }
-    return count;
-  }
-
-  convertDateTime(score: any) {
-    const currentDateTime: any = new Date();
-    const diffTime = currentDateTime - convertSqlDateTime(score.endTime);
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-    
-    if (Math.round(diffDays * 24) < 1) {
-      return `${Math.round(diffDays * 24 * 48)} mins`;
-    } else if (diffDays <= 3) {
-      return `${Math.round(diffDays * 24)} hours`;
-    } else {
-      return `${Math.floor(diffDays)} days`;
-    }
   }
 }

@@ -71,15 +71,14 @@ router.get("/score_status", async (req, res) => {
 // @route GET /scores/score_user
 // @access Private
 router.get("/score_user", async (req, res) => {
-  const status = req.query.status;
-  const userId = req.query.userId;
+  const { status, userId, limit } = req.query;
 
   try {
     let scores;
     if (status == 2) {
-      scores = await Score.findUser(userId);
+      scores = await Score.findUser(userId, limit);
     } else {
-      scores = await Score.findUserWithStatus(userId, status);
+      scores = await Score.findUserWithStatus(userId, status, limit);
     }
 
     if (scores.length == 0) {
@@ -155,13 +154,20 @@ async function calcHandicapIndex(userId) {
     formattedScores.pop();
   }
 
+  console.log(
+    scores.length -
+      numberOf9Holes +
+      (numberOf9Holes % 2 == 0 ? numberOf9Holes : numberOf9Holes - 1)
+  );
   if (
     scores.length -
       numberOf9Holes +
       (numberOf9Holes % 2 == 0 ? numberOf9Holes : numberOf9Holes - 1) <
     3
-  )
+  ) {
+    console.log("Not Enough Scores");
     return;
+  }
 
   const currentHdcp = scores[0].hdcp;
   const HandicapDiffs = [];
@@ -257,10 +263,9 @@ async function calcHandicapIndex(userId) {
   for (let diff of lowestDiffs) {
     sum += diff;
   }
-  let HandicapIndex = (
-    (sum / lowestDiffs.length - adjustment) *
-    0.96
-  ).toFixed(1);
+  let HandicapIndex = ((sum / lowestDiffs.length - adjustment) * 0.96).toFixed(
+    1
+  );
   if (HandicapIndex < 0) HandicapIndex = 0;
 
   console.log(HandicapDiffs);
@@ -306,7 +311,7 @@ router.post("/update", async (req, res) => {
     if (scoreData.hdcpType == "basic") {
       scoreData.hdcp = await calcHandicapIndex(scoreData.userId);
     }
-  } else if (type == 'hdcpType') {
+  } else if (type == "hdcpType") {
     await Score.update(scoreData[type], type, scoreData.id);
     scoreData.hdcp = await calcHandicapIndex(scoreData.userId);
   } else {
@@ -322,16 +327,16 @@ router.post("/update", async (req, res) => {
 // @route POST /scores/delete
 // @access Private
 router.post("/delete", async (req, res) => {
-  const id = req.body.id;
+  const scoreData = req.body.scoreData;
 
   try {
-    await Score.delete(id);
-    calcHandicapIndex(id);
-    console.log(`Deleted score: ${id}`);
+    await Score.delete(scoreData.id);
+    scoreData.hdcp = await calcHandicapIndex(scoreData.userId);
+    console.log(`Deleted score: ${scoreData.id}`);
   } catch (error) {
     console.log(error);
   }
-  res.end();
+  res.json({ scoreData: scoreData });
 });
 
 module.exports = router;

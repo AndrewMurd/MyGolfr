@@ -126,7 +126,7 @@ export class RoundsPageComponent {
           this.scores = this.scores.filter((score: any) => {
             return s.id != score.id;
           });
-          await this.scoreService.delete(s.id);
+          await this.scoreService.delete(s);
           if (s.statusComplete == 0) {
             this.scoreService.inProgressScoreData.next(null);
           }

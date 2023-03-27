@@ -38,16 +38,25 @@
       </div>
     </div>
   </div>
-  <div id="statsInfoContainer">
-    <div class="topBlock">Stats</div>
+  <div id="handicapIndexContainer">
+    <div class="topBlock">Handicap Index</div>
     <div class="bottomBlock">
-      <div id="scoreLineChartContainer">
-        <h1>Score To Par</h1>
-        <canvas id="scoreLineChart"></canvas>
+      <div id="indexChartContainer">
+        <h1>Index</h1>
+        <canvas id="indexChart" width="400" height="400"></canvas>
+        <div class="insideDoughnut">
+          <h2>{{ userData?.hdcp }}</h2>
+        </div>
       </div>
-      <div id="scoreDoughnutChartContainer">
-        <h1>Scoring Summary</h1>
-        <canvas id="scoreDoughnutChart"></canvas>
+      <div>
+        <h1>Scores Used to Calculate Index</h1>
+        <div id="recent" class="roundsContainer">
+          <div class="round" *ngFor="let score of scores">
+            <a (click)="navigateToRound(score)">{{ numberOfHolesPlayed(score) }} holes,
+              {{ score.score.In + score.score.Out }} stroke round</a
+            > {{ convertDateTime(score) }} ago at {{ score.courseName }}
+          </div>
+        </div>
       </div>
     </div>
   </div>

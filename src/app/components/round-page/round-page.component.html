@@ -34,7 +34,10 @@
 <div id="roundPageContainer">
   <div class="left">
     <div id="roundInfoContainer">
-      <div class="topBlock">{{ scoreData?.username + "'s Round" }}<a (click)="popUp = true">Edit Round</a></div>
+      <div class="topBlock">
+        {{ scoreData?.username + "'s Round"
+        }}<a *ngIf="editing" (click)="popUp = true">Edit Round</a>
+      </div>
       <div class="bottomBlock">
         <div class="infoContainer">
           <h1>{{ date?.toLocaleDateString().toString() }}</h1>

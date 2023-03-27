@@ -40,3 +40,27 @@ function convertUTCDateToLocalDate(date: any) {
 
   return newDate;
 }
+
+export function numberOfHolesPlayed(score: any) {
+  let count = 0;
+  for (let [key, value] of Object.entries(score.score)) {
+    if (value != '' && key != 'In' && key != 'Out') {
+      count++;
+    }
+  }
+  return count;
+}
+
+export function convertDateTime(score: any) {
+  const currentDateTime: any = new Date();
+  const diffTime = currentDateTime - convertSqlDateTime(score.endTime);
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+  
+  if (Math.round(diffDays * 24) < 1) {
+    return `${Math.round(diffDays * 24 * 48)} mins`;
+  } else if (diffDays <= 3) {
+    return `${Math.round(diffDays * 24)} hours`;
+  } else {
+    return `${Math.floor(diffDays)} days`;
+  }
+}

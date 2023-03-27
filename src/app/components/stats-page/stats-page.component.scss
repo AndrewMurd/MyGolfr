@@ -60,11 +60,12 @@
       }
     }
   }
-  #statsInfoContainer {
+  #handicapIndexContainer {
     border-radius: 5px;
     width: 100%;
     max-width: 738px;
-    height: 300px;
+    min-height: 330px;
+    height: auto;
     background-color: grey;
     margin-top: 20px;
     margin-left: auto;
@@ -103,22 +104,43 @@
   height: 100%;
 }
 
-#scoreLineChartContainer {
-  width: 60%;
-  #scoreLineChart {
+#indexChart {
+  width: 230px !important;
+}
+
+.insideDoughnut {
+  width: 150px;
+  height: 150px;
+  background-color: grey;
+  position: absolute;
+  top: 61px;
+  left: 40px;
+  border-radius: 50%;
+  box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.6);
+  h2 {
+    font-size: 50px;
+    font-weight: bold;
     position: relative;
-    width: 100%;
+    top: 60px;
+    text-align: center;
   }
 }
 
-#scoreDoughnutChartContainer {
-  width: 50%;
-  #scoreDoughnutChart {
-    position: relative;
-    top: -60px;
-    margin: 0px;
-    width: 311px !important;
+.roundsContainer {
+  h1 {
+    font-weight: bold;
   }
+  a {
+    color: $green;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.round {
+  font-size: 13px;
+  font-weight: 500;
 }
 
 @media (max-width: 830px) {
@@ -169,7 +191,7 @@
     }
   }
 
-  #roundPageContainer {
+  #statsPageContainer {
     width: 97%;
     height: auto;
     #roundInfoContainer {
@@ -186,7 +208,7 @@
         }
       }
     }
-    #statsInfoContainer {
+    #handicapIndexContainer {
       top: 375px;
     }
   }
@@ -196,7 +218,7 @@
     line-height: 60px;
   }
 
-  #statsInfoContainer {
+  #handicapIndexContainer {
     height: 450px !important;
     .bottomBlock {
       flex-wrap: wrap;
@@ -204,25 +226,6 @@
         margin-bottom: 0px;
         font-size: 16px;
       }
-    }
-  }
-
-  #scoreLineChartContainer {
-    align-self: center;
-    width: 100%;
-    #scoreLineChart {
-      position: relative;
-      width: 100%;
-    }
-  }
-
-  #scoreDoughnutChartContainer {
-    width: 100%;
-    #scoreDoughnutChart {
-      position: relative;
-      top: -80px;
-      margin: 0px;
-      width: 311px !important;
     }
   }
 }

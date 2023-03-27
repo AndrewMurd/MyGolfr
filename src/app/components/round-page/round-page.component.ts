@@ -16,6 +16,7 @@ import { convertSqlDateTime } from '../../utilities/functions';
 export class RoundPageComponent {
   subscriptions: Subscription = new Subscription();
   scoreData: any;
+  userData: any;
   addressInfo: string = '';
   date: any;
   timeDifference: any;
@@ -25,6 +26,7 @@ export class RoundPageComponent {
   top!: string;
   popUp: boolean = false;
   hdcpType!: string;
+  editing: boolean = false;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -74,6 +76,17 @@ export class RoundPageComponent {
         for (let i = 1; i < stringArray.length; i++) {
           this.addressInfo += stringArray[i];
         }
+        
+        this.subscriptions.add(
+          this.authService.user.asObservable().subscribe(async (value) => {
+            if (value) {
+              this.userData = value;
+              this.editing = false;
+              console.log(this.scoreData.userId, this.userData.id)
+              if (this.scoreData.userId == this.userData.id) this.editing = true;
+            }
+          })
+        );
       })
     );
 
@@ -204,6 +217,7 @@ export class RoundPageComponent {
                       'red',
                       'black',
                     ],
+                    borderWidth: 0,
                   },
                 ],
               },

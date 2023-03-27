@@ -152,10 +152,7 @@ export class ActiveScorecardComponent {
           this.loadingService.loading.next(true);
           try {
             this.scoreData.statusComplete = 1;
-            await this.scoreService.update(
-              this.scoreData,
-              'statusComplete'
-            );
+            await this.scoreService.update(this.scoreData, 'statusComplete');
             this.scoreService.inProgressScoreData.next(null);
             this.router.navigate(['/round', this.scoreData.id]);
           } catch (error) {}
@@ -173,11 +170,14 @@ export class ActiveScorecardComponent {
       async () => {
         this.loadingService.loading.next(true);
         try {
-          await this.scoreService.delete(this.scoreData.id);
+          const response: any = await this.scoreService.delete(this.scoreData);
           this.router.navigate([
             '/start-round',
             this.scoreData.googleDetails.reference,
           ]);
+          const userData = this.authService.user.getValue();
+          userData.hdcp = response.scoreData.hdcp;
+          this.authService.user.next(userData);
           this.scoreService.inProgressScoreData.next(null);
         } catch (error) {}
         this.loadingService.loading.next(false);

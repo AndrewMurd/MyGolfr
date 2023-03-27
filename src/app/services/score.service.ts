@@ -46,11 +46,11 @@ export class ScoreService {
     });
   }
 
-  async getUser(userId: any, status: number = 2) {
+  async getUser(userId: any, status: number = 2, limit: number = 20) {
     return await new Promise((resolve, reject) => {
       this.http
         .get(ROOT_URL + 'scores/score_user', {
-          params: new HttpParams().set('userId', userId).set('status', status),
+          params: new HttpParams().set('userId', userId).set('status', status).set('limit', limit),
         })
         .subscribe({
           next: (data: any) => {
@@ -108,11 +108,11 @@ export class ScoreService {
     });
   }
 
-  async delete(scoreId: any) {
+  async delete(scoreData: any) {
     return await new Promise((resolve, reject) => {
       this.http
         .post(ROOT_URL + 'scores/delete', {
-          id: scoreId,
+          scoreData: scoreData,
         })
         .subscribe({
           next: (data) => {
