@@ -56,5 +56,8 @@
     </div>
   </form>
 
-  <a routerLink="/register" id="registerLink">Create Account</a>
+  <div id="linkContainer">
+    <a routerLink="/register" id="registerLink">Create Account</a> |
+    <a (click)="forgotPassword()" id="forgotPasswordLink">Forgot Password</a>
+  </div>
 </div>

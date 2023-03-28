@@ -91,7 +91,7 @@ export class RoundsPageComponent {
             if (value) {
               this.userData = value;
               this.selectedUser = true;
-              if (this.scores[0]?.userId == this.userData.id)
+              if (this.scores[0]?.userId == this.userData.id || this.scores.length == 0)
                 this.selectedUser = false;
             }
           })

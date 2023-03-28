@@ -30,6 +30,15 @@ export class StatsPageComponent {
   scoreAvg: string = 'N/A';
   limit: any = 40;
   avgScoreToParData: any = [];
+  typeOfScore: any = {
+    'Eagles or Better': 0,
+    Birdies: 0,
+    Pars: 0,
+    Bogeys: 0,
+    'Double Bogeys': 0,
+    'Triples or Worse': 0,
+  };
+  charts: any = [];
   convertDateTime: Function = convertDateTime;
   numberOfHolesPlayed: Function = numberOfHolesPlayed;
 
@@ -55,7 +64,6 @@ export class StatsPageComponent {
             this.limit
           );
           this.scores = response.scores;
-          console.log(this.scores);
           this.userName = this.scores[0].username;
 
           for (let score of this.scores) {
@@ -70,8 +78,12 @@ export class StatsPageComponent {
           this.authService.user.asObservable().subscribe(async (value) => {
             if (value) {
               this.userData = value;
+              if (!this.userData.hdcp) this.userData.hdcp = 0.0;
               this.selectedUser = true;
-              if (this.scores[0]?.userId == this.userData.id)
+              if (
+                this.scores[0]?.userId == this.userData.id ||
+                this.scores.length == 0
+              )
                 this.selectedUser = false;
 
               this.reload();
@@ -219,8 +231,6 @@ export class StatsPageComponent {
         this.userName = this.scores[0].username;
       }
 
-      console.log(this.scores);
-
       this.reload();
       this.loadingService.loading.next(false);
     } catch (error) {
@@ -229,12 +239,17 @@ export class StatsPageComponent {
   }
 
   reload() {
+    for (let chart of this.charts) {
+      chart.destroy();
+    }
+
     let sumTime = 0,
       scoreSum = 0;
     this.lowestScore = this.scores[0];
     this.highestScore = this.scores[0];
     const scoreByPar: any = { 3: [], 4: [], 5: [] };
-    const typeOfScore = {
+    this.avgScoreToParData = [];
+    this.typeOfScore = {
       'Eagles or Better': 0,
       Birdies: 0,
       Pars: 0,
@@ -275,17 +290,17 @@ export class StatsPageComponent {
           const hole = key.length == 2 ? key.charAt(1) : key.slice(-2);
           const diff = Number(score.score[hole]) - value;
           if (diff <= -2) {
-            typeOfScore['Eagles or Better']++;
+            this.typeOfScore['Eagles or Better']++;
           } else if (diff <= -1) {
-            typeOfScore['Birdies']++;
+            this.typeOfScore['Birdies']++;
           } else if (diff == 0) {
-            typeOfScore['Pars']++;
+            this.typeOfScore['Pars']++;
           } else if (diff == 1) {
-            typeOfScore['Bogeys']++;
+            this.typeOfScore['Bogeys']++;
           } else if (diff == 2) {
-            typeOfScore['Double Bogeys']++;
+            this.typeOfScore['Double Bogeys']++;
           } else if (diff >= 3) {
-            typeOfScore['Triples or Worse']++;
+            this.typeOfScore['Triples or Worse']++;
           }
         }
       }
@@ -305,9 +320,11 @@ export class StatsPageComponent {
       for (let val of value) {
         sum += val;
       }
+      let avg = (Math.round((sum / value.length) * 10) / 10).toFixed(1);
+      if (avg == 'NaN') avg = '0.0';
       this.avgScoreToParData.push({
         label: key,
-        value: Math.round((sum / value.length) * 10) / 10,
+        value: avg,
       });
       if (Math.round((sum / value.length) * 10) / 10 < 0) {
         colors.push('green');
@@ -317,108 +334,292 @@ export class StatsPageComponent {
     }
 
     const canvas: any = document.getElementById('scoreByParChart');
-    new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: this.avgScoreToParData.map(
-          (row: any) => `(${row.value}) Par ${row.label}s`
-        ),
-        datasets: [
-          {
-            data: this.avgScoreToParData.map(
-              (row: any) => row.value - row.label
-            ),
-            backgroundColor: colors,
-            borderRadius: 5,
-            barThickness: 70,
-          },
-        ],
-      },
-      options: {
-        color: 'black',
-        scales: {
-          x: {
-            ticks: {
-              display: false,
-              // font: {
-              //   size: 20,
-              //   weight: 'bold',
-              // },
-              // color: 'black',
-            },
-            grid: {
-              display: false,
-            },
-          },
-          y: {
-            ticks: {
-              font: {
-                weight: 'bold',
-              },
-              stepSize: 1,
-              callback: function (val: any, index) {
-                if (this.getLabelForValue(val) == '0') {
-                  return 'E';
-                } else if (Number(this.getLabelForValue(val)) < 0) {
-                  return this.getLabelForValue(val);
-                } else {
-                  return '+' + this.getLabelForValue(val);
+    this.charts.push(
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: this.avgScoreToParData.map(
+            (row: any) => `(${row.value}) Par ${row.label}s`
+          ),
+          datasets: [
+            {
+              data: this.avgScoreToParData.map((row: any) => {
+                if (row.value == '0.0') {
+                  return Number(row.value);
                 }
+                return Number(row.value) - Number(row.label);
+              }),
+              backgroundColor: colors,
+              borderRadius: 5,
+              barThickness: 70,
+            },
+          ],
+        },
+        options: {
+          color: 'black',
+          scales: {
+            x: {
+              ticks: {
+                display: false,
+                // font: {
+                //   size: 20,
+                //   weight: 'bold',
+                // },
+                // color: 'black',
               },
-              color: 'black',
+              grid: {
+                display: false,
+              },
             },
-            grid: {
-              color: 'black',
-              tickBorderDash: [4],
+            y: {
+              ticks: {
+                font: {
+                  weight: 'bold',
+                },
+                stepSize: 1,
+                callback: function (val: any, index) {
+                  if (this.getLabelForValue(val) == '0') {
+                    return 'E';
+                  } else if (Number(this.getLabelForValue(val)) < 0) {
+                    return this.getLabelForValue(val);
+                  } else {
+                    return '+' + this.getLabelForValue(val);
+                  }
+                },
+                color: 'black',
+              },
+              grid: {
+                color: 'black',
+                tickBorderDash: [4],
+              },
+            },
+          },
+          events: [],
+          plugins: {
+            tooltip: {
+              enabled: false,
+            },
+            legend: {
+              display: false,
             },
           },
         },
-        events: [],
-        plugins: {
-          tooltip: {
-            enabled: false,
-          },
-          legend: {
-            display: false,
-          },
-        },
-      },
-    });
+      })
+    );
+
+    for (let [key, value] of Object.entries(this.typeOfScore)) {
+      const newValue = Number(value) / this.scores.length;
+      if (Number.isNaN(newValue)) {
+        this.typeOfScore[key] = '0.0';
+        continue;
+      } else if (newValue == 0) {
+        this.typeOfScore[key] = '0.0';
+        continue;
+      }
+      if (newValue < 1) {
+        this.typeOfScore[key] = newValue.toFixed(3);
+        this.typeOfScore[key] = parseFloat(this.typeOfScore[key]);
+        this.typeOfScore[key] = this.typeOfScore[key]
+          .toString()
+          .replace(/^./, '');
+      } else {
+        this.typeOfScore[key] = newValue.toFixed(1);
+      }
+    }
 
     const parChart: any = document.getElementById('doughnutChartPar');
-
-    console.log(typeOfScore);
-
-    new Chart(parChart, {
-      type: 'doughnut',
-      data: {
-        labels: ['grey', 'Pars'],
-        datasets: [
-          {
-            data: [100],
-            // data: [18 - (typeOfScore.Pars / this.scores.length) * 18, (typeOfScore.Pars / this.scores.length) * 18],
-            borderWidth: 0,
-            backgroundColor: ['green', 'grey'],
-          },
-        ],
-      },
-      options: {
-        cutout: 40,
-        events: [],
-        plugins: {
-          tooltip: {
-            enabled: false,
-          },
-          legend: {
-            display: false,
+    this.charts.push(
+      new Chart(parChart, {
+        type: 'doughnut',
+        data: {
+          labels: ['grey', 'Pars'],
+          datasets: [
+            {
+              data: [this.typeOfScore.Pars, 18 - this.typeOfScore.Pars],
+              borderWidth: 0,
+              backgroundColor: ['blue', 'grey'],
+            },
+          ],
+        },
+        options: {
+          cutout: 30,
+          events: [],
+          plugins: {
+            tooltip: {
+              enabled: false,
+            },
+            legend: {
+              display: false,
+            },
           },
         },
-      },
-    });
+      })
+    );
+
+    const bogeysChart: any = document.getElementById('doughnutChartBogeys');
+    this.charts.push(
+      new Chart(bogeysChart, {
+        type: 'doughnut',
+        data: {
+          labels: ['grey', 'Bogeys'],
+          datasets: [
+            {
+              data: [this.typeOfScore.Bogeys, 18 - this.typeOfScore.Bogeys],
+              borderWidth: 0,
+              backgroundColor: ['yellow', 'grey'],
+            },
+          ],
+        },
+        options: {
+          cutout: 30,
+          events: [],
+          plugins: {
+            tooltip: {
+              enabled: false,
+            },
+            legend: {
+              display: false,
+            },
+          },
+        },
+      })
+    );
+
+    const birdiesChart: any = document.getElementById('doughnutChartBirdies');
+    this.charts.push(
+      new Chart(birdiesChart, {
+        type: 'doughnut',
+        data: {
+          labels: ['grey', 'Bogeys'],
+          datasets: [
+            {
+              data: [this.typeOfScore.Birdies, 18 - this.typeOfScore.Birdies],
+              borderWidth: 0,
+              backgroundColor: ['green', 'grey'],
+            },
+          ],
+        },
+        options: {
+          cutout: 30,
+          events: [],
+          plugins: {
+            tooltip: {
+              enabled: false,
+            },
+            legend: {
+              display: false,
+            },
+          },
+        },
+      })
+    );
+
+    const eaglesChart: any = document.getElementById('doughnutChartEagles');
+    this.charts.push(
+      new Chart(eaglesChart, {
+        type: 'doughnut',
+        data: {
+          labels: ['grey', 'Bogeys'],
+          datasets: [
+            {
+              data: [
+                this.typeOfScore['Eagles or Better'],
+                18 - this.typeOfScore['Eagles or Better'],
+              ],
+              borderWidth: 0,
+              backgroundColor: ['rgb(2, 207, 2)', 'grey'],
+            },
+          ],
+        },
+        options: {
+          cutout: 30,
+          events: [],
+          plugins: {
+            tooltip: {
+              enabled: false,
+            },
+            legend: {
+              display: false,
+            },
+          },
+        },
+      })
+    );
+
+    const doubleBogeysChart: any = document.getElementById(
+      'doughnutChartDoubleBogeys'
+    );
+    this.charts.push(
+      new Chart(doubleBogeysChart, {
+        type: 'doughnut',
+        data: {
+          labels: ['grey', 'DoubleBogeys'],
+          datasets: [
+            {
+              data: [
+                this.typeOfScore['Double Bogeys'],
+                18 - this.typeOfScore['Double Bogeys'],
+              ],
+              borderWidth: 0,
+              backgroundColor: ['red', 'grey'],
+            },
+          ],
+        },
+        options: {
+          cutout: 30,
+          events: [],
+          plugins: {
+            tooltip: {
+              enabled: false,
+            },
+            legend: {
+              display: false,
+            },
+          },
+        },
+      })
+    );
+
+    const tripleBogeys: any = document.getElementById(
+      'doughnutChartTripleBogeys'
+    );
+    this.charts.push(
+      new Chart(tripleBogeys, {
+        type: 'doughnut',
+        data: {
+          labels: ['grey', 'TripleBogeys'],
+          datasets: [
+            {
+              data: [
+                this.typeOfScore['Triples or Worse'],
+                18 - this.typeOfScore['Triples or Worse'],
+              ],
+              borderWidth: 0,
+              backgroundColor: ['black', 'grey'],
+            },
+          ],
+        },
+        options: {
+          cutout: 30,
+          events: [],
+          plugins: {
+            tooltip: {
+              enabled: false,
+            },
+            legend: {
+              display: false,
+            },
+          },
+        },
+      })
+    );
   }
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    for (let chart of this.charts) {
+      chart.destroy();
+    }
   }
 
   navigateToRound(score: any) {

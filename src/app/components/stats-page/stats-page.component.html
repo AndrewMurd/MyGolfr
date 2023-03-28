@@ -76,17 +76,61 @@
   <div id="statsContainer">
     <div class="topBlock">Score By Par</div>
     <div class="bottomBlock">
-      <div id="barChartContainer">
-        <canvas id="scoreByParChart"></canvas>
-        <div id="chartLegend">
-          <div *ngFor="let par of avgScoreToParData" id="label">
-            <h2>Par {{ par.label }}s</h2>
-            <h1>{{ par.value }}</h1>
+      <div class="center">
+        <div id="barChartContainer">
+          <canvas id="scoreByParChart"></canvas>
+          <div id="chartLegend">
+            <div *ngFor="let par of avgScoreToParData" id="label">
+              <h2>Par {{ par.label }}s</h2>
+              <h1>{{ par.value }}</h1>
+            </div>
           </div>
         </div>
       </div>
       <div id="scoreSummaryContainer">
-        <canvas id="doughnutChartPar"></canvas>
+        <div class="chartContainer">
+          <h3>Eagles or Better</h3>
+          <div class="insideDoughnut-small">
+            <h2>{{ typeOfScore["Eagles or Better"] }}</h2>
+          </div>
+          <canvas id="doughnutChartEagles"></canvas>
+        </div>
+        <div class="chartContainer">
+          <h3>Birdies</h3>
+          <div class="insideDoughnut-small">
+            <h2>{{ typeOfScore.Birdies }}</h2>
+          </div>
+          <canvas id="doughnutChartBirdies"></canvas>
+        </div>
+        <div class="chartContainer">
+          <h3>Pars</h3>
+          <div class="insideDoughnut-small">
+            <h2>{{ typeOfScore.Pars }}</h2>
+          </div>
+          <canvas id="doughnutChartPar"></canvas>
+        </div>
+
+        <div class="chartContainer">
+          <h3>Bogeys</h3>
+          <div class="insideDoughnut-small">
+            <h2>{{ typeOfScore.Bogeys }}</h2>
+          </div>
+          <canvas id="doughnutChartBogeys"></canvas>
+        </div>
+        <div class="chartContainer">
+          <h3>Double Bogeys</h3>
+          <div class="insideDoughnut-small">
+            <h2>{{ typeOfScore["Double Bogeys"] }}</h2>
+          </div>
+          <canvas id="doughnutChartDoubleBogeys"></canvas>
+        </div>
+        <div class="chartContainer">
+          <h3>Triples or Worse</h3>
+          <div class="insideDoughnut-small">
+            <h2>{{ typeOfScore["Triples or Worse"] }}</h2>
+          </div>
+          <canvas id="doughnutChartTripleBogeys"></canvas>
+        </div>
       </div>
     </div>
   </div>

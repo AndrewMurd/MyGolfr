@@ -48,7 +48,7 @@ input {
 }
 
 .inputError {
-  border-color: $error;
+  border-color: $error !important;
 }
 
 .placeholder-text {
@@ -187,8 +187,16 @@ button {
   }
 }
 
-#registerLink {
+#linkContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 230px;
   position: relative;
   margin: auto;
   top: 15px;
+  a {
+    text-decoration: underline;
+    color: rgb(94, 13, 94);
+    cursor: pointer;
+  }
 }

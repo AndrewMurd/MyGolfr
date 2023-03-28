@@ -85,7 +85,6 @@ export class ScoreInputComponent {
       : this.scoreService.inProgressScoreData.next(this.data);
 
     const userData = this.authService.user.getValue();
-    console.log(this.data);
     userData.hdcp = this.data.hdcp;
     this.authService.user.next(userData);
 

@@ -108,14 +108,19 @@
     }
   }
   #statsContainer {
-    width: 738px;
-    height: 487px;
+    width: 590px;
+    height: auto;
+    max-height: 487px;
     background-color: grey;
     border-radius: 5px;
     position: relative;
     top: 10px;
     margin-left: 10px;
     max-width: 738px;
+    .bottomBlock {
+      display: block;
+      justify-content: center;
+    }
   }
 }
 
@@ -166,6 +171,41 @@
   }
 }
 
+.chartContainer {
+  position: relative;
+  h3 {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: -25px;
+    font-size: 12px;
+    color: rgb(26, 26, 26);
+    text-align: center;
+    width: auto;
+  }
+}
+
+.insideDoughnut-small {
+  width: 65px;
+  height: 65px;
+  background-color: grey;
+  position: absolute;
+  top: 13px;
+  right: 12px;
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.6);
+  h2 {
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+    top: 17px;
+    text-align: center;
+  }
+}
+
+
 .roundsContainer {
   h1 {
     font-weight: bold;
@@ -183,39 +223,59 @@
   font-weight: 500;
 }
 
+.center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 #barChartContainer {
-  width: 500px !important;
+  max-width: 520px !important;
+  width: 100% !important;
   display: flex;
   flex-direction: column;
   #chartLegend {
     display: flex;
     justify-content: space-between;
-    width: 75%;
+    width: 72%;
     position: relative;
-    left: 15%;
+    top: -10px;
+    left: 17%;
     #label {
       text-align: center;
     }
     h2 {
       color: rgb(65, 65, 65);
       margin-bottom: 0px;
+      font-size: 15px;
     }
     h1 {
+      position: relative;
+      top: -10px;
       font-weight: bold;
-      font-size: 30px;
+      font-size: 25px;
+      // margin-bottom: 0px;
     }
   }
 }
 
-#scoreByParChart {
-  width: 100% !important;
-}
+// #scoreByParChart {
+//   width: 100% !important;
+// }
 
 #scoreSummaryContainer {
   display: flex;
-  flex-direction: column;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  position: relative;
+  top: -20px;
+  justify-content: center;
+  .column {
+    display: flex;
+    flex-direction: column;
+  }
   canvas {
-    width: 110px !important;
+    width: 90px !important;
   }
 }
 
@@ -225,6 +285,7 @@
     width: 738px;
     #statsContainer {
       margin-left: 0px;
+      width: 738px;
     }
   }
 }
@@ -233,6 +294,16 @@
   app-active-scorecard {
     margin-left: 0;
     width: 100%;
+  }
+
+  #statsPageContainer {
+    #statsContainer {
+      max-height: 520px;
+    }
+  }
+
+  .chartContainer {
+    height: 120px !important;
   }
 
   #queryContainer {

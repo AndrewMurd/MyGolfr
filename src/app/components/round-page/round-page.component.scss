@@ -119,7 +119,8 @@
     border-radius: 5px;
     width: 100%;
     max-width: 738px;
-    height: 300px;
+    height: auto !important;
+    max-height: 300px;
     background-color: grey;
     margin-top: 20px;
     position: relative;
@@ -316,6 +317,12 @@ app-active-scorecard {
 }
 
 @media (max-width: 830px) {
+  #roundPageContainer {
+    #statsInfoContainer {
+      max-height: 600px !important;
+    }
+  }
+
   app-active-scorecard {
     margin-left: 0;
     width: 100%;
@@ -413,6 +420,7 @@ app-active-scorecard {
 
   #scoreDoughnutChartContainer {
     width: 100%;
+    height: 200px;
     #scoreDoughnutChart {
       position: relative;
       top: -80px;

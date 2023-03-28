@@ -43,6 +43,10 @@ export class LoginPageComponent {
     });
   }
 
+  forgotPassword() {
+    console.log(123)
+  }
+
   onClick() {
     this.btn.classList.add('onclic');
   }
