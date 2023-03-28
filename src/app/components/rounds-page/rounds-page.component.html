@@ -1,4 +1,4 @@
-<app-header [height]="'200px'"></app-header>
+<app-header [height]="'150px'"></app-header>
 
 <div class="headerContent">
   <h1 id="title">
@@ -45,11 +45,12 @@
               <div class="dot"></div>
             </div>
           </div>
-          <div class="total" id="total{{ index }}">
+          <div [ngClass]="!selectedUser? 'total': 'nohover'" id="total{{ index }}">
             <h1>{{ score.score.In + score.score.Out }}</h1>
             <h2>Total</h2>
           </div>
           <img
+            *ngIf="!selectedUser"
             (click)="deleteRound(score, $event)"
             src="../../../assets/delete35x35.png"
             alt=""
@@ -58,6 +59,7 @@
           />
         </div>
         <div
+          *ngIf="!selectedUser"
           id="deleteContainer{{ index }}"
           class="deleteContainer"
           (click)="deleteRound(score, $event)"

@@ -1,62 +1,92 @@
-<app-header [height]="'200px'"></app-header>
+<app-header [height]="'125px'"></app-header>
 
 <div class="headerContent">
   <h1 id="title">
     {{ selectedUser ? userName + "'s Stats" : "Stats" }}
   </h1>
+  <div id="queryContainer">
+    <select id="hdcpType" [(ngModel)]="limit" (ngModelChange)="newQuery()">
+      <option value="5">Last 5 Rounds</option>
+      <option value="20">Last 20 Rounds</option>
+      <option value="40">Last 40 Rounds</option>
+      <option value="all">All Time Rounds</option>
+      <option value="thisYear">Year To Date</option>
+    </select>
+  </div>
 </div>
 
 <div id="statsPageContainer">
-  <div id="roundInfoContainer">
-    <div class="topBlock">Career</div>
-    <div class="bottomBlock">
-      <div class="infoContainer">
-        <h1>{{ timePlayed }}</h1>
-        <h2>Time Played</h2>
+  <div class="left">
+    <div id="roundInfoContainer">
+      <div class="topBlock">Career</div>
+      <div class="bottomBlock">
+        <div class="infoContainer">
+          <h1>{{ timePlayed }}</h1>
+          <h2>Time Played</h2>
+        </div>
+        <div class="infoContainer">
+          <h1>
+            <a (click)="navigateToRound(lowestScore)">{{
+              calculateShotsToPar(lowestScore)
+            }}</a>
+          </h1>
+          <h2>Lowest Score</h2>
+        </div>
+        <div class="infoContainer">
+          <h1>
+            <a (click)="navigateToRound(highestScore)">{{
+              calculateShotsToPar(highestScore)
+            }}</a>
+          </h1>
+          <h2>Highest Score</h2>
+        </div>
+        <div class="infoContainer">
+          <h1>
+            {{ scoreAvg }}
+          </h1>
+          <h2>Average Score</h2>
+        </div>
       </div>
-      <div class="infoContainer">
-        <h1>
-          <a (click)="navigateToRound(lowestScore)">{{
-            calculateShotsToPar(lowestScore)
-          }}</a>
-        </h1>
-        <h2>Lowest Score</h2>
-      </div>
-      <div class="infoContainer">
-        <h1>
-          <a (click)="navigateToRound(highestScore)">{{
-            calculateShotsToPar(highestScore)
-          }}</a>
-        </h1>
-        <h2>Highest Score</h2>
-      </div>
-      <div class="infoContainer">
-        <h1>
-          {{ scoreAvg }}
-        </h1>
-        <h2>Average Score</h2>
+    </div>
+    <div id="handicapIndexContainer">
+      <div class="topBlock">Handicap Index</div>
+      <div class="bottomBlock">
+        <div id="indexChartContainer">
+          <h1>Index</h1>
+          <canvas id="indexChart" width="400" height="400"></canvas>
+          <div class="insideDoughnut">
+            <h2>{{ userData?.hdcp }}</h2>
+          </div>
+        </div>
+        <div>
+          <h1>Rounds Used to Calculate Index</h1>
+          <div id="recent" class="roundsContainer">
+            <div class="round" *ngFor="let score of usedForHdcpScores">
+              <a (click)="navigateToRound(score)"
+                >{{ numberOfHolesPlayed(score) }} holes,
+                {{ score.score.In + score.score.Out }} stroke round</a
+              >
+              {{ convertDateTime(score) }} ago at {{ score.courseName }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div id="handicapIndexContainer">
-    <div class="topBlock">Handicap Index</div>
+  <div id="statsContainer">
+    <div class="topBlock">Score By Par</div>
     <div class="bottomBlock">
-      <div id="indexChartContainer">
-        <h1>Index</h1>
-        <canvas id="indexChart" width="400" height="400"></canvas>
-        <div class="insideDoughnut">
-          <h2>{{ userData?.hdcp }}</h2>
-        </div>
-      </div>
-      <div>
-        <h1>Scores Used to Calculate Index</h1>
-        <div id="recent" class="roundsContainer">
-          <div class="round" *ngFor="let score of scores">
-            <a (click)="navigateToRound(score)">{{ numberOfHolesPlayed(score) }} holes,
-              {{ score.score.In + score.score.Out }} stroke round</a
-            > {{ convertDateTime(score) }} ago at {{ score.courseName }}
+      <div id="barChartContainer">
+        <canvas id="scoreByParChart"></canvas>
+        <div id="chartLegend">
+          <div *ngFor="let par of avgScoreToParData" id="label">
+            <h2>Par {{ par.label }}s</h2>
+            <h1>{{ par.value }}</h1>
           </div>
         </div>
+      </div>
+      <div id="scoreSummaryContainer">
+        <canvas id="doughnutChartPar"></canvas>
       </div>
     </div>
   </div>

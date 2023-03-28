@@ -77,6 +77,8 @@ router.get("/score_user", async (req, res) => {
     let scores;
     if (status == 2) {
       scores = await Score.findUser(userId, limit);
+    } else if (limit == 0) {
+      scores = await Score.findUserWithStatusNoLimit(userId, status);
     } else {
       scores = await Score.findUserWithStatus(userId, status, limit);
     }
@@ -133,6 +135,7 @@ function calcOutIn(score) {
 
 async function calcHandicapIndex(userId) {
   const scores = await Score.findScoresForHdcp(userId);
+  await Score.resetUsedForHdcp(userId);
 
   // see which scores contain a nineHole hole golf course
   const formattedScores = [];
@@ -217,19 +220,26 @@ async function calcHandicapIndex(userId) {
     if (lastNineHole) {
       let HandicapDiff =
         (113 / score.teeData.Slope) * (AGS - score.teeData.Rating);
-      if (HandicapDiff < 0) HandicapDiff = 0;
-      if (lastHandicapDiff < 0) lastHandicapDiff = 0;
-      HandicapDiffs.push(HandicapDiff + lastHandicapDiff);
+      if (HandicapDiff.diff < 0) HandicapDiff = 0;
+      if (lastHandicapDiff.diff < 0) lastHandicapDiff = 0;
+      HandicapDiffs.push({
+        score: [HandicapDiff.score, lastHandicapDiff.score],
+        diff: HandicapDiff.diff + lastHandicapDiff.diff,
+      });
       lastNineHole = false;
     } else if (score.courseDetails.nineHoleGolfCourse) {
       lastNineHole = true;
-      lastHandicapDiff =
-        (113 / score.teeData.Slope) * (AGS - score.teeData.Rating);
+      lastHandicapDiff = {
+        score: [score],
+        diff: (113 / score.teeData.Slope) * (AGS - score.teeData.Rating),
+      };
       continue;
     } else {
-      let HandicapDiff =
-        (113 / score.teeData.Slope) * (AGS - score.teeData.Rating);
-      if (HandicapDiff < 0) HandicapDiff = 0;
+      let HandicapDiff = {
+        score: [score],
+        diff: (113 / score.teeData.Slope) * (AGS - score.teeData.Rating),
+      };
+      if (HandicapDiff.diff < 0) HandicapDiff = 0;
       HandicapDiffs.push(HandicapDiff);
     }
   }
@@ -258,10 +268,13 @@ async function calcHandicapIndex(userId) {
   } else if (ln == 20) {
     factor = 8;
   }
-  const lowestDiffs = HandicapDiffs.sort((a, b) => a - b).slice(0, factor);
+  const lowestDiffs = HandicapDiffs.sort((a, b) => a.diff - b.diff).slice(0, factor);
   let sum = 0;
   for (let diff of lowestDiffs) {
-    sum += diff;
+    sum += diff.diff;
+    for (let s of diff.score) {
+      await Score.update(JSON.stringify(1), 'usedForHdcp', s.id);
+    }
   }
   let HandicapIndex = ((sum / lowestDiffs.length - adjustment) * 0.96).toFixed(
     1
@@ -331,7 +344,8 @@ router.post("/delete", async (req, res) => {
 
   try {
     await Score.delete(scoreData.id);
-    scoreData.hdcp = await calcHandicapIndex(scoreData.userId);
+    if (scoreData.hdcpType == "basic")
+      scoreData.hdcp = await calcHandicapIndex(scoreData.userId);
     console.log(`Deleted score: ${scoreData.id}`);
   } catch (error) {
     console.log(error);

@@ -1,10 +1,8 @@
 @import "../../utilities/variables.scss";
 
 .headerContent {
-  display: flex;
-  justify-content: space-between;
   height: auto;
-  top: 150px;
+  top: 75px;
   color: white;
   position: fixed;
   left: 50%;
@@ -21,15 +19,44 @@
   }
 }
 
+#queryContainer {
+  display: flex;
+  position: fixed;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  width: 155px;
+  select {
+    padding-left: 10px;
+    margin-bottom: 10px;
+    height: 40px;
+    width: 155px;
+    font-size: 15px;
+    background-color: lightgrey;
+    border: 1px solid grey;
+    outline: none;
+    border-radius: 5px;
+    option {
+      zoom: 1;
+    }
+  }
+}
+
 #statsPageContainer {
-  top: 200px;
+  top: 125px;
   position: relative;
   left: 50%;
   margin-right: -50%;
   transform: translate(-50%, 0%);
-  height: 1000px;
+  height: auto;
   width: 90%;
-  max-width: 1100px;
+  display: flex;
+  justify-content: center;
+  .left {
+    width: 738px;
+  }
   #roundInfoContainer {
     border-radius: 5px;
     position: relative;
@@ -64,13 +91,12 @@
     border-radius: 5px;
     width: 100%;
     max-width: 738px;
-    min-height: 330px;
     height: auto;
     background-color: grey;
     margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
-    position: absolute;
+    position: relative;
     left: 0;
     right: 0;
     .bottomBlock {
@@ -80,6 +106,16 @@
         font-size: 16px;
       }
     }
+  }
+  #statsContainer {
+    width: 738px;
+    height: 487px;
+    background-color: grey;
+    border-radius: 5px;
+    position: relative;
+    top: 10px;
+    margin-left: 10px;
+    max-width: 738px;
   }
 }
 
@@ -106,6 +142,10 @@
 
 #indexChart {
   width: 230px !important;
+}
+
+#indexChartContainer {
+  width: 230px;
 }
 
 .insideDoughnut {
@@ -143,10 +183,80 @@
   font-weight: 500;
 }
 
+#barChartContainer {
+  width: 500px !important;
+  display: flex;
+  flex-direction: column;
+  #chartLegend {
+    display: flex;
+    justify-content: space-between;
+    width: 75%;
+    position: relative;
+    left: 15%;
+    #label {
+      text-align: center;
+    }
+    h2 {
+      color: rgb(65, 65, 65);
+      margin-bottom: 0px;
+    }
+    h1 {
+      font-weight: bold;
+      font-size: 30px;
+    }
+  }
+}
+
+#scoreByParChart {
+  width: 100% !important;
+}
+
+#scoreSummaryContainer {
+  display: flex;
+  flex-direction: column;
+  canvas {
+    width: 110px !important;
+  }
+}
+
+@media (max-width: 1640px) {
+  #statsPageContainer {
+    display: block;
+    width: 738px;
+    #statsContainer {
+      margin-left: 0px;
+    }
+  }
+}
+
 @media (max-width: 830px) {
   app-active-scorecard {
     margin-left: 0;
     width: 100%;
+  }
+
+  #queryContainer {
+    position: absolute;
+    left: 50%;
+    width: 155px;
+    select {
+      padding-left: 10px;
+      margin-bottom: 10px;
+      height: 40px;
+      width: 155px;
+      font-size: 15px;
+      background-color: lightgrey;
+      border: 1px solid grey;
+      outline: none;
+      border-radius: 5px;
+      option {
+        zoom: 1;
+      }
+    }
+  }
+
+  #indexChartContainer {
+    height: 150px;
   }
 
   .headerContent {
@@ -194,6 +304,9 @@
   #statsPageContainer {
     width: 97%;
     height: auto;
+    .left {
+      width: 100%;
+    }  
     #roundInfoContainer {
       height: 120px;
       .infoContainer {
@@ -209,7 +322,12 @@
       }
     }
     #handicapIndexContainer {
-      top: 375px;
+      top: 0px;
+    }
+    #statsContainer {
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
     }
   }
   .topBlock {
@@ -227,6 +345,23 @@
         font-size: 16px;
       }
     }
+  }
+}
+
+@media (max-width: 699px) {
+  #indexChart {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+  }
+  .insideDoughnut {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
   }
 }
 

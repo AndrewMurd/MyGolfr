@@ -21,12 +21,15 @@ export class StatsPageComponent {
   subscriptions: Subscription = new Subscription();
   userData: any;
   scores: any = [];
+  usedForHdcpScores: any = [];
   selectedUser: boolean = true;
   userName: string = 'Guest';
   timePlayed: string = '0d 0h 0m';
   lowestScore: any = null;
   highestScore: any = null;
   scoreAvg: string = 'N/A';
+  limit: any = 40;
+  avgScoreToParData: any = [];
   convertDateTime: Function = convertDateTime;
   numberOfHolesPlayed: Function = numberOfHolesPlayed;
 
@@ -46,48 +49,19 @@ export class StatsPageComponent {
     this.subscriptions.add(
       this.route.params.subscribe(async (params) => {
         try {
-          const limit = 20;
           const response: any = await this.scoreService.getUser(
             params['id'],
             1,
-            limit
+            this.limit
           );
           this.scores = response.scores;
           console.log(this.scores);
           this.userName = this.scores[0].username;
 
-          let sumTime = 0,
-            scoreSum = 0;
-          this.lowestScore = this.scores[0];
-          this.highestScore = this.scores[0];
           for (let score of this.scores) {
-            sumTime += new Date(
-              convertSqlDateTime(score.endTime) -
-                convertSqlDateTime(score.startTime)
-            ).getTime();
-
-            scoreSum += Number(this.calculateShotsToPar(score));
-
-            if (
-              Number(this.calculateShotsToPar(this.lowestScore)) >
-              Number(this.calculateShotsToPar(score))
-            ) {
-              this.lowestScore = score;
-            }
-            if (
-              Number(this.calculateShotsToPar(this.highestScore)) <
-              Number(this.calculateShotsToPar(score))
-            ) {
-              this.highestScore = score;
-            }
+            if (score.usedForHdcp == 1) this.usedForHdcpScores.push(score);
           }
-          this.timePlayed = this.dhm(sumTime);
-          const scoreAvg = Number((scoreSum / this.scores.length).toFixed(2));
-          if (scoreAvg < 0 || scoreAvg == 0) {
-            this.scoreAvg = `${scoreAvg}`;
-          } else if (scoreAvg > 0) {
-            this.scoreAvg = `+${scoreAvg}`;
-          }
+
           this.loadingService.loading.next(false);
         } catch (error) {
           this.loadingService.loading.next(false);
@@ -99,6 +73,8 @@ export class StatsPageComponent {
               this.selectedUser = true;
               if (this.scores[0]?.userId == this.userData.id)
                 this.selectedUser = false;
+
+              this.reload();
 
               const canvas: any = document.getElementById('indexChart');
               const ctx = canvas.getContext('2d');
@@ -152,64 +128,293 @@ export class StatsPageComponent {
               const handicapRange = 54 - 0;
               const anglesRange = -0.5 - 1.5;
               const angleValue =
-                ((54 - 15 - 0) * anglesRange) / handicapRange +
+                ((54 - this.userData.hdcp - 0) * anglesRange) / handicapRange +
                 1.5;
 
-              // grey out for handicap
-              ctx.strokeStyle = 'grey';
-              ctx.beginPath();
-              ctx.arc(
-                size,
-                size,
-                size,
-                Math.PI * 1.5,
-                Math.PI * angleValue,
-                true
-              );
-              ctx.lineWidth = 41;
-              ctx.stroke();
+              // Animate arc on canvas
+              requestAnimationFrame(animate);
+              let eAngle = 1.5;
+              function animate() {
+                if (eAngle >= angleValue) {
+                  draw(eAngle);
+                  eAngle -= 0.01;
+                  requestAnimationFrame(animate);
+                }
+              }
 
-              // const canvas1: any = document.getElementById('overlayChartjs');
-              // const factor = 54 - Math.round(this.userData.hdcp);
-              // const handicapIndexChart = [
-              //   { label: 'handicap', value: Math.round(this.userData.hdcp) },
-              //   { label: 'space', value: factor },
-              // ];
-              // console.log(handicapIndexChart);
+              function draw(eAngle: number) {
+                ctx.strokeStyle = 'grey';
+                ctx.beginPath();
+                ctx.arc(
+                  size,
+                  size,
+                  size,
+                  Math.PI * 1.5,
+                  Math.PI * eAngle,
+                  true
+                );
+                ctx.lineWidth = 41;
+                ctx.stroke();
+              }
 
-              // new Chart(canvas1, {
-              //   type: 'doughnut',
-              //   data: {
-              //     labels: handicapIndexChart.map(
-              //       (row) => `(${row.value}) ${row.label}`
-              //     ),
-              //     datasets: [
-              //       {
-              //         data: handicapIndexChart.map((row) => row.value),
-              //         borderWidth: 0,
-              //         backgroundColor: ['green', 'grey'],
-              //       },
-              //     ],
-              //   },
-              //   options: {
-              //     cutout: 80,
-              //     responsive: false,
-              //     events: [],
-              //     plugins: {
-              //       tooltip: {
-              //         enabled: false,
-              //       },
-              //       legend: {
-              //         display: false,
-              //       },
-              //     },
-              //   },
-              // });
+              if (this.userData.hdcp == 0) {
+                requestAnimationFrame(animate);
+                let eAngle = 1.5;
+                function animate() {
+                  if (eAngle >= 1.5) {
+                    eAngle += 0.01;
+                    draw(eAngle);
+                    requestAnimationFrame(animate);
+                  }
+                }
+
+                function draw(eAngle: number) {
+                  ctx.strokeStyle = 'green';
+                  ctx.beginPath();
+                  ctx.arc(
+                    size,
+                    size,
+                    size,
+                    Math.PI * 1.5,
+                    Math.PI * eAngle,
+                    false
+                  );
+                  ctx.lineWidth = 41;
+                  ctx.stroke();
+                }
+              }
             }
           })
         );
       })
     );
+  }
+
+  async newQuery() {
+    this.scores.length = 0;
+    let response: any;
+    try {
+      this.loadingService.loading.next(true);
+      if (this.limit == 'all') {
+        response = await this.scoreService.getUser(this.userData.id, 1, 0);
+        this.scores = response.scores;
+        this.userName = this.scores[0].username;
+      } else if (this.limit == 'thisYear') {
+        response = await this.scoreService.getUser(this.userData.id, 1, 0);
+        for (let score of response.scores) {
+          const currentDate = new Date();
+          const newDate = convertSqlDateTime(score.endTime);
+          if (newDate.getFullYear() == currentDate.getFullYear()) {
+            this.scores.push(score);
+          }
+        }
+        this.userName = this.scores[0].username;
+      } else {
+        response = await this.scoreService.getUser(
+          this.userData.id,
+          1,
+          this.limit
+        );
+        this.scores = response.scores;
+        this.userName = this.scores[0].username;
+      }
+
+      console.log(this.scores);
+
+      this.reload();
+      this.loadingService.loading.next(false);
+    } catch (error) {
+      this.loadingService.loading.next(false);
+    }
+  }
+
+  reload() {
+    let sumTime = 0,
+      scoreSum = 0;
+    this.lowestScore = this.scores[0];
+    this.highestScore = this.scores[0];
+    const scoreByPar: any = { 3: [], 4: [], 5: [] };
+    const typeOfScore = {
+      'Eagles or Better': 0,
+      Birdies: 0,
+      Pars: 0,
+      Bogeys: 0,
+      'Double Bogeys': 0,
+      'Triples or Worse': 0,
+    };
+    for (let score of this.scores) {
+      sumTime += new Date(
+        convertSqlDateTime(score.endTime) - convertSqlDateTime(score.startTime)
+      ).getTime();
+
+      scoreSum += Number(this.calculateShotsToPar(score));
+
+      if (
+        Number(this.calculateShotsToPar(this.lowestScore)) >
+        Number(this.calculateShotsToPar(score))
+      ) {
+        this.lowestScore = score;
+      }
+      if (
+        Number(this.calculateShotsToPar(this.highestScore)) <
+        Number(this.calculateShotsToPar(score))
+      ) {
+        this.highestScore = score;
+      }
+
+      let key: any, value: any;
+      for ([key, value] of Object.entries(score.teeData)) {
+        if (key.charAt(0) == 'P' && key != 'Position') {
+          const hole = key.length == 2 ? key.charAt(1) : key.slice(-2);
+          scoreByPar[value].push(Number(score.score[hole]));
+        }
+      }
+
+      for ([key, value] of Object.entries(score.teeData)) {
+        if (key.charAt(0) == 'P' && key != 'Position') {
+          const hole = key.length == 2 ? key.charAt(1) : key.slice(-2);
+          const diff = Number(score.score[hole]) - value;
+          if (diff <= -2) {
+            typeOfScore['Eagles or Better']++;
+          } else if (diff <= -1) {
+            typeOfScore['Birdies']++;
+          } else if (diff == 0) {
+            typeOfScore['Pars']++;
+          } else if (diff == 1) {
+            typeOfScore['Bogeys']++;
+          } else if (diff == 2) {
+            typeOfScore['Double Bogeys']++;
+          } else if (diff >= 3) {
+            typeOfScore['Triples or Worse']++;
+          }
+        }
+      }
+    }
+    this.timePlayed = this.dhm(sumTime);
+    const scoreAvg = Number((scoreSum / this.scores.length).toFixed(1));
+    if (scoreAvg < 0 || scoreAvg == 0) {
+      this.scoreAvg = `${scoreAvg}`;
+    } else if (scoreAvg > 0) {
+      this.scoreAvg = `+${scoreAvg}`;
+    }
+
+    let key: any, value: any;
+    const colors = [];
+    for ([key, value] of Object.entries(scoreByPar)) {
+      let sum = 0;
+      for (let val of value) {
+        sum += val;
+      }
+      this.avgScoreToParData.push({
+        label: key,
+        value: Math.round((sum / value.length) * 10) / 10,
+      });
+      if (Math.round((sum / value.length) * 10) / 10 < 0) {
+        colors.push('green');
+      } else {
+        colors.push('rgb(109, 0, 0)');
+      }
+    }
+
+    const canvas: any = document.getElementById('scoreByParChart');
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: this.avgScoreToParData.map(
+          (row: any) => `(${row.value}) Par ${row.label}s`
+        ),
+        datasets: [
+          {
+            data: this.avgScoreToParData.map(
+              (row: any) => row.value - row.label
+            ),
+            backgroundColor: colors,
+            borderRadius: 5,
+            barThickness: 70,
+          },
+        ],
+      },
+      options: {
+        color: 'black',
+        scales: {
+          x: {
+            ticks: {
+              display: false,
+              // font: {
+              //   size: 20,
+              //   weight: 'bold',
+              // },
+              // color: 'black',
+            },
+            grid: {
+              display: false,
+            },
+          },
+          y: {
+            ticks: {
+              font: {
+                weight: 'bold',
+              },
+              stepSize: 1,
+              callback: function (val: any, index) {
+                if (this.getLabelForValue(val) == '0') {
+                  return 'E';
+                } else if (Number(this.getLabelForValue(val)) < 0) {
+                  return this.getLabelForValue(val);
+                } else {
+                  return '+' + this.getLabelForValue(val);
+                }
+              },
+              color: 'black',
+            },
+            grid: {
+              color: 'black',
+              tickBorderDash: [4],
+            },
+          },
+        },
+        events: [],
+        plugins: {
+          tooltip: {
+            enabled: false,
+          },
+          legend: {
+            display: false,
+          },
+        },
+      },
+    });
+
+    const parChart: any = document.getElementById('doughnutChartPar');
+
+    console.log(typeOfScore);
+
+    new Chart(parChart, {
+      type: 'doughnut',
+      data: {
+        labels: ['grey', 'Pars'],
+        datasets: [
+          {
+            data: [100],
+            // data: [18 - (typeOfScore.Pars / this.scores.length) * 18, (typeOfScore.Pars / this.scores.length) * 18],
+            borderWidth: 0,
+            backgroundColor: ['green', 'grey'],
+          },
+        ],
+      },
+      options: {
+        cutout: 40,
+        events: [],
+        plugins: {
+          tooltip: {
+            enabled: false,
+          },
+          legend: {
+            display: false,
+          },
+        },
+      },
+    });
   }
 
   ngOnDestroy() {

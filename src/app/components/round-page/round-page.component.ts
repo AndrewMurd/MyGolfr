@@ -82,7 +82,6 @@ export class RoundPageComponent {
             if (value) {
               this.userData = value;
               this.editing = false;
-              console.log(this.scoreData.userId, this.userData.id)
               if (this.scoreData.userId == this.userData.id) this.editing = true;
             }
           })

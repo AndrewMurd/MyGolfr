@@ -22,19 +22,25 @@ module.exports = class Score {
 
   static findUser(userId, limit) {
     return executeQuery(
-      `SELECT score, hdcp, teeData, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} ORDER BY endTime desc limit ${limit}`
+      `SELECT score, hdcp, usedForHdcp, teeData, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} ORDER BY endTime desc limit ${limit}`
     );
   }
 
   static findUserWithStatus(userId, status, limit) {
     return executeQuery(
-      `SELECT score, hdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} AND statusComplete = ${status} ORDER BY endTime desc limit ${limit}`,
+      `SELECT score, hdcp, usedForHdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} AND statusComplete = ${status} ORDER BY endTime desc limit ${limit}`,
+    );
+  }
+
+  static findUserWithStatusNoLimit(userId, status) {
+    return executeQuery(
+      `SELECT score, hdcp, usedForHdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} AND statusComplete = ${status} ORDER BY endTime desc`,
     );
   }
 
   static findScoresForHdcp(userId) {
     return executeQuery(
-      "SELECT score, hdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ? AND statusComplete = 1 AND hdcpType = 'basic' ORDER BY endTime desc limit 40",
+      "SELECT score, hdcp, usedForHdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ? AND statusComplete = 1 AND hdcpType = 'basic' ORDER BY endTime desc limit 40",
       [userId]
     );
   }
@@ -52,6 +58,12 @@ module.exports = class Score {
         startTime,
         null,
       ]
+    );
+  }
+
+  static resetUsedForHdcp(userId) {
+    return executeQuery(
+      `UPDATE scores SET usedForHdcp = '0' Where userId = '${userId}'`
     );
   }
 

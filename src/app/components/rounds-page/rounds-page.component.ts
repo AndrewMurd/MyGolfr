@@ -138,7 +138,7 @@ export class RoundsPageComponent {
   }
 
   onPan(event: any, index: number) {
-    if (event.additionalEvent == 'panleft' && window.innerWidth < 830) {
+    if (event.additionalEvent == 'panleft' && window.innerWidth < 830 && !this.selectedUser) {
       // event.target.style.right = `${-event.deltaX}px`;
       // event.target.style.transform = `translateX(${event.deltaX}px)`;
       if (event.deltaX < -50 || event.deltaX > 0) return;
@@ -152,6 +152,7 @@ export class RoundsPageComponent {
   }
 
   openDelete(index: number) {
+    if (this.selectedUser) return;
     document.getElementById(
       `roundItem${index}`
     )!.style.transition = `transform 0.5s`;
