@@ -18,6 +18,10 @@
     font-weight: bold;
     font-size: 40px;
     margin-bottom: 0px;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
   }
   h2 {
     color: rgb(228, 228, 228);
@@ -144,9 +148,15 @@
   font-size: 24px;
   font-weight: bold;
   line-height: 70px;
-  a {
+  div {
     position: absolute;
+    top: 0px;
     right: 0px;
+    width: auto;
+    font-weight: normal;
+  }
+  a {
+    position: relative;
     text-decoration: underline;
     font-weight: normal;
     font-size: 18px;
@@ -393,8 +403,11 @@ app-active-scorecard {
     height: 50px;
     font-size: 20px;
     line-height: 60px;
+    div {
+      font-size: 15px;
+    }
     a {
-      font-size: 16px;
+      font-size: 15px;
     }
   }
 

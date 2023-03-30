@@ -23,9 +23,17 @@
 
 .header {
   display: flex;
+  position: fixed;
+  z-index: 200000;
+  width: 100%;
+  top: 0px;
+  height: 60px;
+}
+
+.headerBackground {
   background-color: #303030;
   position: fixed;
-  z-index: 100000;
+  z-index: 10000;
   width: 100%;
   top: 0px;
   height: 60px;
@@ -171,7 +179,7 @@ a {
 }
 
 .hamburger-menu {
-  z-index: 100001;
+  z-index: 200001;
   position: fixed;
   top: 25px;
 }
@@ -251,15 +259,6 @@ a {
   margin-top: 7px;
   margin-right: 50px;
 }
-
-// #test {
-//   top: 0px;
-//   position: absolute;
-//   height: 500px;
-//   width: 500px;
-//   background-color: blue;
-//   z-index: 100000000000000000000000000000000000000000000;
-// }
 
 @media (max-width: 1000px) {
   .logo {

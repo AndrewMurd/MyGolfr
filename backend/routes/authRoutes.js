@@ -14,10 +14,11 @@ router.use(cookieParser());
 // @access Public
 router.post("/login", loginLimiter, async (req, res) => {
   // Authenticate existing user
-  const result = await User.find(req.body.email);
-
-  if (result.length == 0) return res.status(404).send({ type: "email" });
   try {
+    const result = await User.find(req.body.email);
+
+    if (result.length == 0) return res.status(404).send({ type: "email" });
+
     if (await bcrypt.compare(req.body.password, result[0].password)) {
       const user = {
         id: result[0].id,

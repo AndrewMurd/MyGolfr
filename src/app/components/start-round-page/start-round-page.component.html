@@ -13,7 +13,7 @@
 />
 
 <edit-score-card
-  [ngStyle]="showScorecard ? { display: '' } : { display: 'none' }"
+  [@openCloseScorecard]="showScorecard ? 'open' : 'closed'"
 ></edit-score-card>
 
 <div *ngIf="popUp" id="startRoundPopUpContainer"></div>
@@ -22,9 +22,13 @@
   <h1>Start Round</h1>
   <div id="formContainer">
     <label>Selected Course</label>
-    <div id="course" class="displayInfo"><h6>{{ courseData.name }}</h6></div>
+    <div id="course" class="displayInfo">
+      <h6>{{ courseData.name }}</h6>
+    </div>
     <label>Handicap</label>
-    <div id="hdcp" class="displayInfo"><h6>{{ hdcp }}</h6></div>
+    <div id="hdcp" class="displayInfo">
+      <h6>{{ hdcp }}</h6>
+    </div>
     <label>Handicap Type</label>
     <select id="hdcpType" [(ngModel)]="hdcpType">
       <option value="none">None - No handicap will be used</option>
@@ -32,7 +36,9 @@
     </select>
     <label>Tee Type</label>
     <select id="teeType" [(ngModel)]="selectedTee">
-      <option *ngFor="let tee of completedTees" [ngValue]="tee">{{ tee.ColorName }}</option>
+      <option *ngFor="let tee of completedTees" [ngValue]="tee">
+        {{ tee.ColorName }}
+      </option>
     </select>
     <button id="submitInfo" (click)="startRound()">Start Round</button>
   </div>

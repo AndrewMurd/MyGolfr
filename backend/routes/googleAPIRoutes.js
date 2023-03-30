@@ -9,8 +9,7 @@ const router = Router();
 // @access Private
 router.get("/search", async (req, res) => {
   // Get places
-  const search = req.query.search;
-  const sessiontoken = req.query.sessiontoken;
+  const { search, sessiontoken }  = req.query;
 
   var config = {
     method: "get",
@@ -32,8 +31,7 @@ router.get("/search", async (req, res) => {
 
 // not working will do on client side instead
 router.get("/photo", async (req, res) => {
-  const width = req.query.width;
-  const reference = req.query.reference;
+  const { width, reference } = req.query;
 
   var config = {
     method: "get",

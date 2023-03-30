@@ -32,6 +32,8 @@ import { RoundsPageComponent } from './components/rounds-page/rounds-page.compon
 import { ConfirmationPopupComponent } from './components/confirmation-popup/confirmation-popup.component';
 import { RoundInProgressPageComponent } from './components/round-in-progress-page/round-in-progress-page.component';
 import { RoundPageComponent } from './components/round-page/round-page.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,8 @@ import { RoundPageComponent } from './components/round-page/round-page.component
     ConfirmationPopupComponent,
     RoundInProgressPageComponent,
     RoundPageComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,

@@ -9,21 +9,25 @@ import { StatsPageComponent } from './components/stats-page/stats-page.component
 import { RoundsPageComponent } from './components/rounds-page/rounds-page.component';
 import { RoundInProgressPageComponent } from './components/round-in-progress-page/round-in-progress-page.component';
 import { RoundPageComponent } from './components/round-page/round-page.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 const routes: Routes = [
-  { path: '', component: HomePageComponent},
+  { path: '', component: HomePageComponent },
   { path: 'login', component: LoginPageComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'password-reset/:token', component: ResetPasswordComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'course/:id', component: CoursePageComponent },
   { path: 'stats/:id', component: StatsPageComponent },
   { path: 'rounds/:id', component: RoundsPageComponent },
-  { path: 'round/:id', component: RoundPageComponent }, // when clicking on a round in rounds not implemented
+  { path: 'round/:id', component: RoundPageComponent },
   { path: 'start-round/:id', component: StartRoundPageComponent },
-  { path: 'round/in-progress/:id', component: RoundInProgressPageComponent }
+  { path: 'round/in-progress/:id', component: RoundInProgressPageComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

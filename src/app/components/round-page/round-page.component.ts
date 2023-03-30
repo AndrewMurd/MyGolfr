@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Chart, registerables } from 'chart.js';
 import { Subscription } from 'rxjs';
+import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
@@ -33,6 +34,7 @@ export class RoundPageComponent {
     private authService: AuthenticationService,
     private scoreService: ScoreService,
     private loadingService: LoadingService,
+    private alertService: AlertService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -43,49 +45,54 @@ export class RoundPageComponent {
     this.loadingService.loading.next(true);
     this.subscriptions.add(
       this.route.params.subscribe(async (params) => {
-        const response: any = await this.scoreService.get(params['id']);
-        this.scoreData = response.score;
-        this.scoreService.selectedScoreData.next(this.scoreData);
-        this.loadingService.loading.next(false);
+        try {
+          const response: any = await this.scoreService.get(params['id']);
+          this.scoreData = response.score;
+          this.scoreService.selectedScoreData.next(this.scoreData);
+          this.loadingService.loading.next(false);
 
-        if (this.scoreData.courseDetails.nineHoleGolfCourse)
-          this.nineHole = true;
-        this.onResize();
+          if (this.scoreData.courseDetails.nineHoleGolfCourse)
+            this.nineHole = true;
+          this.onResize();
 
-        this.hdcpType = this.scoreData.hdcpType;
+          this.hdcpType = this.scoreData.hdcpType;
 
-        let count = 0;
-        for (let [key, value] of Object.entries(this.scoreData.score)) {
-          if (value != '' && key != 'In' && key != 'Out') {
-            count++;
-          }
-        }
-        this.scoreLn = count;
-
-        this.date = convertSqlDateTime(this.scoreData.startTime);
-
-        this.timeDifference = new Date(
-          convertSqlDateTime(this.scoreData.endTime) - this.date
-        )
-          .toISOString()
-          .slice(11, 19);
-
-        let stringArray =
-          this.scoreData.googleDetails.plus_code.compound_code.split(/(\s+)/);
-        this.addressInfo = '';
-        for (let i = 1; i < stringArray.length; i++) {
-          this.addressInfo += stringArray[i];
-        }
-        
-        this.subscriptions.add(
-          this.authService.user.asObservable().subscribe(async (value) => {
-            if (value) {
-              this.userData = value;
-              this.editing = false;
-              if (this.scoreData.userId == this.userData.id) this.editing = true;
+          let count = 0;
+          for (let [key, value] of Object.entries(this.scoreData.score)) {
+            if (value != '' && key != 'In' && key != 'Out') {
+              count++;
             }
-          })
-        );
+          }
+          this.scoreLn = count;
+
+          this.date = convertSqlDateTime(this.scoreData.startTime);
+
+          this.timeDifference = new Date(
+            convertSqlDateTime(this.scoreData.endTime) - this.date
+          )
+            .toISOString()
+            .slice(11, 19);
+
+          let stringArray =
+            this.scoreData.googleDetails.plus_code.compound_code.split(/(\s+)/);
+          this.addressInfo = '';
+          for (let i = 1; i < stringArray.length; i++) {
+            this.addressInfo += stringArray[i];
+          }
+
+          this.subscriptions.add(
+            this.authService.user.asObservable().subscribe(async (value) => {
+              if (value) {
+                this.userData = value;
+                this.editing = false;
+                if (this.scoreData.userId == this.userData.id)
+                  this.editing = true;
+              }
+            })
+          );
+        } catch (error) {
+          this.router.navigate(['']);
+        }
       })
     );
 
@@ -247,6 +254,27 @@ export class RoundPageComponent {
     for (let chart of this.charts) {
       chart.destroy();
     }
+  }
+
+  navigateToCourse() {
+    this.router.navigate(['/course', this.scoreData.courseId]);
+  }
+
+  async deleteRound() {
+    this.alertService.confirm(
+      'This round can only be deleted once, and it cannot be recovered. Are you certain that you want to remove it?',
+      { color: 'red', content: 'Delete' },
+      async () => {
+        try {
+          this.router.navigate(['/rounds', this.userData.id]);
+          const response: any = await this.scoreService.delete(this.scoreData);
+          const userData = this.authService.user.getValue();
+          userData.hdcp = response.scoreData.hdcp;
+          this.authService.user.next(userData);
+        } catch (error) {}
+      },
+      () => {}
+    );
   }
 
   editRound() {

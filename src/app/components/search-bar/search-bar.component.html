@@ -17,11 +17,13 @@
         <div></div>
       </div>
     </div>
-    <app-search-item
-      *ngFor="let course of courses.slice(0, amountToDisplay)"
-      [data]="course"
-      (onClickItem)="resetSession($event)"
-    ></app-search-item>
+    <div [@listAnimation]="courses.slice(0, amountToDisplay).length">
+      <app-search-item
+        *ngFor="let course of courses.slice(0, amountToDisplay)"
+        [data]="course"
+        (onClickItem)="resetSession($event)"
+      ></app-search-item>
+    </div>
     <div *ngIf="this.courses.length > 0" (click)="showMore()" id="showMore">
       <i class="arrowDown"></i>
       <span>Show More</span>

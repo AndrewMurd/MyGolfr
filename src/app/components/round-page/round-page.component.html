@@ -2,7 +2,7 @@
 
 <div class="headerContent">
   <div>
-    <h1 id="title">{{ scoreData?.courseName }}</h1>
+    <h1 (click)="navigateToCourse()" id="title">{{ scoreData?.courseName }}</h1>
     <h2>{{ addressInfo }}</h2>
   </div>
   <div id="headerScoreinfo">
@@ -35,8 +35,11 @@
   <div class="left">
     <div id="roundInfoContainer">
       <div class="topBlock">
-        {{ scoreData?.username + "'s Round"
-        }}<a *ngIf="editing" (click)="popUp = true">Edit Round</a>
+        {{ scoreData?.username + "'s Round" }}
+        <div>
+          <a *ngIf="editing" (click)="popUp = true">Edit</a> |
+          <a *ngIf="editing" (click)="deleteRound()">Delete</a>
+        </div>
       </div>
       <div class="bottomBlock">
         <div class="infoContainer">

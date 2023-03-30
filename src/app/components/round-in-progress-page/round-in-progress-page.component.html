@@ -14,7 +14,7 @@
 />
 
 <app-active-scorecard
-  [ngStyle]="showScorecard ? { display: '' } : { display: 'none' }"
+  [@openCloseScorecard]="showScorecard ? 'open' : 'closed'"
 ></app-active-scorecard>
 
 <div id="scoreInput" (clickOutside)="scoreDropdown(false)">

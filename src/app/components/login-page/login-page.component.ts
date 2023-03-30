@@ -41,10 +41,20 @@ export class LoginPageComponent {
     this.passwordInput!.addEventListener('keyup', () => {
       this.passwordInput!.setAttribute('value', this.passwordInput.value);
     });
+
+    window.addEventListener(
+      'popstate',
+      (event) => {
+        setTimeout(() => {
+          this.router.navigate(['/']);
+        });
+      },
+      false
+    );
   }
 
-  forgotPassword() {
-    console.log(123)
+  navigateToForgotPassword() {
+    this.router.navigate(['/forgot-password']);
   }
 
   onClick() {
@@ -89,14 +99,14 @@ export class LoginPageComponent {
       })
       .catch((error) => {
         this.error = error.error.type;
-        if (error.error.type == 'email') {
+        if (this.error == 'email') {
           this.emailInput.classList.add('inputError');
           if (this.email == '') {
             this.emailError.innerText = 'Must enter an email';
           } else {
             this.emailError.innerText = 'This email does not exist';
           }
-        } else if (error.error.type == 'password') {
+        } else if (this.error == 'password') {
           this.passwordInput.classList.add('inputError');
           if (this.password == '') {
             this.passwordError.innerText = 'Must enter a password';

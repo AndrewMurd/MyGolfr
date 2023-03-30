@@ -16,25 +16,30 @@ function parseData(course) {
 // @route GET /courses/search_courses
 // @access Public
 router.get("/search_courses", async (req, res) => {
-  const searchQuery = req.query.searchQuery;
+  const { searchQuery } = req.query;
 
-  const coursesRes = await Course.search(searchQuery);
+  try {
+    const coursesRes = await Course.search(searchQuery);
 
-  let data = [];
-  for (let course of coursesRes) {
-    data.push({
-      course: JSON.parse(course.googleDetails),
-      clicks: course.clicks,
-    });
+    let data = [];
+    for (let course of coursesRes) {
+      data.push({
+        course: JSON.parse(course.googleDetails),
+        clicks: course.clicks,
+      });
+    }
+    res.status(200).send({ data: data });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
   }
-  res.status(200).send({ data: data });
 });
 
 // @desc Get a course
 // @route GET /courses/course
 // @access Private
 router.get("/course", async (req, res) => {
-  const id = req.query.id;
+  const { id } = req.query;
 
   try {
     const courses = await Course.find(id);
@@ -55,13 +60,13 @@ router.get("/course", async (req, res) => {
 // @route GET /courses/courses
 // @access Private
 router.post("/courses", async (req, res) => {
-  const ids = req.body.ids;
+  const { ids } = req.body;
 
   const courses = [];
   for (let id of ids) {
     try {
       const course = await Course.find(id[0]);
-  
+
       if (course.length == 0) {
         res.status(404).send({ error: "Course does not exist!" });
       } else {
@@ -80,7 +85,7 @@ router.post("/courses", async (req, res) => {
 // @route GET /courses/courses_clicks
 // @access Private
 router.post("/courses_clicks", async (req, res) => {
-  const limit = req.body.limit;
+  const { limit } = req.body;
 
   try {
     const courses = await Course.findByClicks(limit);
@@ -98,74 +103,78 @@ router.post("/courses_clicks", async (req, res) => {
 // @route POST /courses/add
 // @access Private
 router.post("/add", async (req, res) => {
-  for (let course of req.body.courses) {
-    const res = await Course.find(course.reference);
+  try {
+    for (let course of req.body.courses) {
+      const res = await Course.find(course.reference);
 
-    if (res.length == 0 && course?.plus_code?.compound_code) {
-      let initialLayout = {};
-      for (let i = 0; i < 18; i++) {
-        initialLayout[i + 1] = {
-          location: {
-            lat: course.geometry.location.lat,
-            lng: course.geometry.location.lng,
-          },
-          zoom: 16,
-          teeLocations: [],
-          flagLocation: {
-            lat: course.geometry.location.lat,
-            lng: course.geometry.location.lng,
-          },
+      if (res.length == 0 && course?.plus_code?.compound_code) {
+        let initialLayout = {};
+        for (let i = 0; i < 18; i++) {
+          initialLayout[i + 1] = {
+            location: {
+              lat: course.geometry.location.lat,
+              lng: course.geometry.location.lng,
+            },
+            zoom: 16,
+            teeLocations: [],
+            flagLocation: {
+              lat: course.geometry.location.lat,
+              lng: course.geometry.location.lng,
+            },
+          };
+        }
+
+        const courseDetails = {
+          id: course.reference,
+          name: course.name,
+          googleDetails: JSON.stringify(course),
+          courseDetails: JSON.stringify({
+            nineHoleGolfCourse: false,
+          }),
+          clicks: 0,
+          scorecard: JSON.stringify([]),
+          mapLayout: JSON.stringify(initialLayout),
         };
-      }
 
-      const courseDetails = {
-        id: course.reference,
-        name: course.name,
-        googleDetails: JSON.stringify(course),
-        courseDetails: JSON.stringify({
-          nineHoleGolfCourse: false,
-        }),
-        clicks: 0,
-        scorecard: JSON.stringify([]),
-        mapLayout: JSON.stringify(initialLayout),
-      };
-
-      try {
         await Course.save(courseDetails);
         console.log("Added to database:", course.name);
-      } catch (error) {}
+      }
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
   }
-
-  res.end();
 });
 
 // @desc Update scorecard value
 // @route POST /courses/set_scorecard_value
 // @access Private
 router.post("/set_scorecard_value", async (req, res) => {
-  const id = req.body.id;
-  const data = req.body.data;
+  const { id, data } = req.body;
+  try {
+    const course = await Course.find(id);
+    let scorecard = JSON.parse(course[0].scorecard);
 
-  const course = await Course.find(id);
-  let scorecard = JSON.parse(course[0].scorecard);
-
-  let length;
-  if (data.id == "new") {
-    length = scorecard.push({ id: uuidv4(), Position: scorecard.length + 1 });
-  } else {
-    for (let tee of scorecard) {
-      if (tee.id == data.id[0]) {
-        tee[data.id[1]] = data.value;
+    let length;
+    if (data.id == "new") {
+      length = scorecard.push({ id: uuidv4(), Position: scorecard.length + 1 });
+    } else {
+      for (let tee of scorecard) {
+        if (tee.id == data.id[0]) {
+          tee[data.id[1]] = data.value;
+        }
       }
     }
+
+    console.log(`Updating Scorecard for ${id} with data:`, data);
+
+    await Course.updateColumn(JSON.stringify(scorecard), "scorecard", id);
+
+    res.send({ scorecard: scorecard });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
   }
-
-  console.log(`Updating Scorecard for ${id} with data:`, data);
-
-  await Course.updateColumn(JSON.stringify(scorecard), "scorecard", id);
-
-  res.send({ scorecard: scorecard });
 });
 
 // @desc Update Course Data
@@ -174,47 +183,60 @@ router.post("/set_scorecard_value", async (req, res) => {
 router.post("/update", async (req, res) => {
   const { id, courseDetails, clicks, scorecard, mapLayout } = req.body.data;
 
-  const obj = {
-    id: id,
-    courseDetails: JSON.stringify(courseDetails),
-    clicks: clicks,
-    scorecard: JSON.stringify(scorecard),
-    mapLayout: JSON.stringify(mapLayout),
-  };
+  try {
+    const obj = {
+      id: id,
+      courseDetails: JSON.stringify(courseDetails),
+      clicks: clicks,
+      scorecard: JSON.stringify(scorecard),
+      mapLayout: JSON.stringify(mapLayout),
+    };
 
-  await Course.update(obj);
+    await Course.update(obj);
 
-  console.log(`Updating course: ${id}`);
+    console.log(`Updating course: ${id}`);
 
-  res.end();
+    res.end();
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
 });
 
 // @desc Update Course Data Column
 // @route POST /courses/update_column
 // @access Private
 router.post("/update_column", async (req, res) => {
-  const id = req.body.id;
-  const data = req.body.data;
-  const type = req.body.type;
+  const { id, data, type } = req.body;
 
-  console.log(`Updating ${type} for ${id}`);
+  try {
+    console.log(`Updating ${type} for ${id}`);
 
-  await Course.updateColumn(JSON.stringify(data), type, id);
+    await Course.updateColumn(JSON.stringify(data), type, id);
 
-  res.end();
+    res.end();
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
 });
 
 // @desc Add click to clicks
 // @route POST /courses/add_click
 // @access Private
 router.post("/add_click", async (req, res) => {
-  const id = req.body.id;
+  const { id } = req.body;
 
-  let courses = await Course.find(id);
+  try {
+    let courses = await Course.find(id);
 
-  await Course.addClick((courses[0].clicks += 1), id);
+    await Course.addClick((courses[0].clicks += 1), id);
 
-  res.send({ numberOfClick: (courses[0].clicks += 1) });
+    res.send({ numberOfClick: (courses[0].clicks += 1) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
 });
 
 module.exports = router;

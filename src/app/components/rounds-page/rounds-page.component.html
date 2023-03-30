@@ -13,59 +13,63 @@
 </div>
 
 <div id="roundsPageContainer">
-  <div>
-    <div id="roundsContainer">
+  <div id="roundsContainer" [@listAnimation]="scores.length">
+    <div *ngIf="scores.length == 0" class="emptyRound">
+      No Rounds Yet
+    </div>
+    <div
+      id="roundItemContainer"
+      *ngFor="let score of scores; let index = index"
+    >
       <div
-        id="roundItemContainer"
-        *ngFor="let score of scores; let index = index"
+        class="roundItem"
+        id="roundItem{{ index }}"
+        (swipeleft)="openDelete(index)"
+        (swiperight)="closeDelete(index)"
+        (panmove)="onPan($event, index)"
+        (click)="showOverview(score)"
       >
-        <div
-          class="roundItem"
-          id="roundItem{{ index }}"
-          (swipeleft)="openDelete(index)"
-          (swiperight)="closeDelete(index)"
-          (panmove)="onPan($event, index)"
-          (click)="showOverview(score)"
-        >
-          <div id="displayFlex">
-            <div id="info">
-              <h1>{{ score.googleDetails.name }}</h1>
-              <h2>
-                {{ score.formattedDate }} •
-                {{ score.holes + " Holes" }}
-                • {{ score.teeData.ColorName }} •
-                {{
-                  score?.hdcpType.charAt(0).toUpperCase() +
-                    score?.hdcpType.slice(1)
-                }}
-              </h2>
-            </div>
-            <div *ngIf="score.statusComplete == 0" id="inProgressIndicator">
-              <span>IN PROGRESS</span>
-              <div class="dot"></div>
-            </div>
+        <div class="displayFlex">
+          <div class="info">
+            <h1>{{ score.googleDetails.name }}</h1>
+            <h2>
+              {{ score.formattedDate }} •
+              {{ score.holes + " Holes" }}
+              • {{ score.teeData.ColorName }} •
+              {{
+                score?.hdcpType.charAt(0).toUpperCase() +
+                  score?.hdcpType.slice(1)
+              }}
+            </h2>
           </div>
-          <div [ngClass]="!selectedUser? 'total': 'nohover'" id="total{{ index }}">
-            <h1>{{ score.score.In + score.score.Out }}</h1>
-            <h2>Total</h2>
+          <div *ngIf="score.statusComplete == 0" id="inProgressIndicator">
+            <span>IN PROGRESS</span>
+            <div class="dot"></div>
           </div>
-          <img
-            *ngIf="!selectedUser"
-            (click)="deleteRound(score, $event)"
-            src="../../../assets/delete35x35.png"
-            alt=""
-            class="deleteRoundImg"
-            id="deleteRound{{ index }}"
-          />
         </div>
         <div
+          [ngClass]="!selectedUser ? 'total' : 'nohover'"
+          id="total{{ index }}"
+        >
+          <h1>{{ score.score.In + score.score.Out }}</h1>
+          <h2>Total</h2>
+        </div>
+        <img
           *ngIf="!selectedUser"
-          id="deleteContainer{{ index }}"
-          class="deleteContainer"
           (click)="deleteRound(score, $event)"
-        >
-          <img src="../../../assets/delete35x35.png" alt="" />
-        </div>
+          src="../../../assets/delete35x35.png"
+          alt=""
+          class="deleteRoundImg"
+          id="deleteRound{{ index }}"
+        />
+      </div>
+      <div
+        *ngIf="!selectedUser"
+        id="deleteContainer{{ index }}"
+        class="deleteContainer"
+        (click)="deleteRound(score, $event)"
+      >
+        <img src="../../../assets/delete35x35.png" alt="" />
       </div>
     </div>
   </div>

@@ -70,9 +70,11 @@ export class HeaderComponent {
       if (this.userDropdown) {
         document.getElementById('userArrow')!.className = 'arrow up';
         document.getElementById('selectUserDropdown')!.style.height = '40px';
+        // document.getElementById('userLinkContainer')!.classList.add('activeLink');
       } else {
         document.getElementById('userArrow')!.className = 'arrow down';
         document.getElementById('selectUserDropdown')!.style.height = '0px';
+        // document.getElementById('userLinkContainer')!.classList.remove('activeLink');
       }
     } catch (error) {}
   }

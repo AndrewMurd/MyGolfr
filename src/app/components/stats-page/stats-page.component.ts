@@ -339,7 +339,7 @@ export class StatsPageComponent {
         type: 'bar',
         data: {
           labels: this.avgScoreToParData.map(
-            (row: any) => `(${row.value}) Par ${row.label}s`
+            (row: any) => `Above/Below Par:`
           ),
           datasets: [
             {
@@ -394,11 +394,7 @@ export class StatsPageComponent {
               },
             },
           },
-          events: [],
           plugins: {
-            tooltip: {
-              enabled: false,
-            },
             legend: {
               display: false,
             },

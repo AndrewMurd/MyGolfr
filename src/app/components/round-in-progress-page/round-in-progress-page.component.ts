@@ -4,13 +4,37 @@ import { Subject, Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
-import { UserService } from 'src/app/services/user.service';
 import { createRange } from 'src/app/utilities/functions';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+} from '@angular/animations';
 
 @Component({
   selector: 'app-round-in-progress-page',
   templateUrl: './round-in-progress-page.component.html',
   styleUrls: ['./round-in-progress-page.component.scss'],
+  animations: [
+    trigger('openCloseScorecard', [
+      state(
+        'open',
+        style({
+          transform: 'scale(1)',
+        })
+      ),
+      state(
+        'closed',
+        style({
+          transform: 'scale(0)',
+        })
+      ),
+      transition('open => closed', [animate('0.2s')]),
+      transition('closed => open', [animate('0.2s')]),
+    ]),
+  ],
 })
 export class RoundInProgressPageComponent {
   subscriptions: Subscription = new Subscription();
@@ -35,12 +59,14 @@ export class RoundInProgressPageComponent {
   async ngOnInit() {
     this.loadingService.loading.next(true);
 
-    this.subscriptions.add(this.authService.user.asObservable().subscribe((value) => {
-      if (!value) {
-        this.router.navigate(['']);
-      }
-      this.loadingService.loading.next(false);
-    }));
+    this.subscriptions.add(
+      this.authService.user.asObservable().subscribe((value) => {
+        if (!value) {
+          this.router.navigate(['']);
+        }
+        this.loadingService.loading.next(false);
+      })
+    );
 
     this.subscriptions.add(
       this.scoreService.inProgressScoreData

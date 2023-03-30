@@ -7,11 +7,35 @@ import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { convertSqlDateTime } from '../../utilities/functions';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  stagger,
+  query,
+  transition,
+  // ...
+} from '@angular/animations';
 
 @Component({
   selector: 'app-rounds-page',
   templateUrl: './rounds-page.component.html',
   styleUrls: ['./rounds-page.component.scss'],
+  animations: [
+    trigger('listAnimation', [
+      transition('* => *', [
+        query(
+          ':enter',
+          [
+            style({ opacity: 0 }),
+            stagger(100, [animate('0.5s', style({ opacity: 1 }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+  ],
 })
 export class RoundsPageComponent {
   subscriptions: Subscription = new Subscription();
@@ -54,33 +78,10 @@ export class RoundsPageComponent {
         try {
           const response: any = await this.scoreService.getUser(params['id']);
           this.scores = response.scores;
-          this.numberOfScores = this.scores.length;
-
           this.userName = this.scores[0].username;
 
-          const currentDate = new Date();
-          for (let score of this.scores) {
-            const newDate = convertSqlDateTime(score.startTime);
-            if (newDate.getFullYear() == currentDate.getFullYear()) {
-              this.amountOfRoundsThisYear += 1;
-            }
-            score.formattedDate = newDate.toLocaleDateString();
+          this.reload();
 
-            let count = 0;
-            for (let [key, value] of Object.entries(score.score)) {
-              if (value != '' && key != 'In' && key != 'Out') {
-                count++;
-              }
-            }
-            score['holes'] = count;
-          }
-
-          this.scores.sort((a: any, b: any) => {
-            return (
-              convertSqlDateTime(b.endTime).getTime() -
-              convertSqlDateTime(a.endTime).getTime()
-            );
-          });
           this.loadingService.loading.next(false);
         } catch (error) {
           console.log(error);
@@ -91,13 +92,50 @@ export class RoundsPageComponent {
             if (value) {
               this.userData = value;
               this.selectedUser = true;
-              if (this.scores[0]?.userId == this.userData.id || this.scores.length == 0)
+              if (
+                this.scores[0]?.userId == this.userData.id ||
+                this.scores.length == 0
+              )
                 this.selectedUser = false;
             }
           })
         );
       })
     );
+  }
+
+  reload() {
+    this.amountOfRoundsThisYear = 0;
+    this.numberOfScores = this.scores.length;
+
+    this.scores.sort((a: any, b: any) => {
+      return (
+        convertSqlDateTime(b.endTime).getTime() -
+        convertSqlDateTime(a.endTime).getTime()
+      );
+    });
+
+    const currentDate = new Date();
+    for (let score of this.scores) {
+      const newDate = convertSqlDateTime(score.startTime);
+      if (newDate.getFullYear() == currentDate.getFullYear()) {
+        this.amountOfRoundsThisYear += 1;
+      }
+      score.formattedDate = newDate.toLocaleDateString();
+
+      let count = 0;
+      for (let [key, value] of Object.entries(score.score)) {
+        if (value != '' && key != 'In' && key != 'Out') {
+          count++;
+        }
+      }
+      score['holes'] = count;
+
+      if (score.statusComplete == 0) {
+        this.scores.splice(this.scores.indexOf(score), 1);
+        this.scores.unshift(score);
+      }
+    }
   }
 
   ngOnDestroy() {
@@ -118,7 +156,7 @@ export class RoundsPageComponent {
   async deleteRound(s: any, event: any) {
     event.stopPropagation();
     this.alertService.confirm(
-      'Deleting this round will make it disappear forever and will not be retrievable. Are you sure you want to delete it?',
+      'This round can only be deleted once, and it cannot be recovered. Are you certain that you want to remove it?',
       { color: 'red', content: 'Delete' },
       async () => {
         try {
@@ -126,10 +164,14 @@ export class RoundsPageComponent {
           this.scores = this.scores.filter((score: any) => {
             return s.id != score.id;
           });
-          await this.scoreService.delete(s);
+          const response: any = await this.scoreService.delete(s);
+          const userData = this.authService.user.getValue();
+          userData.hdcp = response.scoreData.hdcp;
+          this.authService.user.next(userData);
           if (s.statusComplete == 0) {
             this.scoreService.inProgressScoreData.next(null);
           }
+          this.reload();
         } catch (error) {}
         this.loadingService.loading.next(false);
       },
@@ -138,7 +180,11 @@ export class RoundsPageComponent {
   }
 
   onPan(event: any, index: number) {
-    if (event.additionalEvent == 'panleft' && window.innerWidth < 830 && !this.selectedUser) {
+    if (
+      event.additionalEvent == 'panleft' &&
+      window.innerWidth < 830 &&
+      !this.selectedUser
+    ) {
       // event.target.style.right = `${-event.deltaX}px`;
       // event.target.style.transform = `translateX(${event.deltaX}px)`;
       if (event.deltaX < -50 || event.deltaX > 0) return;

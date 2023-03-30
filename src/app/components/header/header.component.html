@@ -1,4 +1,5 @@
-<div class="header" [ngStyle]="{ height: height }">
+<div class="headerBackground" [ngStyle]="{ height: height }"></div>
+<div class="header">
   <img
     routerLink="/"
     src="../../../assets/Golf-ball-isolated-on-transparent-background-PNG.png"
@@ -11,7 +12,7 @@
     (clickOutside)="setDropdownUser(false)"
   >
     <div>
-      <div *ngIf="signedIn" class="underline">
+      <div *ngIf="signedIn" id="userLinkContainer" class="underline">
         <a
           (click)="setDropdownUser(!userDropdown)"
           id="userLink"

@@ -7,11 +7,36 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { createRange, getColorWhite, getRGB } from '../../utilities/functions';
 import { LoadingService } from 'src/app/services/loading.service';
 import { AlertService } from 'src/app/services/alert.service';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+} from '@angular/animations';
 
 @Component({
   selector: 'app-start-round-page',
   templateUrl: './start-round-page.component.html',
   styleUrls: ['./start-round-page.component.scss'],
+  animations: [
+    trigger('openCloseScorecard', [
+      state(
+        'open',
+        style({
+          transform: 'scale(1)',
+        })
+      ),
+      state(
+        'closed',
+        style({
+          transform: 'scale(0)',
+        })
+      ),
+      transition('open => closed', [animate('0.2s')]),
+      transition('closed => open', [animate('0.2s')]),
+    ]),
+  ],
 })
 export class StartRoundPageComponent {
   subscriptions: Subscription = new Subscription();
@@ -23,7 +48,7 @@ export class StartRoundPageComponent {
   selectedTee: any;
   hdcpType: string = 'none';
   popUp: boolean = false;
-  hdcp: string = 'N/A';
+  hdcp: string = '0';
   createRange: Function = createRange;
   getRGB: Function = getRGB;
   getColorWhite: Function = getColorWhite;
@@ -53,8 +78,6 @@ export class StartRoundPageComponent {
           this.userData = value;
           if (this.userData.hdcp) {
             this.hdcp = this.userData.hdcp;
-          } else {
-            this.hdcp = 'N/A';
           }
         }
       })

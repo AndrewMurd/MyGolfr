@@ -117,6 +117,7 @@ export class ActiveScorecardComponent {
       }
     }
 
+    // Check whether user can submit score
     if (Object.keys(this.scoreData.score).length >= factor && count == factor) {
       this.alertService.confirm(
         'Are you sure you want to submit this score?',
@@ -141,7 +142,7 @@ export class ActiveScorecardComponent {
       );
     } else if (this.scoreData.hdcpType == 'basic') {
       this.alertService.alert(
-        'This score is incomplete! You must complete every holes when calculating handicap.',
+        'This score is incomplete! You must complete every hole when calculating handicap.',
         { color: 'green', content: 'Accept' }
       );
     } else {

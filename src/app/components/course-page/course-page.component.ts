@@ -4,9 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from 'src/app/services/loading.service';
 import { Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
-import { convertSqlDateTime } from '../../utilities/functions';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { convertDateTime, numberOfHolesPlayed } from '../../utilities/functions';
+import {
+  convertDateTime,
+  numberOfHolesPlayed,
+} from '../../utilities/functions';
 
 @Component({
   selector: 'app-course-page',
@@ -39,19 +41,21 @@ export class CoursePageComponent {
       })
     );
 
-    this.subscriptions.add(this.courseService.courseData.asObservable().subscribe(async (value) => {
-      if (value) {
-        this.courseData = value;
-        try {
-          const scoresRes: any = await this.scoreService.getCourse(
-            this.courseData.id,
-            1
-          );
-          this.scores = scoresRes.scores;
-        } catch (error) {}
-        this.loadingService.loading.next(false);
-      }
-    }));
+    this.subscriptions.add(
+      this.courseService.courseData.asObservable().subscribe(async (value) => {
+        if (value) {
+          this.courseData = value;
+          try {
+            const scoresRes: any = await this.scoreService.getCourse(
+              this.courseData.id,
+              1
+            );
+            this.scores = scoresRes.scores;
+          } catch (error) {}
+          this.loadingService.loading.next(false);
+        }
+      })
+    );
 
     this.subscriptions.add(
       this.authService.token.asObservable().subscribe((value) => {

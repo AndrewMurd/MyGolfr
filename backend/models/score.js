@@ -10,31 +10,31 @@ module.exports = class Score {
 
   static findCourse(courseId) {
     return executeQuery(
-      `SELECT score, hdcp, teeData, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON scores.courseId = '${courseId}' AND courses.id = '${courseId}' AND userId = users.id ORDER BY endTime desc limit 30`
+      `SELECT score, hdcp, teeData, courses.name as courseName, courseDetails, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON scores.courseId = '${courseId}' AND courses.id = '${courseId}' AND userId = users.id ORDER BY endTime desc limit 30`
     );
   }
 
   static findCourseWithStatus(courseId, status) {
     return executeQuery(
-      `SELECT score, hdcp, teeData, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON scores.courseId = '${courseId}' AND courses.id = '${courseId}' AND userId = users.id WHERE statusComplete = ${status} ORDER BY endTime desc limit 30`
+      `SELECT score, hdcp, teeData, courses.name as courseName, courseDetails, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON scores.courseId = '${courseId}' AND courses.id = '${courseId}' AND userId = users.id WHERE statusComplete = ${status} ORDER BY endTime desc limit 30`
     );
   }
 
   static findUser(userId, limit) {
     return executeQuery(
-      `SELECT score, hdcp, usedForHdcp, teeData, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} ORDER BY endTime desc limit ${limit}`
+      `SELECT score, hdcp, usedForHdcp, teeData, courses.name as courseName, courseDetails,  googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} ORDER BY endTime desc limit ${limit}`
     );
   }
 
   static findUserWithStatus(userId, status, limit) {
     return executeQuery(
-      `SELECT score, hdcp, usedForHdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} AND statusComplete = ${status} ORDER BY endTime desc limit ${limit}`,
+      `SELECT score, hdcp, usedForHdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} AND statusComplete = ${status} ORDER BY endTime desc limit ${limit}`
     );
   }
 
   static findUserWithStatusNoLimit(userId, status) {
     return executeQuery(
-      `SELECT score, hdcp, usedForHdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} AND statusComplete = ${status} ORDER BY endTime desc`,
+      `SELECT score, hdcp, usedForHdcp, teeData, courseDetails, mapLayout, courses.name as courseName, googleDetails, scorecard, scores.id as id, userId, courseId, statusComplete, hdcpType, startTime, endTime, users.name as username FROM courses INNER JOIN scores INNER JOIN users ON courses.id = scores.courseId AND userId = users.id WHERE userId = ${userId} AND statusComplete = ${status} ORDER BY endTime desc`
     );
   }
 

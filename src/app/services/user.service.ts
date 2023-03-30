@@ -4,10 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { ROOT_URL } from '../utilities/enviroment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
   constructor(private http: HttpClient) {}
 
   signUp(name: string, email: string, password: string, confirmPass: string) {
@@ -34,7 +33,43 @@ export class UserService {
     return new Promise((resolve, reject) => {
       this.http
         .post(ROOT_URL + 'users/update', {
-          user: user
+          user: user,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  forgotPassword(email: string) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'users/forgot_password', {
+          email: email,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  resetPassword(password: string, confirmPass: string, token: string) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'users/reset_password', {
+          password: password,
+          confirmPass: confirmPass,
+          token: token,
         })
         .subscribe({
           next: (data) => {

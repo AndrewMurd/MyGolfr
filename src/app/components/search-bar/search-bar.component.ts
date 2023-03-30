@@ -7,11 +7,36 @@ import { Subject, Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { UserService } from 'src/app/services/user.service';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  stagger,
+  query,
+  transition,
+  // ...
+} from '@angular/animations';
 
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss'],
+  animations: [
+    trigger('listAnimation', [
+      transition('* => *', [
+        query(
+          ':leave',
+          [stagger(100, [animate('0.5s', style({ opacity: 0 }))])],
+          { optional: true }
+        ),
+        query(':enter', [
+          style({ opacity: 0 }),
+          stagger(100, [animate('0.5s', style({ opacity: 1 }))]),
+        ], { optional: true }),
+      ]),
+    ]),
+  ],
 })
 export class SearchBarComponent {
   subscriptions: Subscription = new Subscription();
