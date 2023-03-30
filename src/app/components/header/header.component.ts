@@ -32,28 +32,38 @@ export class HeaderComponent {
       this.isPhone = false;
     }
 
-    this.subscriptions.add(this.authService.token.asObservable().subscribe((value) => {
-      if (value) {
-        this.signedIn = true;
-      } else {
-        this.signedIn = false;
-      }
-    }));
+    this.subscriptions.add(
+      this.authService.token.asObservable().subscribe((value) => {
+        if (value) {
+          this.signedIn = true;
+        } else {
+          this.signedIn = false;
+        }
+      })
+    );
 
-    this.subscriptions.add(this.authService.user.asObservable().subscribe(async (value) => {
-      if (value) {
-        this.userData = value;
-      }
-    }));
+    this.subscriptions.add(
+      this.authService.user.asObservable().subscribe(async (value) => {
+        if (value) {
+          this.userData = value;
+        }
+      })
+    );
 
-    this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
-      this.scoreData = value;
-    }));
+    this.subscriptions.add(
+      this.scoreService.inProgressScoreData
+        .asObservable()
+        .subscribe((value) => {
+          this.scoreData = value;
+        })
+    );
   }
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
+
+  editAccount() {}
 
   signOut() {
     this.signedIn = false;
@@ -69,7 +79,7 @@ export class HeaderComponent {
     try {
       if (this.userDropdown) {
         document.getElementById('userArrow')!.className = 'arrow up';
-        document.getElementById('selectUserDropdown')!.style.height = '40px';
+        document.getElementById('selectUserDropdown')!.style.height = '80px';
         // document.getElementById('userLinkContainer')!.classList.add('activeLink');
       } else {
         document.getElementById('userArrow')!.className = 'arrow down';

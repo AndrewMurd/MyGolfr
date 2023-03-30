@@ -24,6 +24,7 @@ export class RegisterPageComponent {
   emailInput: any;
   passwordInput: any;
   confirmPassInput: any;
+  eyeSrc: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -72,6 +73,17 @@ export class RegisterPageComponent {
     this.emailInput.classList.remove('inputError');
     this.passwordInput.classList.remove('inputError');
     this.confirmPassInput.classList.remove('inputError');
+  }
+
+  switchEye() {
+    this.eyeSrc = !this.eyeSrc;
+    if (this.eyeSrc) {
+      this.passwordInput.setAttribute('type', 'text');
+      this.confirmPassInput.setAttribute('type', 'text');
+    } else {
+      this.passwordInput.setAttribute('type', 'password');
+      this.confirmPassInput.setAttribute('type', 'password');
+    }
   }
 
   onSubmit() {

@@ -45,7 +45,11 @@ export class ScoreInputComponent {
         if (value) {
           this.userData = value;
           this.editing = false;
-          if (this.data.userId == this.userData.id) this.editing = true;
+          if (this.data.userId == this.userData.id) {
+            this.editing = true;
+          } else {
+            this.showField = false;
+          }
         }
       })
     );

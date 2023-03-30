@@ -18,6 +18,7 @@ export class LoginPageComponent {
   passwordError: any;
   emailInput: any;
   passwordInput: any;
+  eyeSrc: boolean = false;
 
   constructor(
     private authService: AuthenticationService,
@@ -69,6 +70,15 @@ export class LoginPageComponent {
   resetInputClass() {
     this.emailInput.classList.remove('inputError');
     this.passwordInput.classList.remove('inputError');
+  }
+
+  switchEye() {
+    this.eyeSrc = !this.eyeSrc;
+    if (this.eyeSrc) {
+      this.passwordInput.setAttribute('type', 'text');
+    } else {
+      this.passwordInput.setAttribute('type', 'password');
+    }
   }
 
   onSubmit() {

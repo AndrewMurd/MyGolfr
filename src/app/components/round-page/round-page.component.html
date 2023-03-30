@@ -36,9 +36,9 @@
     <div id="roundInfoContainer">
       <div class="topBlock">
         {{ scoreData?.username + "'s Round" }}
-        <div>
-          <a *ngIf="editing" (click)="popUp = true">Edit</a> |
-          <a *ngIf="editing" (click)="deleteRound()">Delete</a>
+        <div *ngIf="editing">
+          <a (click)="popUp = true">Edit</a> |
+          <a (click)="deleteRound()">Delete</a>
         </div>
       </div>
       <div class="bottomBlock">

@@ -18,6 +18,7 @@ export class ResetPasswordComponent {
   confirmError: any;
   confirmInput: any;
   token!: string;
+  eyeSrc: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -111,5 +112,16 @@ export class ResetPasswordComponent {
   resetInputClass() {
     this.passwordInput.classList.remove('inputError');
     this.confirmInput.classList.remove('inputError');
+  }
+
+  switchEye() {
+    this.eyeSrc = !this.eyeSrc;
+    if (this.eyeSrc) {
+      this.passwordInput.setAttribute('type', 'text');
+      this.confirmInput.setAttribute('type', 'text');
+    } else {
+      this.passwordInput.setAttribute('type', 'password');
+      this.confirmInput.setAttribute('type', 'password');
+    }
   }
 }

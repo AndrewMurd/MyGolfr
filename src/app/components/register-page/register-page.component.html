@@ -71,6 +71,8 @@
         />
         <label id="password2Error" class="error"></label>
       </div>
+      <img *ngIf="!eyeSrc" src="../../../assets/eye-closed.png" class="eyeIcon" (click)="switchEye()" alt="">
+      <img *ngIf="eyeSrc" src="../../../assets/eye-open.png" class="eyeIcon" (click)="switchEye()" alt="">
     </div>
 
     <div class="input-contain">
