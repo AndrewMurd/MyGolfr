@@ -63,7 +63,7 @@
           <div id="recent" class="roundsContainer">
             <div class="round" *ngFor="let score of usedForHdcpScores">
               <a (click)="navigateToRound(score)"
-                >{{ numberOfHolesPlayed(score) }} holes,
+                >{{ numberOfHolesPlayed(score) }} hole,
                 {{ score.score.In + score.score.Out }} stroke round</a
               >
               {{ convertDateTime(score) }} ago at {{ score.courseName }}

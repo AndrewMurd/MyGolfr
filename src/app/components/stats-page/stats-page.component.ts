@@ -279,7 +279,7 @@ export class StatsPageComponent {
       if (Object.keys(score.score).length < factor || count != factor) {
         scoresLn--;
         continue;
-      };
+      }
       // get the total time played for user
       sumTime += new Date(
         convertSqlDateTime(score.endTime) - convertSqlDateTime(score.startTime)
