@@ -19,6 +19,7 @@ import {
 export class CoursePageComponent {
   subscriptions: Subscription = new Subscription();
   courseData: any;
+  roundInProgress: boolean = false;
   scores: any;
   signedIn!: boolean;
   convertDateTime: Function = convertDateTime;
@@ -67,6 +68,14 @@ export class CoursePageComponent {
         }
       })
     );
+    
+    this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
+      if (value) {
+        this.roundInProgress = true;
+      } else {
+        this.roundInProgress = false;
+      }
+    });
   }
 
   ngOnDestroy() {

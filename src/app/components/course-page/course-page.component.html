@@ -7,7 +7,7 @@
   <div id="recent" class="roundsContainer">
     <div id="roundsHeader">
       <h1>{{scores?.length <= 0 ? 'No Rounds Posted Recently':'Recent Rounds'}}</h1>
-      <button id="startRoundBtn" (click)="startRound()">Start New Round</button>
+      <button *ngIf="!roundInProgress" id="startRoundBtn" (click)="startRound()">Start New Round</button>
     </div>
     <div class="round" *ngFor="let score of scores">
       <a (click)="navigateToRounds(score)">{{ score.username }}</a> played a
