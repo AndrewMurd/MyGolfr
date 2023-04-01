@@ -10,6 +10,7 @@ import {
   numberOfHolesPlayed,
 } from '../../utilities/functions';
 
+// this component displays the data for the currently selected course
 @Component({
   selector: 'app-course-page',
   templateUrl: './course-page.component.html',

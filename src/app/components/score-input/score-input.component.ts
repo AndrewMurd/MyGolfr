@@ -4,6 +4,7 @@ import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ScoreService } from 'src/app/services/score.service';
 
+// input used in active tee for inputting score for each hole
 @Component({
   selector: 'app-score-input',
   templateUrl: './score-input.component.html',
@@ -34,6 +35,7 @@ export class ScoreInputComponent {
   ) {}
 
   ngOnInit() {
+    // get font color
     this.subscriptions.add(
       this.whiteEvent.subscribe((value: boolean) => {
         this.isWhite = value;
@@ -45,6 +47,7 @@ export class ScoreInputComponent {
         if (value) {
           this.userData = value;
           this.editing = false;
+          // check whether to allow user to edit the score based on logged in user
           if (this.data.userId == this.userData.id) {
             this.editing = true;
           } else {
@@ -53,11 +56,12 @@ export class ScoreInputComponent {
         }
       })
     );
-
+    // set value from previously entered score got from database
     if (this.data.score[this.id]) {
       this.value = this.data.score[this.id];
       this.showField = false;
     }
+    // get par for this hole
     this.par = this.data.teeData['P' + this.id];
 
     this.setBorder();
@@ -68,6 +72,7 @@ export class ScoreInputComponent {
   }
 
   async submit() {
+    // if score is completed and the user removed the value alert them and reset field
     if (!this.value && this.data.statusComplete == 1) {
       this.alertService.alert('Must Enter Strokes!', {
         color: 'green',
@@ -80,21 +85,22 @@ export class ScoreInputComponent {
     if (this.value) {
       this.showField = false;
     }
-
+    // update score for this round
     this.data.score[this.id] = this.value;
     const response: any = await this.scoreService.update(this.data, 'score');
     this.data = response.scoreData;
     this.selectedScore
       ? this.scoreService.selectedScoreData.next(this.data)
       : this.scoreService.inProgressScoreData.next(this.data);
-
+    // update hdcp based on changed score value
+    // hdcp will only change on backend if this score is completed
     const userData = this.authService.user.getValue();
     userData.hdcp = this.data.hdcp;
     this.authService.user.next(userData);
-
+    // update border for the new score
     this.setBorder();
   }
-
+  // set the border based on score 
   setBorder() {
     const diff = Number(this.value) - this.par;
     if (diff == 0) {

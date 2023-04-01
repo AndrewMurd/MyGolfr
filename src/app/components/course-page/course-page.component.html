@@ -11,7 +11,7 @@
     </div>
     <div class="round" *ngFor="let score of scores">
       <a (click)="navigateToRounds(score)">{{ score.username }}</a> played a
-      <a (click)="navigateToRound(score)">{{ numberOfHolesPlayed(score) }} holes,
+      <a (click)="navigateToRound(score)">{{ numberOfHolesPlayed(score) }} hole,
         {{ score.score.In + score.score.Out }} stroke round</a
       >
       here {{ convertDateTime(score) }} ago

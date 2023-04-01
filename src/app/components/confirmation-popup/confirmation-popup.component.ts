@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 
+// this component is used in a custom global alert/confirmation service
 @Component({
   selector: 'app-confirmation-popup',
   templateUrl: './confirmation-popup.component.html',
@@ -19,6 +20,7 @@ export class ConfirmationPopupComponent {
   constructor(private alertService: AlertService) {}
 
   ngOnInit() {
+    // listen for new alerts from app
     this.subscriptions.add(this.alertService.subject.asObservable().subscribe((value) => {
       if (value) {
         this.hover = false;
@@ -35,12 +37,14 @@ export class ConfirmationPopupComponent {
     this.subscriptions.unsubscribe();
   }
 
+  // user confirmed run callback
   confirm(e: any) {
     e.stopPropagation();
     this.showPopUp = false;
     this.alert.yesFn();
   }
 
+  // user confirmed cancelled run callback
   cancel(e: any) {
     e.stopPropagation();
     this.showPopUp = false;

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/services/alert.service';
 import { UserService } from 'src/app/services/user.service';
 
+// reset password component used for password reset link the user got in email from the forgot password component
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
@@ -68,6 +69,7 @@ export class ResetPasswordComponent {
         this.router.navigate(['/login']);
       }, 1000);
     } catch (error: any) {
+      // set error based on backend error
       if (error.error.errors) this.error = error.error.errors[0].param;
       const err = error.error;
       if (this.error == 'password') {
@@ -79,12 +81,14 @@ export class ResetPasswordComponent {
         this.confirmError.innerText = error.error.errors[0].msg;
         this.btn!.classList.remove('onclic');
       } else if (err.type == 'token') {
+        // token is invalid
         this.alertService.alert('This session is invalid', {
           color: 'green',
           content: 'Accept',
         });
         this.router.navigate(['/login']);
       } else if (err.type == 'expired') {
+        // token has expired
         this.alertService.alert(
           'This session has expired, send another email and try again :)',
           { color: 'green', content: 'Accept' }

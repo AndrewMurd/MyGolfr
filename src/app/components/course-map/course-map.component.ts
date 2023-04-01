@@ -12,7 +12,9 @@ import { ScoreService } from 'src/app/services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { CourseDetailsService } from '../../services/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
+import { LoadingService } from 'src/app/services/loading.service';
 
+// this component is a map view of the currently viewed course in course page or in progress round page
 @Component({
   selector: 'app-course-map',
   templateUrl: './course-map.component.html',
@@ -41,7 +43,7 @@ export class CourseMapComponent {
   lines: any = [];
   mapLabels: any = [];
   editOn: boolean = false;
-  offsetFactor = 0.0006;
+  offsetFactor = 0.0006; // ofset placed on markers to spread them apart
   layoutData: any;
   scorecard: any;
   googleDetails: any;
@@ -55,6 +57,7 @@ export class CourseMapComponent {
     private courseService: CourseDetailsService,
     private authService: AuthenticationService,
     private scoreService: ScoreService,
+    private loadingService: LoadingService,
     private router: Router
   ) {}
 
@@ -68,12 +71,14 @@ export class CourseMapComponent {
     }));
 
     this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
+      // check whether map is being used for course page or in progress round page
       if (this.router.url.split('/')[1] == 'course') {
         this.scoreData = value;
         this.roundInProgress = false;
         return;
       }
       if (value) {
+        // set data for in progress round
         this.roundInProgress = true;
         this.scoreData = value;
         this.courseData = JSON.parse(JSON.stringify(this.scoreData));
@@ -93,6 +98,7 @@ export class CourseMapComponent {
       }
     }));
 
+    // change view of map based on hole
     if (this.changeView) {
       this.subscriptions.add(this.changeView.subscribe((value) => {
         this.setMapView(value);
@@ -104,7 +110,9 @@ export class CourseMapComponent {
     this.subscriptions.unsubscribe();
   }
 
+  // reloads map with correct selectedMapView (hole) value
   reload() {
+    this.loadingService.loading.next(true);
     this.center.lat = this.courseData.googleDetails.geometry.location.lat;
     this.center.lng = this.courseData.googleDetails.geometry.location.lng;
 
@@ -131,8 +139,9 @@ export class CourseMapComponent {
     } else {
       this.isPhone = false;
     }
+    this.loadingService.loading.next(false);
   }
-
+  // clear map of all markers on reload
   clearOverlays() {
     for (var i = 0; i < this.markers.length; i++) {
       this.markers[i][0].setMap(null);
@@ -174,9 +183,11 @@ export class CourseMapComponent {
 
   async setMapView(a: any) {
     this.selectedMapView = `${a}`;
+    // tell other component the view was changed
     this.changedView.emit(this.selectedMapView);
     let map = this.map;
 
+    // check whether view is of whole course or a specific hole
     if (a === 'course') {
       this.map.setCenter(this.center);
       this.map.setZoom(16);
@@ -188,11 +199,13 @@ export class CourseMapComponent {
 
     let holeLayout;
     try {
+      // remove reference on layout data for ease of use and easier manipulation
       holeLayout = JSON.parse(JSON.stringify(this.layoutData[a]));
     } catch (err) {
       return;
     }
 
+    // remove layout data for each tee that isnt for in progress round
     if (this.scorecard.length == 1) {
       holeLayout.teeLocations = holeLayout.teeLocations.filter(
         (teeLoc: any) => {
@@ -201,6 +214,7 @@ export class CourseMapComponent {
       );
     }
 
+    // set center and zoom on map for the hole based on user set view
     this.map.setCenter(holeLayout.location);
     if (this.isPhone) {
       this.map.setZoom(holeLayout.zoom - 1);
@@ -210,8 +224,9 @@ export class CourseMapComponent {
 
     var offsetTee = this.offsetFactor;
     for (const teeLoc of holeLayout.teeLocations) {
+      // if round is in progress skip all tees that arent being played
       if (this.roundInProgress && teeLoc.id != this.scoreData.teeData.id) continue;
-
+      // get correct color of tee for map info display
       let color;
       let colorName;
       for (let tee of this.scorecard) {
@@ -224,8 +239,8 @@ export class CourseMapComponent {
           }
         }
       }
-
       if (this.roundInProgress) {
+        // create polyline from tee location center of view at the distance marker
         this.lines.push(
           new google.maps.Polyline({
             path: [teeLoc, holeLayout.location],
@@ -233,11 +248,13 @@ export class CourseMapComponent {
             strokeWeight: 2,
           })
         );
+        // calculate center of polyline
         const inBetween = google.maps.geometry.spherical.interpolate(
           teeLoc,
           holeLayout.location,
           0.5
         );
+        // push label for distance measurment between tee and distance marker
         this.mapLabels.push(
           new google.maps.Marker({
             position: {
@@ -254,6 +271,7 @@ export class CourseMapComponent {
         );
       }
 
+      // if tee has not been moved by user create offset on each tee displayed
       let lng: number = teeLoc.lng;
       if (
         teeLoc.lat == holeLayout.location.lat ||
@@ -265,7 +283,7 @@ export class CourseMapComponent {
         offsetTee += this.offsetFactor;
       }
 
-      // tee markers
+      // tee marker
       this.markers.push([
         new google.maps.Marker({
           position: { lat: teeLoc.lat, lng: lng },
@@ -318,7 +336,7 @@ export class CourseMapComponent {
     );
 
     if (this.roundInProgress) {
-      // distance marker
+      // distance marker that is dragged by user for distance info
       this.distanceMarker.push(
         new google.maps.Marker({
           position: holeLayout.location,
@@ -338,7 +356,7 @@ export class CourseMapComponent {
           draggable: true,
         })
       );
-
+      // polyline between distance marker (at center of view) and the flag marker
       this.lines.push(
         new google.maps.Polyline({
           path: [flagLoc, holeLayout.location],
@@ -351,6 +369,7 @@ export class CourseMapComponent {
         holeLayout.location,
         0.5
       );
+      // create another label for distance between distance marker and flag
       this.mapLabels.push(
         new google.maps.Marker({
           position: {
@@ -365,7 +384,7 @@ export class CourseMapComponent {
           },
         })
       );
-
+      // set inital distance measurments
       this.mapLabels[0].setLabel({
         text:
           Math.round(
@@ -384,17 +403,20 @@ export class CourseMapComponent {
           ) + '',
         color: 'white',
       });
-
+      // calculates distance between tee and distance marker when distance marker is being dragged
       google.maps.event.addListener(this.distanceMarker[0], 'drag', () => {
+        // current distance marker position
         let disMarkerpos = { lat: 0, lng: 0 };
         disMarkerpos.lat = this.distanceMarker[0].getPosition().lat();
         disMarkerpos.lng = this.distanceMarker[0].getPosition().lng();
         for (let i = 0; i < this.lines.length; i++) {
+          // redraw path of the polyline based on change in distance marker's position
           let path = this.lines[i].getPath().getArray();
           let markerPos = { lat: 0, lng: 0 };
           markerPos.lat = path[0].lat();
           markerPos.lng = path[0].lng();
           this.lines[i].setPath([markerPos, disMarkerpos]);
+          // move label based on change
           let inBetween = google.maps.geometry.spherical.interpolate(
             markerPos,
             disMarkerpos,
@@ -404,6 +426,7 @@ export class CourseMapComponent {
             lat: inBetween.lat() + 0.00006,
             lng: inBetween.lng(),
           });
+          // recalculate distance based on change
           if (i == 0) {
             this.mapLabels[0].setLabel({
               text:
@@ -429,7 +452,7 @@ export class CourseMapComponent {
           }
         }
       });
-
+      // calculates distance between flag and distance marker when flag marker is being dragged
       google.maps.event.addListener(this.flagMarker[0], 'drag', () => {
         let flagMarkerpos = { lat: 0, lng: 0 };
         flagMarkerpos.lat = this.flagMarker[0].getPosition().lat();
@@ -485,10 +508,11 @@ export class CourseMapComponent {
       );
     return d;
   }
-
+  // Sets hole view and marker location when in editing mode
   async setHoleLayout() {
+    this.loadingService.loading.next(true);
     if (this.selectedMapView == 'course') return;
-
+    // get current view 
     this.courseData.mapLayout[this.selectedMapView].location.lat = this.map
       .getCenter()!
       .lat();
@@ -496,7 +520,7 @@ export class CourseMapComponent {
       .getCenter()!
       .lng();
     this.courseData.mapLayout[this.selectedMapView].zoom = this.map.getZoom();
-
+    // get position of tee markers
     if (this.markers.length != 0) {
       const layoutData = this.courseData.mapLayout[this.selectedMapView];
       for (let teeLoc of layoutData.teeLocations) {
@@ -507,16 +531,18 @@ export class CourseMapComponent {
           }
         }
       }
+      // get flag location
       layoutData.flagLocation.lat = this.flagMarker[0].getPosition()?.lat();
       layoutData.flagLocation.lng = this.flagMarker[0].getPosition()?.lng();
     }
-
+    // update hole map data in database
     await this.courseService.update(this.courseData);
     this.courseService.courseData.next(this.courseData);
     if (this.scoreData) {
       this.scoreData.mapLayout = JSON.parse(JSON.stringify(this.courseData.mapLayout));
       this.scoreService.inProgressScoreData.next(this.scoreData);
     }
+    this.loadingService.loading.next(false);
   }
 
   @HostListener('window:resize', ['$event'])

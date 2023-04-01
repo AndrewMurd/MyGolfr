@@ -4,6 +4,7 @@ import jwt_decode from 'jwt-decode';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
 
+// register page (sign up page)
 @Component({
   selector: 'app-register-page',
   templateUrl: './register-page.component.html',
@@ -99,6 +100,7 @@ export class RegisterPageComponent {
         this.resetInnerText();
         this.resetInputClass();
 
+        // login user once account is created
         this.authService.login(this.email, this.password).then((data: any) => {
           this.authService.token.next(data.accessToken);
           const userData: any = jwt_decode(data.accessToken);

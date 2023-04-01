@@ -9,6 +9,7 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { convertSqlDateTime } from '../../utilities/functions';
 
+// this component displays the a selected round that has been completed
 @Component({
   selector: 'app-round-page',
   templateUrl: './round-page.component.html',
@@ -56,7 +57,7 @@ export class RoundPageComponent {
           this.onResize();
 
           this.hdcpType = this.scoreData.hdcpType;
-
+          // count number of completed holes
           let count = 0;
           for (let [key, value] of Object.entries(this.scoreData.score)) {
             if (value != '' && key != 'In' && key != 'Out') {
@@ -64,9 +65,9 @@ export class RoundPageComponent {
             }
           }
           this.scoreLn = count;
-
+          // convert date from database
           this.date = convertSqlDateTime(this.scoreData.startTime);
-
+          // get the time lasped from start to finish of round
           this.timeDifference = new Date(
             convertSqlDateTime(this.scoreData.endTime) - this.date
           )
@@ -85,6 +86,7 @@ export class RoundPageComponent {
               if (value) {
                 this.userData = value;
                 this.editing = false;
+                // check whether this round is from the currently logged in user or not
                 if (this.scoreData.userId == this.userData.id)
                   this.editing = true;
               }
@@ -100,11 +102,11 @@ export class RoundPageComponent {
       this.scoreService.selectedScoreData.asObservable().subscribe((value) => {
         if (value) {
           this.scoreData = value;
-
+          // destroy current charts
           for (let chart of this.charts) {
             chart.destroy();
           }
-
+          // get canvas from dom
           const canvas: any = document.getElementById('scoreLineChart');
           const canvas1: any = document.getElementById('scoreDoughnutChart');
 
@@ -112,6 +114,7 @@ export class RoundPageComponent {
           const score = [];
 
           if (!this.scoreData?.teeData) return;
+          // get data for teeData par and sum it for chart
           let sum = 0;
           for (let [key, value] of Object.entries(this.scoreData.teeData)) {
             if (key.charAt(0) == 'P' && key != 'Position') {
@@ -123,6 +126,7 @@ export class RoundPageComponent {
               });
             }
           }
+          // get data for score and sum it for chart
           sum = 0;
           for (let [key, value] of Object.entries(this.scoreData.score)) {
             if (key != 'In' && key != 'Out') {
@@ -130,7 +134,7 @@ export class RoundPageComponent {
               score.push({ hole: key, value: value, sum: sum });
             }
           }
-
+          // create line chart for displaying increase in score sum vs increase in par sum for each hole 
           this.charts.push(
             new Chart(canvas, {
               type: 'line',
@@ -177,7 +181,7 @@ export class RoundPageComponent {
               },
             })
           );
-
+          // count types of score for each hole
           let birdies = 0,
             par = 0,
             bogeys = 0,
@@ -205,7 +209,7 @@ export class RoundPageComponent {
             { label: 'Double Bogeys', value: double },
             { label: 'Triple Bogeys or Worse', value: triple },
           ];
-
+          // create doughnut chart for displaying ratio between each type of score
           this.charts.push(
             new Chart(canvas1, {
               type: 'doughnut',
@@ -281,18 +285,53 @@ export class RoundPageComponent {
     this.popUp = true;
   }
 
+  // edit whether course should be counted towards hdcp
   async submitEdit() {
     this.loadingService.loading.next(true);
-    try {
-      this.scoreData.hdcpType = this.hdcpType;
-      await this.scoreService.update(this.scoreData, 'hdcpType');
-    } catch (error) {
-      console.log(error);
+
+    let factor = 0;
+    this.scoreData.courseDetails.nineHoleGolfCourse
+      ? (factor = 10)
+      : (factor = 20);
+
+    // count number of inputed score values
+    let count = 0;
+    for (let value of Object.values(this.scoreData.score)) {
+      if (value != '') {
+        count++;
+      }
+    }
+
+    // check whether user should be able to switch round to count towards hdcp calculation
+    if (this.hdcpType == 'basic') {
+      if (Object.keys(this.scoreData.score).length >= factor && count == factor) {
+        try {
+          this.scoreData.hdcpType = this.hdcpType;
+          await this.scoreService.update(this.scoreData, 'hdcpType');
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        // warn user that the score is imcomplete and they cant change it to count towards hdcp calculation
+        this.alertService.alert(
+          'This score is incomplete! You must complete every hole when calculating handicap.',
+          { color: 'green', content: 'Accept' }
+        );
+        this.hdcpType = 'none';
+      }
+    } else {
+      try {
+        this.scoreData.hdcpType = this.hdcpType;
+        await this.scoreService.update(this.scoreData, 'hdcpType');
+      } catch (error) {
+        console.log(error);
+      }
     }
     this.popUp = false;
     this.loadingService.loading.next(false);
   }
 
+  // calculate difference between total sum par and total score
   calculateShotsToPar() {
     const scoreToPar =
       this.scoreData?.score.In +

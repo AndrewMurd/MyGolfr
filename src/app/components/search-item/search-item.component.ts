@@ -4,7 +4,9 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
 import { Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
+// import { apiKey } from '../../utilities/enviroment';
 
+// this component is dynamically created in the from search bar for each searched for course
 @Component({
   selector: 'app-search-item',
   templateUrl: './search-item.component.html',
@@ -64,7 +66,7 @@ export class SearchItemComponent {
           }
         })
     );
-
+    // get location for search item info
     let stringArray = this.data.plus_code.compound_code.split(/(\s+)/);
     this.addressInfo = '';
 
@@ -76,14 +78,14 @@ export class SearchItemComponent {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
-
+  // navigate to course page
   clickItem() {
     if (this.disable) return;
     this.onClickItem.emit(this.data);
     this.router.navigate(['/course', this.data.reference]);
     this.addClickToUser();
   }
-
+  // navigate to start round page
   startRound() {
     if (!this.signedIn) {
       this.router.navigate(['/login']);
@@ -94,7 +96,7 @@ export class SearchItemComponent {
     this.router.navigate(['/start-round', this.data.reference]);
     this.addClickToUser();
   }
-
+  // add click to logged in users fav courses
   async addClickToUser() {
     if (!this.userData) return;
     if (this.userData.favCourses[this.data.reference]) {

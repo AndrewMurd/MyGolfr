@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 
+// forgot password component that send email to user for password retrieval
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',

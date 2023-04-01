@@ -3,15 +3,16 @@ import { BehaviorSubject } from 'rxjs';
 import { ROOT_URL } from '../utilities/enviroment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
+// interface for manipulating course details in database
 @Injectable({
   providedIn: 'root',
 })
 export class CourseDetailsService {
-  courseData = new BehaviorSubject<any>(null);
-  editingScoreCard = new BehaviorSubject<any>(false);
+  courseData = new BehaviorSubject<any>(null); // course data for selected course
+  editingScoreCard = new BehaviorSubject<any>(false); // boolean for turning on/off editing of scorecard
   
   constructor(private http: HttpClient) {}
-
+  // search database for saved courses based on text query
   async searchCourses(searchString: string) {
     return await new Promise((resolve, reject) => {
       this.http
@@ -28,7 +29,7 @@ export class CourseDetailsService {
         });
     });
   }
-
+  // update column of course data
   async updateColumn(courseId: string, data: any, type: string) {
     return await new Promise((resolve, reject) => {
       this.http
@@ -47,7 +48,7 @@ export class CourseDetailsService {
         });
     });
   }
-
+  // update entire course
   async update(data: any) {
     return await new Promise((resolve, reject) => {
       this.http
@@ -64,7 +65,7 @@ export class CourseDetailsService {
         });
     });
   }
-
+  // get course
   async get(id: string) {
     return await new Promise((resolve, reject) => {
       this.http
@@ -81,7 +82,7 @@ export class CourseDetailsService {
         });
     });
   }
-
+  // get an array of courses
   async getCourses(ids: any) {
     return await new Promise((resolve, reject) => {
       this.http

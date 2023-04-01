@@ -13,6 +13,7 @@ import {
   transition,
 } from '@angular/animations';
 
+// this component is the page used for editing the currently in progress round
 @Component({
   selector: 'app-round-in-progress-page',
   templateUrl: './round-in-progress-page.component.html',
@@ -60,15 +61,6 @@ export class RoundInProgressPageComponent {
     this.loadingService.loading.next(true);
 
     this.subscriptions.add(
-      this.authService.user.asObservable().subscribe((value) => {
-        if (!value) {
-          this.router.navigate(['']);
-        }
-        this.loadingService.loading.next(false);
-      })
-    );
-
-    this.subscriptions.add(
       this.scoreService.inProgressScoreData
         .asObservable()
         .subscribe((value) => {
@@ -80,6 +72,7 @@ export class RoundInProgressPageComponent {
               this.selectedScore = 'Strokes';
             }
             this.reload();
+            this.loadingService.loading.next(false);
           }
         })
     );
@@ -90,10 +83,12 @@ export class RoundInProgressPageComponent {
   }
 
   async reload() {
+    // get the current hole last played in round
     this.currentHole = this.getCurrentHoleInProgress(this.scoreData.score);
+    // set view on map based on current hole
     this.changeView.next(this.currentHole);
   }
-
+  // change score for current hole
   async updateScore(strokes: any) {
     this.selectedScore = strokes;
     if (
@@ -109,7 +104,7 @@ export class RoundInProgressPageComponent {
       this.scoreService.inProgressScoreData.next(this.scoreData);
     }
   }
-
+  // switch hole based on map view
   async setCurrentHole(a: any) {
     this.currentHole = a;
     if (this.currentHole == 'course') {
@@ -125,13 +120,13 @@ export class RoundInProgressPageComponent {
       }
     } catch (error) {}
   }
-
+  // get last hole played
   getCurrentHoleInProgress(score: any) {
     const ln = Object.keys(score).length;
     if (ln == 2) return 1;
     return ln - 2;
   }
-
+  // set height of score dropdown
   scoreDropdown(set: boolean) {
     this.openScoreDropdown = set;
     let pixels = 34 * 10;

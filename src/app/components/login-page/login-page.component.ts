@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
 import { ScoreService } from 'src/app/services/score.service';
 
+// login page
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
@@ -93,12 +94,16 @@ export class LoginPageComponent {
         this.btn!.classList.add('validate');
         this.resetInnerText();
         this.resetInputClass();
-
+    
+        // set jwt access token in successful login
         this.authService.token.next(data.accessToken);
+        // decode jwt token
         const userData: any = jwt_decode(data.accessToken);
+        // set user data from token
         this.authService.user.next(userData);
 
         try {
+          // check if there is a round currently in progress for logged in user
           const response: any = await this.scoreService.getUser(userData.id, 0);
           this.scoreService.inProgressScoreData.next(response.scores[0]);
         } catch (error) {}
@@ -108,6 +113,7 @@ export class LoginPageComponent {
         }, 1000);
       })
       .catch((error) => {
+        // set error text for based on backend error
         this.error = error.error.type;
         if (this.error == 'email') {
           this.emailInput.classList.add('inputError');

@@ -6,10 +6,11 @@ import {
   animate,
   transition,
 } from '@angular/animations';
-import { AuthenticationService } from '../services/authentication.service';
+import { AuthenticationService } from '../../services/authentication.service';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { UserService } from '../services/user.service';
+import { UserService } from '../../services/user.service';
 
+// this component is used for displaying and editing logged in users account info
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
@@ -90,11 +91,13 @@ export class AccountComponent {
     this.subscriptions.add(
       this.showAccountObs.subscribe((value) => {
         this.showAccount = value;
+        // reset variables when opening account info component
         this.editName = false;
         this.editEmail = false;
         this.editPassword = false;
         this.btnOpen = false;
         this.height = this.initialHeight;
+        // delaying displaying info until animation is done
         if (value == false) {
           this.showOtherInfo = value;
           return;
@@ -116,6 +119,7 @@ export class AccountComponent {
     this.passwordInput = document.querySelector('#passwordInputAccount');
     this.confirmPassInput = document.querySelector('#confirmPassInputAccount');
 
+    // move placeholder text to top of input when there is value
     this.nameInput.addEventListener('keyup', () => {
       this.nameInput.setAttribute('value', this.nameInput.value);
     });
@@ -151,8 +155,10 @@ export class AccountComponent {
 
     if (this.editName) {
       try {
+        // remove whitespace
         this.userData.name = this.name.replace(/ /g, '');
         await this.userService.updateName(this.userData.name, this.userData.id);
+        // set btn class to validate and reset inputs
         this.btn.classList.remove('onclic');
         this.btn.classList.add('validate');
         this.resetInnerText();
@@ -163,7 +169,7 @@ export class AccountComponent {
           this.openBtn();
         }, 800);
       } catch (error: any) {
-        console.log(error);
+        // set error
         this.error = error.error.errors[0].param;
         this.nameInput.classList.add('inputError');
         this.nameError.innerText = error.error.errors[0].msg;
@@ -228,6 +234,7 @@ export class AccountComponent {
     }
   }
 
+  // adds or removes height to account info page based on what user is editing
   openBtn() {
     const factor = 65;
     if (
@@ -269,6 +276,7 @@ export class AccountComponent {
     this.confirmPassInput.classList.remove('inputError');
   }
 
+  // switch input type based on eye
   switchEye(ev: any) {
     ev.stopPropagation();
     this.eyeSrc = !this.eyeSrc;

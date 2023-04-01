@@ -3,15 +3,16 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ROOT_URL } from '../utilities/enviroment';
 
+// interface for manipulating round/score info in database
 @Injectable({
   providedIn: 'root',
 })
 export class ScoreService {
-  selectedScoreData = new BehaviorSubject<any>(null);
-  inProgressScoreData = new BehaviorSubject<any>(null);
+  selectedScoreData = new BehaviorSubject<any>(null); // currently selected course/round
+  inProgressScoreData = new BehaviorSubject<any>(null); // in progress score/round
 
   constructor(private http: HttpClient) {}
-
+  // get score
   async get(id: string) {
     return await new Promise((resolve, reject) => {
       this.http
@@ -28,7 +29,7 @@ export class ScoreService {
         });
     });
   }
-
+  // get scores from a course
   async getCourse(courseId: string, status: number = 2) {
     return await new Promise((resolve, reject) => {
       this.http
@@ -45,7 +46,7 @@ export class ScoreService {
         });
     });
   }
-
+  // get scores for a user
   async getUser(userId: any, status: number = 2, limit: number = 20) {
     return await new Promise((resolve, reject) => {
       this.http
@@ -62,7 +63,7 @@ export class ScoreService {
         });
     });
   }
-
+  // update a score
   async update(scoreData: string, type: string) {
     return await new Promise((resolve, reject) => {
       this.http
@@ -80,7 +81,7 @@ export class ScoreService {
         });
     });
   }
-
+  // add new score to database
   async newScore(
     userId: string,
     courseId: string,
@@ -107,7 +108,7 @@ export class ScoreService {
         });
     });
   }
-
+  // delete a score
   async delete(scoreData: any) {
     return await new Promise((resolve, reject) => {
       this.http

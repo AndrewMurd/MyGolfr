@@ -1,9 +1,8 @@
-import { Component, ElementRef, HostListener, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { convertSqlDateTime } from '../../utilities/functions';
@@ -18,6 +17,7 @@ import {
   // ...
 } from '@angular/animations';
 
+// this component diplays all completed and in progress rounds by the selected user
 @Component({
   selector: 'app-rounds-page',
   templateUrl: './rounds-page.component.html',
@@ -62,7 +62,6 @@ export class RoundsPageComponent {
   ];
 
   constructor(
-    private courseService: CourseDetailsService,
     private alertService: AlertService,
     private authService: AuthenticationService,
     private scoreService: ScoreService,
@@ -92,6 +91,7 @@ export class RoundsPageComponent {
             if (value) {
               this.userData = value;
               this.selectedUser = true;
+              // check whether these rounds are from the currently logged in user or not
               if (
                 this.scores[0]?.userId == this.userData.id ||
                 this.scores.length == 0
@@ -104,10 +104,12 @@ export class RoundsPageComponent {
     );
   }
 
+  // reload rounds page data
   reload() {
     this.amountOfRoundsThisYear = 0;
     this.numberOfScores = this.scores.length;
 
+    // sort rounds based on finish date time
     this.scores.sort((a: any, b: any) => {
       return (
         convertSqlDateTime(b.endTime).getTime() -
@@ -117,12 +119,13 @@ export class RoundsPageComponent {
 
     const currentDate = new Date();
     for (let score of this.scores) {
+      // count number of rounds this year
       const newDate = convertSqlDateTime(score.startTime);
       if (newDate.getFullYear() == currentDate.getFullYear()) {
         this.amountOfRoundsThisYear += 1;
       }
       score.formattedDate = newDate.toLocaleDateString();
-
+      // count completed holes
       let count = 0;
       for (let [key, value] of Object.entries(score.score)) {
         if (value != '' && key != 'In' && key != 'Out') {
@@ -130,7 +133,7 @@ export class RoundsPageComponent {
         }
       }
       score['holes'] = count;
-
+      // move the in progress round to top of rounds order
       if (score.statusComplete == 0) {
         this.scores.splice(this.scores.indexOf(score), 1);
         this.scores.unshift(score);
@@ -141,7 +144,7 @@ export class RoundsPageComponent {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
-
+  // show round page for clicked on round
   showOverview(score: any) {
     if (score.statusComplete == 0) {
       if (this.userData.id != score.userId) {
@@ -182,7 +185,7 @@ export class RoundsPageComponent {
       () => {}
     );
   }
-
+  // when user with touch screen moves round to the left show delete button
   onPan(event: any, index: number) {
     if (
       event.additionalEvent == 'panleft' &&
@@ -200,7 +203,7 @@ export class RoundsPageComponent {
       )!.style.borderRadius = `8px 0px 0px 8px`;
     }
   }
-
+  // show delete button
   openDelete(index: number) {
     if (this.selectedUser) return;
     document.getElementById(
@@ -210,7 +213,7 @@ export class RoundsPageComponent {
       `roundItem${index}`
     )!.style.transform = `translateX(-50px)`;
   }
-
+  // cover delete button
   closeDelete(index: number) {
     document.getElementById(
       `roundItem${index}`
@@ -220,7 +223,7 @@ export class RoundsPageComponent {
     )!.style.transform = `translateX(0px)`;
     document.getElementById(`roundItem${index}`)!.style.borderRadius = `8px`;
   }
-
+  // (not in use) reset position of elements on delete btn
   resetDelete() {
     for (let i = 0; i < this.scores.length; i++) {
       document.getElementById(

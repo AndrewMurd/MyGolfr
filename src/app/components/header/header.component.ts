@@ -4,6 +4,7 @@ import { Subject, Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
 
+// header component for entire app
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -64,7 +65,7 @@ export class HeaderComponent {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
-
+  // sign out user
   signOut() {
     this.signedIn = false;
     this.authService.token.next(null);
@@ -73,7 +74,7 @@ export class HeaderComponent {
     this.router.navigate(['/login']);
     this.authService.logout();
   }
-
+  // dynamically change arrow icon and height of user dropdown
   setDropdownUser(set: boolean) {
     this.userDropdown = set;
     try {

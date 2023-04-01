@@ -5,6 +5,8 @@ import { CourseDetailsService } from '../../services/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
 import { AlertService } from 'src/app/services/alert.service';
 
+// this component is dynamically added to the edit scorecard component. 
+// this components allows user to edit scorecard data for selected course.
 @Component({
   selector: 'app-new-scorecard-tee',
   templateUrl: './new-scorecard-tee.component.html',
@@ -20,6 +22,7 @@ export class NewScorecardTeeComponent {
   @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
   scorecard: any;
   courseData: any;
+  scoreData: any;
   editing: boolean = false;
   showCopySI!: boolean;
   showCopyPar!: boolean;
@@ -47,13 +50,17 @@ export class NewScorecardTeeComponent {
     this.color = this.teeData.Color;
     this.nameColor = this.teeData.ColorName;
 
-    this.subscriptions.add(this.courseService.courseData.asObservable().subscribe((value) => {
-      if (value) {
-        this.courseData = value;
-        this.scorecard = value.scorecard;
-      }
-    }));
+    this.subscriptions.add(
+      this.courseService.courseData.asObservable().subscribe((value) => {
+        if (value) {
+          this.courseData = value;
+          this.scorecard = value.scorecard;
+        }
+      })
+    );
 
+    // counts number of completed entries for this tee
+    // to see whether user should be able to copy data from other tee with copy btn
     let key, value: any;
     let countPar = 0,
       countSI = 0;
@@ -104,30 +111,47 @@ export class NewScorecardTeeComponent {
       this.displayInputSelector = true;
     }
 
-    this.subscriptions.add(this.submitInput.subscribe((value) => {
-      if (this.teeData.id == value.id[0] && 'Color' == value.id[1]) {
-        this.teeData.Color = value.value;
-        if (this.teeData.ColorName) {
+    this.subscriptions.add(
+      this.submitInput.subscribe((value) => {
+        if (this.teeData.id == value.id[0] && 'Color' == value.id[1]) {
+          this.teeData.Color = value.value;
+          if (this.teeData.ColorName) {
+            this.displayInputSelector = false;
+            this.displayColorName = true;
+          }
+
+          this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
+          if (this.isWhite) {
+            this.colorEventsSubject.next(true);
+          } else {
+            this.colorEventsSubject.next(false);
+          }
+        } else if (
+          this.teeData.id == value.id[0] &&
+          'ColorName' == value.id[1]
+        ) {
+          this.teeData.ColorName = value.value;
           this.displayInputSelector = false;
           this.displayColorName = true;
         }
+      })
+    );
 
-        this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
-        if (this.isWhite) {
-          this.colorEventsSubject.next(true);
-        } else {
-          this.colorEventsSubject.next(false);
-        }
-      } else if (this.teeData.id == value.id[0] && 'ColorName' == value.id[1]) {
-        this.teeData.ColorName = value.value;
-        this.displayInputSelector = false;
-        this.displayColorName = true;
-      }
-    }));
+    this.subscriptions.add(
+      this.courseService.editingScoreCard.asObservable().subscribe((value) => {
+        this.editing = value;
+      })
+    );
 
-    this.subscriptions.add(this.courseService.editingScoreCard.asObservable().subscribe((value) => {
-      this.editing = value;
-    }));
+    this.subscriptions.add(
+      this.scoreService.inProgressScoreData
+        .asObservable()
+        .subscribe((value) => {
+          if (value) {
+            this.scoreData = value;
+          }
+        })
+    );
   }
 
   ngOnDestroy() {
@@ -143,7 +167,7 @@ export class NewScorecardTeeComponent {
       this.colorEventsSubject.next(false);
     }
   }
-
+  // changes position of tee on scorecard
   async changePosition(event: any) {
     const newPos = event.target.value;
 
@@ -167,12 +191,14 @@ export class NewScorecardTeeComponent {
     this.courseData.scorecard = this.scorecard;
     this.courseService.courseData.next(this.courseData);
   }
-
+  // copys par data from tee with most data complete in either back nine or front nine respectively
+  // this function allows user to complete new tees added to a course faster (ease of use)
   async copyParData() {
     this.showCopyPar = false;
 
     const list: any[] = [];
 
+    // gets values for par data from other tees
     for (let tee of this.scorecard) {
       const parValues: any = {};
       let key, value: any;
@@ -192,13 +218,14 @@ export class NewScorecardTeeComponent {
       list.push(parValues);
     }
 
+    // get tee with most completed data
     let largest = list[0];
     for (let i = 0; i < list.length; i++) {
       if (Object.entries(largest).length < Object.entries(list[i]).length) {
         largest = list[i];
       }
     }
-
+    // set this tee with the completed data from the other tee
     for (let tee of this.scorecard) {
       if (tee.id == this.teeData.id) {
         let key, value: any;
@@ -207,7 +234,7 @@ export class NewScorecardTeeComponent {
         }
       }
     }
-
+    // update scorecard
     await this.courseService.updateColumn(
       this.courseData.googleDetails.reference,
       this.scorecard,
@@ -216,7 +243,7 @@ export class NewScorecardTeeComponent {
     this.courseData.scorecard = this.scorecard;
     this.courseService.courseData.next(this.courseData);
   }
-
+  // same thing as par copy pasta just for stroke index
   async copySIData() {
     this.showCopySI = false;
 
@@ -268,22 +295,22 @@ export class NewScorecardTeeComponent {
       { color: 'red', content: 'Delete' },
       async () => {
         try {
+          // remove the tee from dom
           document.getElementById(this.teeData.id)?.remove();
           document.getElementById(this.teeData.id)?.remove();
-
+          // filter out tee
           for (let i = 0; i < this.scorecard.length; i++) {
             if (this.scorecard[i].id == this.teeData.id) {
               this.scorecard.splice(i, 1);
             }
           }
-
+          // readjust position for other tees
           for (let tee of this.scorecard) {
             if (tee.Position > this.teeData.Position)
               tee.Position = tee.Position - 1;
           }
-
+          // update layout data for course
           let mapLayout = this.courseData.mapLayout;
-
           for (let [key, value] of Object.entries(mapLayout)) {
             for (let i = 0; i < mapLayout[key].teeLocations.length; i++) {
               if (mapLayout[key].teeLocations[i].id == this.teeData.id) {
@@ -308,7 +335,10 @@ export class NewScorecardTeeComponent {
 
   async submitColorName() {
     if (!this.nameColor) {
-      alert('Must enter name!');
+      this.alertService.alert('Must enter Value!', {
+        color: 'green',
+        content: 'Accept',
+      });
       this.displayColorNamer = false;
       this.displayInputSelector = true;
     } else {
@@ -325,6 +355,15 @@ export class NewScorecardTeeComponent {
       );
 
       this.courseData.scorecard = response.scorecard;
+      this.scoreData.scorecard = response.scorecard;
+      // update teeData with updated scorecard data for in progress score
+      for (let tee of this.scoreData.scorecard) {
+        if (tee.id == this.scoreData.teeData.id) {
+          this.scoreData.teeData = tee;
+          await this.scoreService.update(this.scoreData, 'teeData');
+        }
+      }
+      this.scoreService.inProgressScoreData.next(this.scoreData);
       this.courseService.courseData.next(this.courseData);
 
       this.onSubmitofInput.emit({
@@ -353,6 +392,15 @@ export class NewScorecardTeeComponent {
       { id: [this.teeData.id, 'Color'], value: this.color }
     );
     this.courseData.scorecard = response.scorecard;
+    this.scoreData.scorecard = response.scorecard;
+    // update teeData with updated scorecard data for in progress score
+    for (let tee of this.scoreData.scorecard) {
+      if (tee.id == this.scoreData.teeData.id) {
+        this.scoreData.teeData = tee;
+        await this.scoreService.update(this.scoreData, 'teeData');
+      }
+    }
+    this.scoreService.inProgressScoreData.next(this.scoreData);
     this.courseService.courseData.next(this.courseData);
 
     this.onSubmitofInput.emit({

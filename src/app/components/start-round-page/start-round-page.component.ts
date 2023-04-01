@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CourseDetailsService } from '../../services/course-details.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ScoreService } from '../../services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { createRange, getColorWhite, getRGB } from '../../utilities/functions';
@@ -15,6 +15,7 @@ import {
   transition,
 } from '@angular/animations';
 
+// start round page where user can start a new round based on completed tees in scorecard
 @Component({
   selector: 'app-start-round-page',
   templateUrl: './start-round-page.component.html',
@@ -24,13 +25,13 @@ import {
       state(
         'open',
         style({
-          transform: 'scale(1)',
+          transform: 'scale(1, 1)',
         })
       ),
       state(
         'closed',
         style({
-          transform: 'scale(0)',
+          transform: 'scale(1, 0)',
         })
       ),
       transition('open => closed', [animate('0.2s')]),
@@ -106,12 +107,12 @@ export class StartRoundPageComponent {
     this.teeDropdown(false);
     this.selectedTee = tee;
   }
-
+  // start round based on selected inputs
   async startRound() {
     this.loadingService.loading.next(true);
     try {
       if (this.hdcpType == 'basic') {
-        console.log(this.selectedTee);
+        // need a slope and rating for calculating hdcp
         if (this.selectedTee.Rating != '' && this.selectedTee.Slope != '') {
           await this.scoreService.newScore(
             this.userData.id,
@@ -120,12 +121,12 @@ export class StartRoundPageComponent {
             this.hdcpType,
             this.sqlDate()
           );
-          // navigate to round in progress page
           const response: any = await this.scoreService.getUser(
             this.userData.id,
             0
           );
           this.router.navigate(['/round/in-progress', response.scores[0].id]);
+          // update the current in progress round
           setTimeout(() => {
             this.scoreService.inProgressScoreData.next(response.scores[0]);
           });
@@ -148,7 +149,6 @@ export class StartRoundPageComponent {
           this.hdcpType,
           this.sqlDate()
         );
-        // navigate to round in progress page
         const response: any = await this.scoreService.getUser(
           this.userData.id,
           0
@@ -171,7 +171,8 @@ export class StartRoundPageComponent {
       document.getElementById('selectTeeBtn')!.style.top = '145px';
     }
   }
-
+  // checks which tees are complete 
+  // to prevent user from starting round with incomplete data for selected tee
   checkCompleteTees() {
     if (this.courseData.courseDetails.nineHoleGolfCourse) {
       this.completedTees = this.completedTees.filter((tee: any) => {
@@ -198,12 +199,12 @@ export class StartRoundPageComponent {
       return a.Position - b.Position;
     });
   }
-
+  // convert date to sql format
   sqlDate() {
     const date = new Date();
     return date.toISOString().slice(0, 19).replace('T', ' ');
   }
-
+  // alert user if there are no tees ready to be played with
   alertUserOfTees() {
     if (this.completedTees.length == 0) {
       this.alertService.alert(
@@ -212,7 +213,7 @@ export class StartRoundPageComponent {
       );
     }
   }
-
+  // set height of tee dropdown dynamically
   teeDropdown(set: boolean) {
     this.openTeeDropdown = set;
     let pixels = 44 * this.completedTees.length;

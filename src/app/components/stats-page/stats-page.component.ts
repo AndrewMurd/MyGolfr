@@ -12,6 +12,7 @@ import {
   numberOfHolesPlayed,
 } from '../../utilities/functions';
 
+// stats page for displaying all stats and info based on a user's career and submitted scores
 @Component({
   selector: 'app-stats-page',
   templateUrl: './stats-page.component.html',
@@ -65,7 +66,7 @@ export class StatsPageComponent {
           );
           this.scores = response.scores;
           this.userName = this.scores[0].username;
-
+          // filter scores used in hdcp calculation
           for (let score of this.scores) {
             if (score.usedForHdcp == 1) this.usedForHdcpScores.push(score);
           }
@@ -88,6 +89,7 @@ export class StatsPageComponent {
 
               this.reload();
 
+              // create doughnut visual for handicap index
               const canvas: any = document.getElementById('indexChart');
               const ctx = canvas.getContext('2d');
 
@@ -136,7 +138,7 @@ export class StatsPageComponent {
 
               // A handicap ranges from [0, 54]
               // The angles range from [1.5, -0.5] * Math.PI
-              // We need to convert handicap range to angle range while keeping ratio
+              // We need to convert handicap range to angle range while keeping same ratio
               const handicapRange = 54 - 0;
               const anglesRange = -0.5 - 1.5;
               const angleValue =
@@ -168,7 +170,7 @@ export class StatsPageComponent {
                 ctx.lineWidth = 41;
                 ctx.stroke();
               }
-
+              // animate when user hdcp is zero
               if (this.userData.hdcp == 0) {
                 requestAnimationFrame(animate);
                 let eAngle = 1.5;
@@ -201,17 +203,19 @@ export class StatsPageComponent {
       })
     );
   }
-
+  // when queries a different range of rounds reload calculations
   async newQuery() {
     this.scores.length = 0;
     let response: any;
     try {
       this.loadingService.loading.next(true);
+      // all rounds
       if (this.limit == 'all') {
         response = await this.scoreService.getUser(this.userData.id, 1, 0);
         this.scores = response.scores;
         this.userName = this.scores[0].username;
       } else if (this.limit == 'thisYear') {
+        // rounds only this year
         response = await this.scoreService.getUser(this.userData.id, 1, 0);
         for (let score of response.scores) {
           const currentDate = new Date();
@@ -222,6 +226,7 @@ export class StatsPageComponent {
         }
         this.userName = this.scores[0].username;
       } else {
+        // number of rounds selected (5, 20, 40)
         response = await this.scoreService.getUser(
           this.userData.id,
           1,
@@ -257,13 +262,31 @@ export class StatsPageComponent {
       'Double Bogeys': 0,
       'Triples or Worse': 0,
     };
+    let scoresLn = this.scores.length;
     for (let score of this.scores) {
+      let factor = 0;
+      score.courseDetails.nineHoleGolfCourse ? (factor = 10) : (factor = 20);
+
+      // count number of inputed score values
+      let count = 0;
+      for (let value of Object.values(score.score)) {
+        if (value != '') {
+          count++;
+        }
+      }
+
+      // remove score from calculations if it is not completed
+      if (Object.keys(score.score).length < factor || count != factor) {
+        scoresLn--;
+        continue;
+      };
+      // get the total time played for user
       sumTime += new Date(
         convertSqlDateTime(score.endTime) - convertSqlDateTime(score.startTime)
       ).getTime();
 
       scoreSum += Number(this.calculateShotsToPar(score));
-
+      // calculate best and worst score
       if (
         Number(this.calculateShotsToPar(this.lowestScore)) >
         Number(this.calculateShotsToPar(score))
@@ -276,7 +299,7 @@ export class StatsPageComponent {
       ) {
         this.highestScore = score;
       }
-
+      // get scores for all holes
       let key: any, value: any;
       for ([key, value] of Object.entries(score.teeData)) {
         if (key.charAt(0) == 'P' && key != 'Position') {
@@ -284,7 +307,7 @@ export class StatsPageComponent {
           scoreByPar[value].push(Number(score.score[hole]));
         }
       }
-
+      // calculate total number of each type of score
       for ([key, value] of Object.entries(score.teeData)) {
         if (key.charAt(0) == 'P' && key != 'Position') {
           const hole = key.length == 2 ? key.charAt(1) : key.slice(-2);
@@ -306,13 +329,14 @@ export class StatsPageComponent {
       }
     }
     this.timePlayed = this.dhm(sumTime);
-    const scoreAvg = Number((scoreSum / this.scores.length).toFixed(1));
+    // caculate avg score
+    const scoreAvg = Number((scoreSum / scoresLn).toFixed(1));
     if (scoreAvg < 0 || scoreAvg == 0) {
       this.scoreAvg = `${scoreAvg}`;
     } else if (scoreAvg > 0) {
       this.scoreAvg = `+${scoreAvg}`;
     }
-
+    // calculate data for bar chart
     let key: any, value: any;
     const colors = [];
     for ([key, value] of Object.entries(scoreByPar)) {
@@ -332,15 +356,13 @@ export class StatsPageComponent {
         colors.push('rgb(109, 0, 0)');
       }
     }
-
+    // bar chart displays how the user scores on avg on a par 3, 4 and 5
     const canvas: any = document.getElementById('scoreByParChart');
     this.charts.push(
       new Chart(canvas, {
         type: 'bar',
         data: {
-          labels: this.avgScoreToParData.map(
-            (row: any) => `Above/Below Par:`
-          ),
+          labels: this.avgScoreToParData.map((row: any) => `Above/Below Par:`),
           datasets: [
             {
               data: this.avgScoreToParData.map((row: any) => {
@@ -361,11 +383,6 @@ export class StatsPageComponent {
             x: {
               ticks: {
                 display: false,
-                // font: {
-                //   size: 20,
-                //   weight: 'bold',
-                // },
-                // color: 'black',
               },
               grid: {
                 display: false,
@@ -404,7 +421,7 @@ export class StatsPageComponent {
     );
 
     for (let [key, value] of Object.entries(this.typeOfScore)) {
-      const newValue = Number(value) / this.scores.length;
+      const newValue = Number(value) / scoresLn;
       if (Number.isNaN(newValue)) {
         this.typeOfScore[key] = '0.0';
         continue;
@@ -422,7 +439,7 @@ export class StatsPageComponent {
         this.typeOfScore[key] = newValue.toFixed(1);
       }
     }
-
+    // doughnut charts for displaying the avg amount of each type of score
     const parChart: any = document.getElementById('doughnutChartPar');
     this.charts.push(
       new Chart(parChart, {
@@ -635,7 +652,7 @@ export class StatsPageComponent {
     }
     return 'N/A';
   }
-
+  // converts time in ms to a more readable format of days/hours/mins
   dhm(ms: number) {
     const days = Math.floor(ms / (24 * 60 * 60 * 1000));
     const daysms = ms % (24 * 60 * 60 * 1000);

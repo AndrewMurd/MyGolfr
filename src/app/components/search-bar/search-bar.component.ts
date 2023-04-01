@@ -3,9 +3,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
 import { ROOT_URL } from '../../utilities/enviroment';
 import { CourseDetailsService } from '../../services/course-details.service';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { LoadingService } from 'src/app/services/loading.service';
 import { UserService } from 'src/app/services/user.service';
 import {
   trigger,
@@ -18,6 +17,7 @@ import {
   // ...
 } from '@angular/animations';
 
+// this is the input used on landing page/home page for searching course from google or saved in database
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
@@ -64,6 +64,7 @@ export class SearchBarComponent {
         if (value) {
           this.isLoading = true;
           this.userData = value;
+          // get favourite courses from logged in user based on clicks
           if (value.favCourses) {
             if (Object.keys(this.userData.favCourses).length == 0) {
               const response: any = await this.courseService.getCoursesByClicks(
@@ -73,6 +74,7 @@ export class SearchBarComponent {
                 this.courses.push(course.googleDetails);
               }
             } else {
+              // sort courses
               const items = Object.keys(this.userData.favCourses).map((key) => {
                 return [key, this.userData.favCourses[key]];
               });
@@ -80,12 +82,14 @@ export class SearchBarComponent {
                 return second[1] - first[1];
               });
               items.slice(0, this.amountToDisplay * 3);
+              // get course data from backend
               const response: any = await this.courseService.getCourses(items);
               for (let course of response.courses) {
                 this.courses.push(course.googleDetails);
               }
             }
           } else {
+            // set new user fav courses
             this.userData.favCourses = {};
             await this.userService.update(this.userData);
           }
@@ -98,6 +102,7 @@ export class SearchBarComponent {
     this.subscriptions.add(
       this.authService.token.asObservable().subscribe(async (value) => {
         if (value == '') {
+          // if user is not logged in get courses with most clicks
           const response: any = await this.courseService.getCoursesByClicks(15);
           for (let course of response.courses) {
             this.courses.push(course.googleDetails);
@@ -117,11 +122,11 @@ export class SearchBarComponent {
     this.sessionToken = null;
     await this.courseService.addClick(data.reference);
   }
-
+  // search for courses on google and saved in database
   async searchCourses() {
     this.amountToDisplay = 5;
     this.courses = [];
-
+    // create session id for google search
     if (this.sessionToken == null) {
       this.sessionToken = uuidv4();
     }
@@ -131,9 +136,11 @@ export class SearchBarComponent {
         '10px 10px 0px 0px';
       try {
         this.isLoading = true;
+        // search database for saved course based on search query
         let searchRes: any = await this.courseService.searchCourses(
           this.search
         );
+        // sort courses by clicks
         let temp = searchRes.data.sort((a: any, b: any) => {
           return b.clicks - a.clicks;
         });
@@ -142,11 +149,11 @@ export class SearchBarComponent {
         }
         this.setBorder();
 
-        console.log('from database: ', this.courses);
-
+        // if database produces less than 5 saved courses search google
         if (this.courses.length < 5) {
           try {
             const res: any = await this.getCourses();
+            // filter google search for golf courses
             this.courses = res.results.filter((course: any) => {
               return (
                 !course.name.toLowerCase().includes('mini') &&
@@ -161,9 +168,7 @@ export class SearchBarComponent {
             });
             this.setBorder();
             this.isLoading = false;
-
-            console.log('from googleAPI: ', this.courses);
-
+            // add these new places from google search to database
             this.http
               .post(ROOT_URL + 'courses/add', {
                 courses: this.courses,
@@ -181,7 +186,7 @@ export class SearchBarComponent {
       document.getElementById('homepageSearch')!.style.borderRadius = '10px';
     }
   }
-
+  // sets border of input for search based on search
   setBorder() {
     try {
       if (this.courses.length > 0 || this.isLoading) {
@@ -192,11 +197,11 @@ export class SearchBarComponent {
       }
     } catch (error) {}
   }
-
+  // show more courses in results
   showMore() {
     this.amountToDisplay = this.courses.length;
   }
-
+  // text search google places api
   getCourses() {
     return new Promise((resolve, reject) => {
       this.http

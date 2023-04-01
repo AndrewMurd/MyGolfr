@@ -8,6 +8,7 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { ActiveTeeComponent } from '../active-tee/active-tee.component';
 
+// this component is used for displaying and editing rounds/scores user is currently playing or has completed
 @Component({
   selector: 'app-active-scorecard',
   templateUrl: './active-scorecard.component.html',
@@ -52,6 +53,7 @@ export class ActiveScorecardComponent {
 
   async ngAfterViewInit() {
     setTimeout(() => {
+      // whether or not user selected a finished score or the score currently in progress
       if (this.selectedScore) {
         this.subscriptions.add(
           this.scoreService.selectedScoreData
@@ -93,6 +95,7 @@ export class ActiveScorecardComponent {
   async reload() {
     this.isLoading = true;
 
+    // clear scorecard of dymically added tees
     if (this.frontNineContainer && this.backNineContainer) {
       this.frontNineContainer.clear();
       this.backNineContainer.clear();
@@ -111,6 +114,7 @@ export class ActiveScorecardComponent {
       ? (factor = 10)
       : (factor = 20);
 
+    // count number of inputed score values
     let count = 0;
     for (let value of Object.values(this.scoreData.score)) {
       if (value != '') {
@@ -120,6 +124,7 @@ export class ActiveScorecardComponent {
 
     // Check whether user can submit score
     if (Object.keys(this.scoreData.score).length >= factor && count == factor) {
+      // confirm user wants to submit valid score (completed)
       this.alertService.confirm(
         'Are you sure you want to submit this score?',
         { color: 'green', content: 'Confirm' },
@@ -131,6 +136,7 @@ export class ActiveScorecardComponent {
               this.scoreData,
               'statusComplete'
             );
+            // set new hdcp from backend after inputing score
             const userData = this.authService.user.getValue();
             userData.hdcp = response.scoreData.hdcp;
             this.authService.user.next(userData);
@@ -142,11 +148,13 @@ export class ActiveScorecardComponent {
         () => {}
       );
     } else if (this.scoreData.hdcpType == 'basic') {
+      // warn user that score is imcomplete and they must continue since its being used for hdcp
       this.alertService.alert(
         'This score is incomplete! You must complete every hole when calculating handicap.',
         { color: 'green', content: 'Accept' }
       );
     } else {
+      // warn user that score is imcomplete and allow them to submit if score isnt being used for hdcp calculations
       this.alertService.confirm(
         'This score is incomplete! Are you sure you want to submit this score?',
         { color: 'green', content: 'Confirm' },
@@ -166,6 +174,7 @@ export class ActiveScorecardComponent {
   }
 
   async deleteScore() {
+    // confirm user wants to delete score
     this.alertService.confirm(
       'Are you sure you want to delete this score? (Cannot be undone)',
       { color: 'red', content: 'Delete' },
@@ -177,6 +186,7 @@ export class ActiveScorecardComponent {
             '/start-round',
             this.scoreData.googleDetails.reference,
           ]);
+          // set new hdcp since user just deleted a score that might have been used in calculation
           const userData = this.authService.user.getValue();
           userData.hdcp = response.scoreData.hdcp;
           this.authService.user.next(userData);
@@ -190,6 +200,7 @@ export class ActiveScorecardComponent {
 
   onSubmit(data: any) {
     this.onSubmitInput.next(data);
+    // after submitting data recalculate Sums for Out and In scores and Par In and Out
     for (let tee of this.scoreData.scorecard) {
       if (tee.id == data.id[0]) {
         tee[data.id[1]] = data.value;
@@ -230,17 +241,16 @@ export class ActiveScorecardComponent {
 
   async finishEdit() {
     this.editing = false;
+    // update scorecard data based on edited values
     this.courseService.editingScoreCard.next(this.editing);
     await this.courseService.updateColumn(
       this.scoreData.googleDetails.reference,
       this.scoreData.scorecard,
       'scorecard'
     );
+    // update teeData with updated scorecard data for in progress score
     for (let tee of this.scoreData.scorecard) {
-      if (
-        tee.id == this.scoreData.teeData.id &&
-        JSON.stringify(tee) != JSON.stringify(this.scoreData.teeData)
-      ) {
+      if (tee.id == this.scoreData.teeData.id) {
         this.scoreData.teeData = tee;
         await this.scoreService.update(this.scoreData, 'teeData');
       }
@@ -248,6 +258,7 @@ export class ActiveScorecardComponent {
     this.scoreService.inProgressScoreData.next(this.scoreData);
   }
 
+  // enable editing of scorecard
   edit() {
     if (!this.signedIn) {
       this.router.navigate(['/login']);
@@ -256,7 +267,7 @@ export class ActiveScorecardComponent {
     this.editing = true;
     this.courseService.editingScoreCard.next(this.editing);
   }
-
+  // switch course to a 9 hole or vice versa
   async removebacknine() {
     this.scoreData.courseDetails['nineHoleGolfCourse'] =
       !this.scoreData.courseDetails['nineHoleGolfCourse'];
@@ -269,6 +280,8 @@ export class ActiveScorecardComponent {
     this.scoreService.inProgressScoreData.next(this.scoreData);
   }
 
+  // creates dynamic tees on scorecard based on number of tees on scorecard
+  // and the current data for the course or teeData for that score
   createTeeComponents(teeData: any) {
     const frontNineTee =
       this.frontNineContainer.createComponent(ActiveTeeComponent);

@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class LoadingService {
-  loading = new BehaviorSubject<any>(false);
+  loading = new BehaviorSubject<any>(false); // turn on and off loading for entire app
 
   constructor() {}
 }

@@ -3,7 +3,10 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { ScoreService } from '../../services/score.service';
 import { CourseDetailsService } from '../../services/course-details.service';
 import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
+import { AlertService } from 'src/app/services/alert.service';
 
+// this component is dynamically added to the active scorecard component. 
+// This components allows user to edit score and tee data for current round selected or in progress.
 @Component({
   selector: 'app-active-tee',
   templateUrl: './active-tee.component.html',
@@ -36,7 +39,8 @@ export class ActiveTeeComponent {
 
   constructor(
     private courseService: CourseDetailsService,
-    private scoreService: ScoreService
+    private scoreService: ScoreService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit() {
@@ -72,13 +76,14 @@ export class ActiveTeeComponent {
 
     this.subscriptions.add(
       this.submitInput.subscribe((value) => {
+        // If submitted data is a color change. Switch the color for both back nine and front nine components.
         if (this.teeData.id == value.id[0] && 'Color' == value.id[1]) {
           this.teeData.Color = value.value;
           if (this.teeData.ColorName) {
             this.displayInputSelector = false;
             this.displayColorName = true;
           }
-
+          // Get whether or not font needs to be white or black based on tee color
           this.isWhite = this.getColorWhite(this.getRGB(this.teeData.Color));
           if (this.isWhite) {
             this.colorEventsSubject.next(true);
@@ -123,7 +128,10 @@ export class ActiveTeeComponent {
 
   async submitColorName() {
     if (!this.nameColor) {
-      alert('Must enter name!');
+      this.alertService.alert('Must enter value!', {
+        color: 'green',
+        content: 'Accept',
+      });
       this.displayColorNamer = false;
       this.displayInputSelector = true;
     } else {
@@ -134,12 +142,19 @@ export class ActiveTeeComponent {
       this.nameColor =
         this.nameColor.charAt(0).toUpperCase() + this.nameColor.slice(1);
 
+      // set color name of tee in database
       const response: any = await this.courseService.setScorecardValue(
         this.scoreData.googleDetails.reference,
         { id: [this.teeData.id, 'ColorName'], value: this.nameColor }
       );
-
       this.scoreData.scorecard = response.scorecard;
+      // update teeData with updated scorecard data for in progress score
+      for (let tee of this.scoreData.scorecard) {
+        if (tee.id == this.scoreData.teeData.id) {
+          this.scoreData.teeData = tee;
+          await this.scoreService.update(this.scoreData, 'teeData');
+        }
+      }
       this.scoreService.inProgressScoreData.next(this.scoreData);
 
       this.onSubmitofInput.emit({
@@ -162,12 +177,19 @@ export class ActiveTeeComponent {
       this.color = '#000000';
     }
 
-    // set Color in database
+    // set color of tee in database
     const response: any = await this.courseService.setScorecardValue(
       this.scoreData.googleDetails.reference,
       { id: [this.teeData.id, 'Color'], value: this.color }
     );
     this.scoreData.scorecard = response.scorecard;
+    // update teeData with updated scorecard data for in progress score
+    for (let tee of this.scoreData.scorecard) {
+      if (tee.id == this.scoreData.teeData.id) {
+        this.scoreData.teeData = tee;
+        await this.scoreService.update(this.scoreData, 'teeData');
+      }
+    }
     this.scoreService.inProgressScoreData.next(this.scoreData);
 
     this.onSubmitofInput.emit({

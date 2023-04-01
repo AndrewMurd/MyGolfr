@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { filter, fromEvent, Subscription } from 'rxjs';
 
+// this directive is triggered when user clicks away from target element (clicked outside the target element)
 @Directive({
   selector: '[clickOutside]',
 })

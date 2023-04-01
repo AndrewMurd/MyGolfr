@@ -6,13 +6,13 @@ import { ROOT_URL } from '../utilities/enviroment';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
   // if token exists user is logged in otherwise user is not logged in and token is null
-  // when user exits app the refresh token is remains is secure cookie storage.
-  // when user logs back in app will use refresh token from cookies to log user back in automatically if refresh token has not expired
-  token = new BehaviorSubject<any>(null);
-  user = new BehaviorSubject<any>(null);
+  // when user exits app the refresh token remain in cookie storage
+  // when opens app the refresh token is used to log user back in automatically if it has not expired
+  token = new BehaviorSubject<any>(null); // refresh token
+  user = new BehaviorSubject<any>(null); // logged in user data
 
   constructor(private http: HttpClient) {}
-
+  // login a user
   login(email: string, password: string) {
     return new Promise((resolve, reject) => {
       this.http
@@ -37,7 +37,7 @@ export class AuthenticationService {
         });
     });
   }
-
+  // logout a user
   logout() {
     return new Promise((resolve, reject) => {
       this.http
@@ -59,7 +59,7 @@ export class AuthenticationService {
         });
     });
   }
-
+  // refresh the refresh token 
   refresh() {
     return new Promise((resolve, reject) => {
       this.http
@@ -76,7 +76,7 @@ export class AuthenticationService {
         });
     });
   }
-
+  // register user with new account
   signUp(name: string, email: string, password: string, confirmPass: string) {
     return new Promise((resolve, reject) => {
       this.http

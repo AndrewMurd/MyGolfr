@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ROOT_URL } from '../utilities/enviroment';
 
+// interface for manipulating user data
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   constructor(private http: HttpClient) {}
-
+  // register user for new account
   signUp(name: string, email: string, password: string, confirmPass: string) {
     return new Promise((resolve, reject) => {
       this.http
@@ -28,7 +29,7 @@ export class UserService {
         });
     });
   }
-
+  // update user data
   update(user: string) {
     return new Promise((resolve, reject) => {
       this.http
@@ -45,7 +46,7 @@ export class UserService {
         });
     });
   }
-
+  // update user's name
   updateName(name: string, id: string) {
     return new Promise((resolve, reject) => {
       this.http
@@ -63,7 +64,7 @@ export class UserService {
         });
     });
   }
-
+  // update user's email
   updateEmail(email: string, id: string) {
     return new Promise((resolve, reject) => {
       this.http
@@ -81,7 +82,7 @@ export class UserService {
         });
     });
   }
-
+  // update user's password
   updatePassword(password: string, confirmPass: string, id: string) {
     return new Promise((resolve, reject) => {
       this.http
@@ -100,7 +101,7 @@ export class UserService {
         });
     });
   }
-
+  // send email for password reset
   forgotPassword(email: string) {
     return new Promise((resolve, reject) => {
       this.http
@@ -117,7 +118,7 @@ export class UserService {
         });
     });
   }
-
+  // reset password if token is valid
   resetPassword(password: string, confirmPass: string, token: string) {
     return new Promise((resolve, reject) => {
       this.http

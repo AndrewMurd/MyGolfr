@@ -46,13 +46,14 @@ export class AppComponent {
     } catch (error) {
       this.authService.token.next('');
     }
-
+    // check whether user has in progress rounds
     try {
       const response: any = await this.scoreService.getUser(this.userData.id, 0);
       this.scoreService.inProgressScoreData.next(response.scores[0]);
     } catch (error) {}
     
     this.loadingService.loading.asObservable().subscribe((value) => {
+      // disable or enable body scrolling based whether app is loading
       const body = document.getElementsByTagName('body')[0];
       if (!value) {
         enableBodyScroll(body);
