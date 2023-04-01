@@ -34,6 +34,7 @@ export class AppComponent {
   }
 
   async ngOnInit() {
+    this.loading = true;
     // refresh login token
     try {
       const res: any = await this.authService.refresh();
@@ -60,5 +61,6 @@ export class AppComponent {
       }
       this.loading = value;
     });
+    this.loading = false;
   }
 }

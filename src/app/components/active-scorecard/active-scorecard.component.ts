@@ -16,6 +16,7 @@ import { ActiveTeeComponent } from '../active-tee/active-tee.component';
 export class ActiveScorecardComponent {
   subscriptions: Subscription = new Subscription();
   @Input() selectedScore: boolean = false;
+  @Input() showScorecard!: boolean;
   signedIn: boolean = false;
   title!: string;
   scoreData: any;

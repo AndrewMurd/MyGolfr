@@ -55,7 +55,7 @@ input {
 }
 
 .inputError {
-  border-color: $error;
+  border-color: $error !important;
 }
 
 .placeholder-text {

@@ -1,0 +1,285 @@
+@import "../utilities/variables.scss";
+
+$containerColor: rgb(102, 102, 102);
+
+#containerAccountInfo {
+  position: absolute;
+  top: 120px;
+  right: 0px;
+  background-color: lightgrey;
+  border-radius: 8px;
+  z-index: 10000000;
+  max-width: 400px;
+  border: 2px solid black;
+  overflow: hidden;
+  .infoContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  h1 {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    height: 35px;
+    width: 100%;
+    border-bottom: 1px solid black;
+  }
+  label {
+  }
+  .dataSegment {
+    position: relative;
+    text-align: left;
+    padding: 0px 15px;
+    height: 75px;
+    font-size: 20px;
+    line-height: 72px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    &:hover {
+      background-image: url("../../assets/pencil.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-position-x: 97%;
+      background-color: grey;
+    }
+  }
+  .inputSegment {
+    position: relative;
+    text-align: left;
+    padding: 0px 15px;
+    height: 51px;
+    font-size: 20px;
+    line-height: 50px;
+    margin-bottom: 25px;
+  }
+}
+
+.rowContainer {
+  width: 800px;
+  display: grid;
+  grid-template-columns: 400px 400px;
+  gap: 0px;
+  height: 75px;
+}
+
+.input-contain {
+  position: relative;
+  margin: auto;
+  margin-bottom: 20px;
+  width: 80%;
+}
+
+input {
+  margin-top: 5px;
+  height: 50px;
+  border: 3px solid $theme;
+  border-radius: 15px;
+  background-color: $theme;
+  color: white;
+  width: calc(100% - 2.5rem);
+  font-size: 5px;
+}
+
+input[type="text"] {
+  font-size: 20px;
+}
+
+.leftArrow {
+  height: 45px;
+  position: absolute;
+  top: 10px;
+  right: 5px;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 8px;
+  height: 40px;
+  top: 13px;
+}
+
+.error {
+  position: absolute;
+  top: 46px;
+  left: 35px;
+  color: $error;
+  font-size: 15px;
+  z-index: 10000000;
+}
+
+.errorImg {
+  left: 10px;
+  position: absolute;
+  height: 18px;
+  width: 18px;
+}
+
+.inputError {
+  border-color: $error !important;
+}
+
+.placeholder-text {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border: 3px solid transparent;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.text {
+  font-size: 1.4rem;
+  background-color: transparent;
+  color: black;
+  height: 5px;
+  line-height: 10px;
+}
+
+input,
+.placeholder-text {
+  font-size: 1.4rem;
+  padding: 0 1.2rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: black;
+}
+
+.text {
+  transform: translate(0);
+  transition: transform 0.15s ease-out, font-size 0.15s ease-out,
+    background-color 0.2s ease-out, color 0.15s ease-out;
+}
+
+input:focus + .placeholder-text .text,
+:not(input[value=""]) + .placeholder-text .text {
+  background-color: $theme;
+  font-size: 0.9rem;
+  color: black;
+  transform: translate(0, -350%);
+}
+
+button {
+  margin-top: 12px;
+  outline: none;
+  height: 40px;
+  text-align: center;
+  width: 75%;
+  border-radius: 40px;
+  background: $green;
+  border: 2px solid $containerColor;
+  color: black;
+  letter-spacing: 1px;
+  text-shadow: 0;
+  font: {
+    size: 12px;
+    weight: bold;
+  }
+  cursor: pointer;
+  transition: all 0.25s ease;
+  &:hover {
+    background: #366d00;
+  }
+  &:active {
+    letter-spacing: 2px;
+  }
+  &:after {
+    content: "Submit";
+  }
+}
+.onclic {
+  width: 40px;
+  border-color: $green;
+  border-width: 5px;
+  font-size: 0;
+  border-left-color: $theme;
+  animation: rotating 2s 0.25s linear infinite;
+  cursor: default;
+
+  &:after {
+    content: "";
+  }
+  &:hover {
+    color: $green;
+    background: $green;
+  }
+}
+
+.validate {
+  width: 80px;
+  font-size: 13px;
+  color: white;
+  background: $green;
+  &:after {
+    content: url("../../assets/check.png");
+  }
+  &:hover {
+    color: $green;
+    background: $green;
+  }
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (hover: none) {
+  #containerAccountInfo {
+    position: absolute;
+    top: 120px;
+    right: 0px;
+    background-color: lightgrey;
+    border-radius: 8px;
+    z-index: 10000000;
+    max-width: 400px;
+    border: 2px solid black;
+    overflow: hidden;
+    .infoContainer {
+      display: flex;
+      flex-direction: column;
+    }
+    h1 {
+      margin-top: 10px;
+      margin-bottom: 0px;
+      height: 35px;
+      width: 100%;
+      border-bottom: 1px solid black;
+    }
+    label {
+    }
+    .dataSegment {
+      position: relative;
+      text-align: left;
+      padding: 0px 15px;
+      height: 75px;
+      font-size: 20px;
+      line-height: 72px;
+      cursor: pointer;
+      overflow: hidden;
+      white-space: nowrap;
+      background-image: url("../../assets/pencil.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-position-x: 97%;
+    }
+    .inputSegment {
+      position: relative;
+      text-align: left;
+      padding: 0px 15px;
+      height: 51px;
+      font-size: 20px;
+      line-height: 50px;
+      margin-bottom: 25px;
+    }
+  }
+}

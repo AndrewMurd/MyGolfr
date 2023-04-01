@@ -26,9 +26,7 @@ module.exports = class User {
   }
 
   static updateHdcp(id, hdcp) {
-    return executeQuery(
-      `UPDATE users SET hdcp = '${hdcp}' WHERE id = '${id}'`
-    );
+    return executeQuery(`UPDATE users SET hdcp = '${hdcp}' WHERE id = '${id}'`);
   }
 
   static updateToken(token, expiry, email) {
@@ -37,7 +35,17 @@ module.exports = class User {
     );
   }
 
-  static updatePassword(password, id) {
+  static updateName(id, name) {
+    return executeQuery(`UPDATE users SET name = '${name}' WHERE id = '${id}'`);
+  }
+
+  static updateEmail(id, email) {
+    return executeQuery(
+      `UPDATE users SET email = '${email}' WHERE id = '${id}'`
+    );
+  }
+
+  static updatePassword(id, password) {
     return executeQuery(
       `UPDATE users SET password = '${password}' WHERE id = '${id}'`
     );

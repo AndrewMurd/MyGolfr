@@ -1,0 +1,153 @@
+<div
+  [ngStyle]="{ height: height + 'px' }"
+  [@openCloseAccount]="showAccount ? 'open' : 'closed'"
+  id="containerAccountInfo"
+>
+  <div class="infoContainer">
+    <h1>Account Information</h1>
+    <form (ngSubmit)="onSubmit()">
+      <div [@openCloseRow]="!editName ? 'open' : 'closed'" class="rowContainer">
+        <div (click)="editName = true; openBtn()" class="dataSegment">
+          Name: {{ userData?.name }}
+        </div>
+        <div class="inputSegment">
+          <div class="input-contain">
+            <input
+              id="nameInputAccount"
+              name="name"
+              [(ngModel)]="name"
+              type="text"
+              value=""
+            />
+            <label class="placeholder-text">
+              <div class="text">Name</div>
+            </label>
+            <div class="errorContainer">
+              <img
+                *ngIf="error == 'name'"
+                class="errorImg"
+                src="../../assets/error.png"
+                alt=""
+              />
+              <label id="nameErrorAccount" class="error"></label>
+            </div>
+          </div>
+          <img
+            class="leftArrow"
+            (click)="editName = false; openBtn()"
+            src="../../assets/left-arrow.png"
+            alt=""
+          />
+        </div>
+      </div>
+      <div
+        [@openCloseRow]="!editEmail ? 'open' : 'closed'"
+        class="rowContainer"
+      >
+        <div (click)="editEmail = true; openBtn()" class="dataSegment">
+          Email: {{ userData?.email }}
+        </div>
+        <div class="inputSegment">
+          <div class="input-contain">
+            <input
+              id="emailInputAccount"
+              name="email"
+              [(ngModel)]="email"
+              type="text"
+              value=""
+            />
+            <label class="placeholder-text">
+              <div class="text">Email</div>
+            </label>
+            <div class="errorContainer">
+              <img
+                *ngIf="error == 'email'"
+                class="errorImg"
+                src="../../assets/error.png"
+                alt=""
+              />
+              <label id="emailErrorAccount" class="error"></label>
+            </div>
+          </div>
+          <img
+            class="leftArrow"
+            (click)="editEmail = false; openBtn()"
+            src="../../assets/left-arrow.png"
+            alt=""
+          />
+        </div>
+      </div>
+      <div
+        [@openCloseRow]="!editPassword ? 'open' : 'closed'"
+        class="rowContainer"
+        [ngStyle]="!editPassword ? { height: '75px' } : { height: '150px' }"
+      >
+        <div
+          (click)="height = height + 80; editPassword = true; openBtn()"
+          class="dataSegment"
+        >
+          Password: ••••••••••••••••
+        </div>
+        <div>
+          <div class="inputSegment">
+            <div class="input-contain">
+              <input
+                id="passwordInputAccount"
+                name="password"
+                [(ngModel)]="password"
+                type="password"
+                value=""
+              />
+              <label class="placeholder-text">
+                <div class="text">Password</div>
+              </label>
+              <div class="errorContainer">
+                <img
+                  *ngIf="error == 'password'"
+                  class="errorImg"
+                  src="../../assets/error.png"
+                  alt=""
+                />
+                <label id="passwordErrorAccount" class="error"></label>
+              </div>
+              <img *ngIf="!eyeSrc" src="../../../assets/eye-closed.png" class="eyeIcon" (click)="switchEye($event)" alt="">
+              <img *ngIf="eyeSrc" src="../../../assets/eye-open.png" class="eyeIcon" (click)="switchEye($event)" alt="">
+            </div>
+            <img
+              class="leftArrow"
+              (click)="editPassword = false; height = height - 80; openBtn()"
+              src="../../assets/left-arrow.png"
+              alt=""
+            />
+          </div>
+          <div class="inputSegment">
+            <div class="input-contain">
+              <input
+                id="confirmPassInputAccount"
+                name="confirmPass"
+                [(ngModel)]="confirmPass"
+                type="password"
+                value=""
+              />
+              <label class="placeholder-text">
+                <div class="text">Confirm Password</div>
+              </label>
+              <div class="errorContainer">
+                <img
+                  *ngIf="error == 'confirmPass'"
+                  class="errorImg"
+                  src="../../../assets/error.png"
+                  alt=""
+                />
+                <label id="confirmPassErrorAccount" class="error"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-contain">
+        <button id="buttonAccount" type="submit" (click)="onClick()"></button>
+      </div>
+    </form>
+  </div>
+</div>

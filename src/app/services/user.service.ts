@@ -46,6 +46,61 @@ export class UserService {
     });
   }
 
+  updateName(name: string, id: string) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'users/name', {
+          name: name,
+          id: id,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  updateEmail(email: string, id: string) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'users/email', {
+          email: email,
+          id: id,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
+  updatePassword(password: string, confirmPass: string, id: string) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post(ROOT_URL + 'users/password', {
+          password: password,
+          confirmPass: confirmPass,
+          id: id,
+        })
+        .subscribe({
+          next: (data) => {
+            return resolve(data);
+          },
+          error: (error) => {
+            return reject(error);
+          },
+        });
+    });
+  }
+
   forgotPassword(email: string) {
     return new Promise((resolve, reject) => {
       this.http

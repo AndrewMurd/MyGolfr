@@ -34,6 +34,7 @@ import { RoundInProgressPageComponent } from './components/round-in-progress-pag
 import { RoundPageComponent } from './components/round-page/round-page.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { AccountComponent } from './account/account.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     RoundPageComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
+    AccountComponent,
   ],
   imports: [
     BrowserModule,

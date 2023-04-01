@@ -1,6 +1,6 @@
 import { Component, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
 
@@ -18,6 +18,8 @@ export class HeaderComponent {
   scoreData: any;
   isPhone!: boolean;
   isChecked: boolean = false;
+  showAccount: boolean = false;
+  showAccountSub: Subject<any> = new Subject<any>();
 
   constructor(
     private authService: AuthenticationService,
@@ -63,8 +65,6 @@ export class HeaderComponent {
     this.subscriptions.unsubscribe();
   }
 
-  editAccount() {}
-
   signOut() {
     this.signedIn = false;
     this.authService.token.next(null);
@@ -79,7 +79,7 @@ export class HeaderComponent {
     try {
       if (this.userDropdown) {
         document.getElementById('userArrow')!.className = 'arrow up';
-        document.getElementById('selectUserDropdown')!.style.height = '80px';
+        document.getElementById('selectUserDropdown')!.style.height = '120px';
         // document.getElementById('userLinkContainer')!.classList.add('activeLink');
       } else {
         document.getElementById('userArrow')!.className = 'arrow down';

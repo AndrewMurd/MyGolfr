@@ -26,8 +26,8 @@ router.post(
   [
     check("name")
       .trim()
-      .isLength({ min: 4 })
-      .withMessage("Must be 4 characters long"),
+      .isLength({ min: 4, max: 40 })
+      .withMessage("Must be between 4 to 40 characters"),
     check("email")
       .isEmail()
       .withMessage("Please enter a valid email address")
@@ -77,9 +77,13 @@ router.post(
 );
 
 // @desc update user
-// @route GET /users/update
+// @route POST /users/update
 // @access Public
 router.post("/update", async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { user } = req.body;
 
   try {
@@ -91,6 +95,108 @@ router.post("/update", async (req, res) => {
 
   res.json({ user: user });
 });
+
+// @desc update user name
+// @route POST /users/name
+// @access Public
+router.post(
+  "/name",
+  [
+    check("name")
+      .trim()
+      .isLength({ min: 4, max: 40 })
+      .withMessage("Must be between 4 to 40 characters"),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { id, name } = req.body;
+
+    try {
+      await User.updateName(id, name);
+      console.log(`Updating name for: ${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+
+    res.end();
+  }
+);
+
+// @desc update user
+// @route POST /users/email
+// @access Public
+router.post(
+  "/email",
+  [
+    check("email")
+      .isEmail()
+      .withMessage("Please enter a valid email address")
+      .custom(async (email) => {
+        const users = await User.find(email);
+        if (users.length > 0) {
+          return Promise.reject("Email address already registered");
+        }
+      }),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { id, email } = req.body;
+
+    try {
+      await User.updateEmail(id, email);
+      console.log(`Updating email for: ${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+
+    res.end();
+  }
+);
+
+// @desc update user password
+// @route POST /users/password
+// @access Private
+router.post(
+  "/password",
+  [
+    check("password")
+      .trim()
+      .isLength({ min: 7, max: 16 })
+      .withMessage("Must be between 7 to 16 characters"),
+    check("confirmPass")
+      .trim()
+      .custom(async (confirmPass, { req }) => {
+        const password = req.body.password;
+        if (password !== confirmPass) {
+          return Promise.reject("Passwords must match");
+        }
+      }),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { id, password } = req.body;
+
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await User.updatePassword(id, hashedPassword);
+      console.log(`Updating password for: ${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+
+    res.end();
+  }
+);
 
 // @desc send email to user for password reset
 // @route POST /users/forgot_password
