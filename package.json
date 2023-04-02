@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "nodemon server.js",
-    "build": "ng build",
+    "build": "ng build --prod --base-href my-golfr",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
