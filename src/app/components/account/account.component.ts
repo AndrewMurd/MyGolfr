@@ -66,7 +66,10 @@ export class AccountComponent {
   editName: boolean = false;
   editEmail: boolean = false;
   editPassword: boolean = false;
-  error: string = '';
+  errorName: boolean = false;
+  errorEmail: boolean = false;
+  errorPassword: boolean = false;
+  errorConfirmPass: boolean = false;
   name: string = '';
   email: string = '';
   password: string = '';
@@ -179,7 +182,6 @@ export class AccountComponent {
   }
 
   async onSubmit() {
-    this.error = '';
     this.resetInnerText();
     this.resetInputClass();
 
@@ -200,7 +202,7 @@ export class AccountComponent {
         }, 800);
       } catch (error: any) {
         // set error
-        this.error = error.error.errors[0].param;
+        this.errorName = true;
         this.nameInput.classList.add('inputError');
         this.nameError.innerText = error.error.errors[0].msg;
         setTimeout(() => {
@@ -222,7 +224,7 @@ export class AccountComponent {
           this.openBtn();
         }, 800);
       } catch (error: any) {
-        this.error = error.error.errors[0].param;
+        this.errorEmail = true;
         this.emailInput.classList.add('inputError');
         this.emailError.innerText = error.error.errors[0].msg;
         setTimeout(() => {
@@ -248,11 +250,12 @@ export class AccountComponent {
           this.height -= 80;
         }, 800);
       } catch (error: any) {
-        this.error = error.error.errors[0].param;
-        if (this.error == 'password') {
+        if (error.error.errors[0].param == 'password') {
+          this.errorPassword = true;
           this.passwordInput.classList.add('inputError');
           this.passwordError.innerText = error.error.errors[0].msg;
-        } else if (this.error == 'confirmPass') {
+        } else if (error.error.errors[0].param == 'confirmPass') {
+          this.errorConfirmPass = true;
           this.passwordInput.classList.add('inputError');
           this.confirmPassInput.classList.add('inputError');
           this.confirmPassError.innerText = error.error.errors[0].msg;
@@ -297,6 +300,10 @@ export class AccountComponent {
     this.emailError.innerText = '';
     this.passwordError.innerText = '';
     this.confirmPassError.innerText = '';
+    this.errorName = false;
+    this.errorEmail = false;
+    this.errorPassword = false;
+    this.errorConfirmPass = false;
   }
 
   resetInputClass() {

@@ -24,7 +24,7 @@
             </label>
             <div class="errorContainer">
               <img
-                *ngIf="error == 'name'"
+                *ngIf="errorName"
                 class="errorImg"
                 src="../../../assets/error.png"
                 alt=""
@@ -61,7 +61,7 @@
             </label>
             <div class="errorContainer">
               <img
-                *ngIf="error == 'email'"
+                *ngIf="errorEmail"
                 class="errorImg"
                 src="../../../assets/error.png"
                 alt=""
@@ -103,7 +103,7 @@
               </label>
               <div class="errorContainer">
                 <img
-                  *ngIf="error == 'password'"
+                  *ngIf="errorPassword"
                   class="errorImg"
                   src="../../../assets/error.png"
                   alt=""
@@ -149,7 +149,7 @@
               </label>
               <div class="errorContainer">
                 <img
-                  *ngIf="error == 'confirmPass'"
+                  *ngIf="errorConfirmPass"
                   class="errorImg"
                   src="../../../assets/error.png"
                   alt=""
