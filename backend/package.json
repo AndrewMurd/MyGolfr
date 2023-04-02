@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "async": "^3.2.4",
     "axios": "^1.2.6",
     "bcrypt": "^5.1.0",
