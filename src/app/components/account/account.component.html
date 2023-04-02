@@ -13,7 +13,7 @@
         <div class="inputSegment">
           <div class="input-contain">
             <input
-              id="nameInputAccount"
+              id="nameInputAccount{{ uniqueId }}"
               name="name"
               [(ngModel)]="name"
               type="text"
@@ -29,7 +29,7 @@
                 src="../../../assets/error.png"
                 alt=""
               />
-              <label id="nameErrorAccount" class="error"></label>
+              <label id="nameErrorAccount{{ uniqueId }}" class="error"></label>
             </div>
           </div>
           <img
@@ -50,7 +50,7 @@
         <div class="inputSegment">
           <div class="input-contain">
             <input
-              id="emailInputAccount"
+              id="emailInputAccount{{ uniqueId }}"
               name="email"
               [(ngModel)]="email"
               type="text"
@@ -66,7 +66,7 @@
                 src="../../../assets/error.png"
                 alt=""
               />
-              <label id="emailErrorAccount" class="error"></label>
+              <label id="emailErrorAccount{{ uniqueId }}" class="error"></label>
             </div>
           </div>
           <img
@@ -92,7 +92,7 @@
           <div class="inputSegment">
             <div class="input-contain">
               <input
-                id="passwordInputAccount"
+                id="passwordInputAccount{{ uniqueId }}"
                 name="password"
                 [(ngModel)]="password"
                 type="password"
@@ -108,10 +108,25 @@
                   src="../../../assets/error.png"
                   alt=""
                 />
-                <label id="passwordErrorAccount" class="error"></label>
+                <label
+                  id="passwordErrorAccount{{ uniqueId }}"
+                  class="error"
+                ></label>
               </div>
-              <img *ngIf="!eyeSrc" src="../../../assets/eye-closed.png" class="eyeIcon" (click)="switchEye($event)" alt="">
-              <img *ngIf="eyeSrc" src="../../../assets/eye-open.png" class="eyeIcon" (click)="switchEye($event)" alt="">
+              <img
+                *ngIf="!eyeSrc"
+                src="../../../assets/eye-closed.png"
+                class="eyeIcon"
+                (click)="switchEye($event)"
+                alt=""
+              />
+              <img
+                *ngIf="eyeSrc"
+                src="../../../assets/eye-open.png"
+                class="eyeIcon"
+                (click)="switchEye($event)"
+                alt=""
+              />
             </div>
             <img
               class="leftArrow"
@@ -123,7 +138,7 @@
           <div class="inputSegment">
             <div class="input-contain">
               <input
-                id="confirmPassInputAccount"
+                id="confirmPassInputAccount{{ uniqueId }}"
                 name="confirmPass"
                 [(ngModel)]="confirmPass"
                 type="password"
@@ -139,14 +154,21 @@
                   src="../../../assets/error.png"
                   alt=""
                 />
-                <label id="confirmPassErrorAccount" class="error"></label>
+                <label
+                  id="confirmPassErrorAccount{{ uniqueId }}"
+                  class="error"
+                ></label>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="btn-contain">
-        <button id="buttonAccount" type="submit" (click)="onClick()"></button>
+        <button
+          id="buttonAccount{{ uniqueId }}"
+          type="submit"
+          (click)="onClick()"
+        ></button>
       </div>
     </form>
   </div>

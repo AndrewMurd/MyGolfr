@@ -8,7 +8,7 @@ export class AuthenticationService {
   // if token exists user is logged in otherwise user is not logged in and token is null
   // when user exits app the refresh token remain in cookie storage
   // when opens app the refresh token is used to log user back in automatically if it has not expired
-  token = new BehaviorSubject<any>(null); // refresh token
+  token = new BehaviorSubject<any>(null); // access token
   user = new BehaviorSubject<any>(null); // logged in user data
 
   constructor(private http: HttpClient) {}

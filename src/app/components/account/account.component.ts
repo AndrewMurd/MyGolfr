@@ -57,6 +57,7 @@ import { UserService } from '../../services/user.service';
 export class AccountComponent {
   subscriptions: Subscription = new Subscription();
   @Input() showAccountObs!: Observable<any>;
+  uniqueId: string = this.makeid(5);
   showAccount: boolean = false;
   showOtherInfo: boolean = false;
   initialHeight: number = 270;
@@ -87,6 +88,19 @@ export class AccountComponent {
     private userService: UserService
   ) {}
 
+  makeid(length: number) {
+    let result = '';
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+  }
+
   ngOnInit() {
     this.subscriptions.add(
       this.showAccountObs.subscribe((value) => {
@@ -108,16 +122,34 @@ export class AccountComponent {
         }
       })
     );
+  }
 
-    this.btn = document.querySelector('#buttonAccount');
-    this.nameError = document.querySelector('#nameErrorAccount');
-    this.emailError = document.querySelector('#emailErrorAccount');
-    this.passwordError = document.querySelector('#passwordErrorAccount');
-    this.confirmPassError = document.querySelector('#confirmPassErrorAccount');
-    this.nameInput = document.querySelector('#nameInputAccount');
-    this.emailInput = document.querySelector('#emailInputAccount');
-    this.passwordInput = document.querySelector('#passwordInputAccount');
-    this.confirmPassInput = document.querySelector('#confirmPassInputAccount');
+  ngAfterViewInit() {
+    this.btn = document.getElementById('buttonAccount' + this.uniqueId);
+    this.nameError = document.getElementById(
+      'nameErrorAccount' + this.uniqueId
+    );
+    this.emailError = document.getElementById(
+      'emailErrorAccount' + this.uniqueId
+    );
+    this.passwordError = document.getElementById(
+      'passwordErrorAccount' + this.uniqueId
+    );
+    this.confirmPassError = document.getElementById(
+      'confirmPassErrorAccount' + this.uniqueId
+    );
+    this.nameInput = document.getElementById(
+      'nameInputAccount' + this.uniqueId
+    );
+    this.emailInput = document.getElementById(
+      'emailInputAccount' + this.uniqueId
+    );
+    this.passwordInput = document.getElementById(
+      'passwordInputAccount' + this.uniqueId
+    );
+    this.confirmPassInput = document.getElementById(
+      'confirmPassInputAccount' + this.uniqueId
+    );
 
     // move placeholder text to top of input when there is value
     this.nameInput.addEventListener('keyup', () => {
@@ -132,9 +164,7 @@ export class AccountComponent {
     this.confirmPassInput.addEventListener('keyup', () => {
       this.confirmPassInput.setAttribute('value', this.confirmPassInput.value);
     });
-  }
 
-  ngAfterViewInit() {
     this.subscriptions.add(
       this.authService.user.asObservable().subscribe((value) => {
         if (value) {
