@@ -1,9 +1,7 @@
-node_modules
 backend/node_modules
 backend/requests.rest
 backend/config
 backend/.env
 backend/logs
+node_modules
 .angular
-src/app/utilities/enviroment.ts
-src/index.html
