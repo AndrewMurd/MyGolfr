@@ -295,7 +295,7 @@ router.post(
       }
       // set password in database
       const hashedPassword = await bcrypt.hash(password, 10);
-      await User.updatePassword(hashedPassword, users[0].id);
+      await User.updatePassword(users[0].id, hashedPassword);
       console.log(`Updating password for user: ${users[0].id}`);
       await User.updateToken(null, null, users[0].email);
 
