@@ -3,22 +3,23 @@
 app-loading-animation {
   position: absolute;
   z-index: 10;
-  transform: scale(3, 3);
-  left: 0;
-  right: 0;
-  margin: auto;
+  transform: scale(3);
   margin-top: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  left: -35px;
+  right: 0;
 }
 
 .scroll { overflow-y: hidden; }
 
 #loadingContainer {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   z-index: 10000000000;
   background-color: black;
   opacity: 0.97;
-  position: absolute;
+  position: fixed;
 }
 
 @media (max-width: 830px) {
