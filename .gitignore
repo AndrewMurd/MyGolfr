@@ -1,6 +1,5 @@
 backend/node_modules
 backend/requests.rest
-backend/config
 backend/.env
 backend/logs
 node_modules
