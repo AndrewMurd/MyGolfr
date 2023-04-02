@@ -53,5 +53,8 @@
     "karma-jasmine-html-reporter": "~2.0.0",
     "nodemon": "^2.0.20",
     "typescript": "~4.9.4"
+  },
+  "engines": {
+    "node": ">=14 <15"
   }
 }
