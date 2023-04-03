@@ -1,3 +1,10 @@
+<!-- <div id="rotateLeftDiv">
+  <button id="rotateLeftBtn" class="ui-button">Rotate Left</button>
+</div>
+<div id="rotateRightDiv">
+  <button id="rotateRightBtn" class="ui-button">Rotate Right</button>
+</div> -->
+
 <div id="courseMapContainer" [ngStyle]="{ height: mapHeight }">
   <div id="map"></div>
   <div *ngIf="selectedMapView != 'course'" id="infoDisplay">
@@ -9,7 +16,10 @@
             ? { 'background-color': tee.Color, color: 'black' }
             : { 'background-color': tee.Color, color: 'white' }
         "
-        *ngFor="let tee of roundInProgress? [scoreData.teeData]:scorecard; let index = index"
+        *ngFor="
+          let tee of roundInProgress ? [scoreData.teeData] : scorecard;
+          let index = index
+        "
         (click)="selectedTeeView = tee"
       >
         {{ tee["H" + selectedMapView] }}

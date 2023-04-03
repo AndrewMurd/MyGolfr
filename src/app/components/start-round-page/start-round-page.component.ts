@@ -113,7 +113,7 @@ export class StartRoundPageComponent {
     try {
       if (this.hdcpType == 'basic') {
         // need a slope and rating for calculating hdcp
-        if (this.selectedTee.Rating != '' && this.selectedTee.Slope != '') {
+        if (this.selectedTee.Rating != '' && this.selectedTee.Rating != undefined && this.selectedTee.Slope != '' && this.selectedTee.Rating != undefined) {
           await this.scoreService.newScore(
             this.userData.id,
             this.courseData.id,

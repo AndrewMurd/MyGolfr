@@ -62,47 +62,57 @@ export class CourseMapComponent {
   ) {}
 
   async ngOnInit() {
-    this.subscriptions.add(this.authService.token.asObservable().subscribe((value) => {
-      if (value) {
-        this.signedIn = true;
-      } else {
-        this.signedIn = false;
-      }
-    }));
+    this.subscriptions.add(
+      this.authService.token.asObservable().subscribe((value) => {
+        if (value) {
+          this.signedIn = true;
+        } else {
+          this.signedIn = false;
+        }
+      })
+    );
 
-    this.subscriptions.add(this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
-      // check whether map is being used for course page or in progress round page
-      if (this.router.url.split('/')[1] == 'course') {
-        this.scoreData = value;
-        this.roundInProgress = false;
-        return;
-      }
-      if (value) {
-        // set data for in progress round
-        this.roundInProgress = true;
-        this.scoreData = value;
-        this.courseData = JSON.parse(JSON.stringify(this.scoreData));
-        this.courseData.id = this.courseData.googleDetails.reference;
-        this.selectedTeeView = this.scoreData.teeData;
-        this.reload();
-      } else {
-        this.scoreData = null;
-        this.roundInProgress = false;
-      }
-    }));
+    this.subscriptions.add(
+      this.scoreService.inProgressScoreData
+        .asObservable()
+        .subscribe((value) => {
+          // check whether map is being used for course page or in progress round page
+          if (this.router.url.split('/')[1] == 'course') {
+            this.scoreData = value;
+            this.roundInProgress = false;
+            return;
+          }
+          if (value) {
+            // set data for in progress round
+            this.roundInProgress = true;
+            this.scoreData = value;
+            this.courseData = JSON.parse(JSON.stringify(this.scoreData));
+            this.courseData.id = this.courseData.googleDetails.reference;
+            this.selectedTeeView = this.scoreData.teeData;
+            this.reload();
+          } else {
+            this.scoreData = null;
+            this.roundInProgress = false;
+          }
+        })
+    );
 
-    this.subscriptions.add(this.courseService.courseData.asObservable().subscribe((value) => {
-      if (value && this.roundInProgress == false) {
-        this.courseData = value;
-        this.reload();
-      }
-    }));
+    this.subscriptions.add(
+      this.courseService.courseData.asObservable().subscribe((value) => {
+        if (value && this.roundInProgress == false) {
+          this.courseData = value;
+          this.reload();
+        }
+      })
+    );
 
     // change view of map based on hole
     if (this.changeView) {
-      this.subscriptions.add(this.changeView.subscribe((value) => {
-        this.setMapView(value);
-      }));
+      this.subscriptions.add(
+        this.changeView.subscribe((value) => {
+          this.setMapView(value);
+        })
+      );
     }
   }
 
@@ -123,9 +133,65 @@ export class CourseMapComponent {
         center: this.center,
         mapTypeId: 'hybrid',
         minZoom: 15,
+        heading: 0,
+        tilt: 0,
         disableDefaultUI: true,
-      } as google.maps.MapOptions
+        mapId: "90f87356969d889c",
+      }
     );
+
+    let map = this.map;
+
+    const buttons: [string, string, number, google.maps.ControlPosition][] = [
+      ['Rotate Left', 'rotate', 20, google.maps.ControlPosition.LEFT_CENTER],
+      ['Rotate Right', 'rotate', -20, google.maps.ControlPosition.RIGHT_CENTER],
+      // ['Tilt Down', 'tilt', 20, google.maps.ControlPosition.TOP_CENTER],
+      // ['Tilt Up', 'tilt', -20, google.maps.ControlPosition.BOTTOM_CENTER],
+    ];
+
+    buttons.forEach(([text, mode, amount, position]) => {
+      const controlDiv = document.createElement('div');
+      const controlUI = document.createElement('button');
+
+      controlUI.classList.add('ui-button');
+      controlUI.innerText = `${text}`;
+      controlUI.addEventListener('click', () => {
+        adjustMap(mode, amount);
+      });
+      controlDiv.appendChild(controlUI);
+      map.controls[position].push(controlDiv);
+
+      console.log(controlDiv)
+    });
+    
+    // const rotateBtnLeftEl: any = document.getElementById('rotateLeftBtn');
+    // const rotateDivLeftEl: any = document.getElementById('rotateLeftDiv');
+    // const rotateBtnRightEl: any = document.getElementById('rotateRightBtn'); 
+    // const rotateDivRightEl: any = document.getElementById('rotateRightDiv');
+
+    // console.log(rotateBtnLeftEl)
+
+    // rotateBtnLeftEl?.addEventListener('click', () => {
+    //   adjustMap('rotate', 20);
+    // });
+    // map.controls[google.maps.ControlPosition.LEFT_CENTER].push(rotateDivLeftEl);
+    // rotateBtnRightEl?.addEventListener('click', () => {
+    //   adjustMap('rotate', -20);
+    // });
+    // map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(rotateDivRightEl);
+
+    const adjustMap = (mode: string, amount: number) => {
+      switch (mode) {
+        case 'tilt':
+          map.setTilt(map.getTilt()! + amount);
+          break;
+        case 'rotate':
+          map.setHeading(map.getHeading()! + amount);
+          break;
+        default:
+          break;
+      }
+    };
 
     this.isNineHole = this.courseData.courseDetails.nineHoleGolfCourse;
     this.layoutData = this.courseData.mapLayout;
@@ -216,6 +282,7 @@ export class CourseMapComponent {
 
     // set center and zoom on map for the hole based on user set view
     this.map.setCenter(holeLayout.location);
+    this.map.setHeading(holeLayout.heading);
     if (this.isPhone) {
       this.map.setZoom(holeLayout.zoom - 1);
     } else {
@@ -225,7 +292,8 @@ export class CourseMapComponent {
     var offsetTee = this.offsetFactor;
     for (const teeLoc of holeLayout.teeLocations) {
       // if round is in progress skip all tees that arent being played
-      if (this.roundInProgress && teeLoc.id != this.scoreData.teeData.id) continue;
+      if (this.roundInProgress && teeLoc.id != this.scoreData.teeData.id)
+        continue;
       // get correct color of tee for map info display
       let color;
       let colorName;
@@ -301,9 +369,10 @@ export class CourseMapComponent {
             scale: 0.06,
           },
           draggable: this.editOn,
-          title: `${colorName}`
-        }), teeLoc.id]
-      );
+          title: `${colorName}`,
+        }),
+        teeLoc.id,
+      ]);
     }
 
     // flag marker
@@ -388,8 +457,10 @@ export class CourseMapComponent {
       this.mapLabels[0].setLabel({
         text:
           Math.round(
-            this.haversine_distance(this.distanceMarker[0], this.markers[0][0]) *
-              1760
+            this.haversine_distance(
+              this.distanceMarker[0],
+              this.markers[0][0]
+            ) * 1760
           ) + '',
         color: 'white',
       });
@@ -512,7 +583,8 @@ export class CourseMapComponent {
   async setHoleLayout() {
     this.loadingService.loading.next(true);
     if (this.selectedMapView == 'course') return;
-    // get current view 
+
+    // get current view
     this.courseData.mapLayout[this.selectedMapView].location.lat = this.map
       .getCenter()!
       .lat();
@@ -520,6 +592,7 @@ export class CourseMapComponent {
       .getCenter()!
       .lng();
     this.courseData.mapLayout[this.selectedMapView].zoom = this.map.getZoom();
+    this.courseData.mapLayout[this.selectedMapView].heading = this.map.getHeading();
     // get position of tee markers
     if (this.markers.length != 0) {
       const layoutData = this.courseData.mapLayout[this.selectedMapView];
@@ -539,7 +612,9 @@ export class CourseMapComponent {
     await this.courseService.update(this.courseData);
     this.courseService.courseData.next(this.courseData);
     if (this.scoreData) {
-      this.scoreData.mapLayout = JSON.parse(JSON.stringify(this.courseData.mapLayout));
+      this.scoreData.mapLayout = JSON.parse(
+        JSON.stringify(this.courseData.mapLayout)
+      );
       this.scoreService.inProgressScoreData.next(this.scoreData);
     }
     this.loadingService.loading.next(false);

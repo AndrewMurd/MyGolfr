@@ -225,8 +225,7 @@ span {
 }
 
 @media (max-width: 1200px) {
-  edit-score-card,
-  app-active-scorecard {
+  edit-score-card {
     top: 240px;
   }
 
@@ -236,15 +235,9 @@ span {
 }
 
 @media (max-width: 830px) {
-  edit-score-card,
-  app-active-scorecard {
+  edit-score-card {
     margin-left: 0;
     width: 100%;
-  }
-
-  app-loading-animation {
-    transform: scale(2);
-    margin-top: 300px;
   }
 
   .dropdown-content a {

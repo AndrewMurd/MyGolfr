@@ -151,7 +151,8 @@
   top: 110px;
 }
 
-#addFlagBtn, #removeFlagBtn {
+#addFlagBtn,
+#removeFlagBtn {
   position: relative;
   z-index: 1;
   height: 30px;
@@ -189,7 +190,7 @@
 /* The switch - the box around the slider */
 #editMapBtn {
   position: absolute;
-  left: 200px
+  left: 200px;
 }
 
 .switch {
@@ -215,8 +216,8 @@
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -227,8 +228,8 @@
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
@@ -277,11 +278,11 @@ input:checked + .slider:before {
     font-size: normal;
     height: 30px;
   }
-  
+
   #otherInfoDisplay {
     font-size: normal;
   }
-  
+
   #yards {
     width: 35px;
   }

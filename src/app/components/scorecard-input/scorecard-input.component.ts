@@ -69,6 +69,14 @@ export class ScorecardInputComponent {
   }
 
   async submit() {
+    if (this.value == '') {
+      this.alertService.alert('Must enter Value!', {
+        color: 'green',
+        content: 'Accept',
+      });
+      return;
+    }
+
     this.showField = false;
     this.onSubmitInput.emit({ id: this.arrId, value: this.value });
   }
