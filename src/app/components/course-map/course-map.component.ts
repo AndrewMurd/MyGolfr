@@ -160,8 +160,6 @@ export class CourseMapComponent {
       });
       controlDiv.appendChild(controlUI);
       map.controls[position].push(controlDiv);
-
-      console.log(controlDiv)
     });
     
     // const rotateBtnLeftEl: any = document.getElementById('rotateLeftBtn');

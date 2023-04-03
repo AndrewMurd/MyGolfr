@@ -212,6 +212,9 @@ export class RoundsPageComponent {
     document.getElementById(
       `roundItem${index}`
     )!.style.transform = `translateX(-50px)`;
+    document.getElementById(
+      `roundItem${index}`
+    )!.style.borderRadius = `8px 0px 0px 8px`;
   }
   // cover delete button
   closeDelete(index: number) {
