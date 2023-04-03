@@ -46,7 +46,7 @@
     <div id="roundContainer" class="underline">
       <a
         *ngIf="signedIn && scoreData"
-        (click)="navigateToStartRound()"
+        (click)="navigateToInProgressRound()"
         id="roundLink"
         class="headerLink"
         >Continue Round</a
@@ -88,7 +88,7 @@
       <a
         *ngIf="signedIn && scoreData"
         class="menu__item"
-        (click)="closeBox(); navigateToStartRound()"
+        (click)="closeBox(); navigateToInProgressRound()"
         >Continue Round</a
       >
     </li>

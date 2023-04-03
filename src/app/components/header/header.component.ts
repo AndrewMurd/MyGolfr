@@ -90,7 +90,7 @@ export class HeaderComponent {
     } catch (error) {}
   }
 
-  navigateToStartRound() {
+  navigateToInProgressRound() {
     this.router.navigate(['/round/in-progress', this.scoreData.id]);
     setTimeout(() => {
       this.scoreService.inProgressScoreData.next(this.scoreData);
