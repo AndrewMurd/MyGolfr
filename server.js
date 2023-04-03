@@ -1,10 +1,27 @@
-const express = require('express');
-const app = express();
+require("dotenv").config();
+
+const express = require("express");
+const cors = require("cors");
+const { logger } = require("./backend/middleware/logger");
+const cookieParser = require('cookie-parser');
+const corsOptions = require("./backend/config/corsOptions");
 const path = require('path');
 
-const PORT = process.env.PORT || 4200;
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(logger);
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(cookieParser());
 
 app.use(express.static(__dirname + '/dist/my-golfr'));
+
+app.use("/backend/users", require("./backend/routes/userRoutes"));
+app.use("/backend/courses", require("./backend/routes/courseRoutes"));
+app.use("/backend/google", require("./backend/routes/googleAPIRoutes"));
+app.use("/backend/auth", require("./backend/routes/authRoutes"));
+app.use("/backend/scores", require("./backend/routes/scoreRoutes"));
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname + '/dist/my-golfr/index.html'));
