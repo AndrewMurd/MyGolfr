@@ -9,6 +9,7 @@ import {
 import { AuthenticationService } from '../../services/authentication.service';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { UserService } from '../../services/user.service';
+import { makeid } from 'src/app/utilities/functions';
 
 // this component is used for displaying and editing logged in users account info
 @Component({
@@ -57,7 +58,7 @@ import { UserService } from '../../services/user.service';
 export class AccountComponent {
   subscriptions: Subscription = new Subscription();
   @Input() showAccountObs!: Observable<any>;
-  uniqueId: string = this.makeid(5);
+  uniqueId: string = makeid(5);
   showAccount: boolean = false;
   showOtherInfo: boolean = false;
   initialHeight: number = 270;
@@ -90,19 +91,6 @@ export class AccountComponent {
     private authService: AuthenticationService,
     private userService: UserService
   ) {}
-
-  makeid(length: number) {
-    let result = '';
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
-  }
 
   ngOnInit() {
     this.subscriptions.add(

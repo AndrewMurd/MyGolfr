@@ -173,6 +173,7 @@
   background-color: lightgray;
   border: none;
   border-right: 1px solid grey;
+  text-align: center;
   &:hover {
     background-color: $green;
   }
@@ -260,12 +261,14 @@ input:checked + .slider:before {
     min-width: 5px;
     height: 20px;
     border-top: 1px solid grey;
+    text-align: center;
     &:hover {
       background-color: lightgray;
     }
   }
 
   .mapselectionBtnSelected {
+    text-align: center;
     font-size: 10px;
     min-width: 5px;
     height: 20px;

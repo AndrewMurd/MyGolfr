@@ -62,6 +62,55 @@ export class CourseMapComponent {
   ) {}
 
   async ngOnInit() {
+    this.map = new google.maps.Map(
+      document.getElementById('map') as HTMLElement,
+      {
+        zoom: 16,
+        center: this.center,
+        mapTypeId: 'hybrid',
+        minZoom: 15,
+        heading: 0,
+        tilt: 0,
+        disableDefaultUI: true,
+        mapId: '90f87356969d889c',
+      }
+    );
+
+    let map = this.map;
+
+    const buttons: [string, string, number, google.maps.ControlPosition][] = [
+      ['Rotate Left', 'rotate', 20, google.maps.ControlPosition.LEFT_CENTER],
+      ['Rotate Right', 'rotate', -20, google.maps.ControlPosition.RIGHT_CENTER],
+      // ['Tilt Down', 'tilt', 20, google.maps.ControlPosition.TOP_CENTER],
+      // ['Tilt Up', 'tilt', -20, google.maps.ControlPosition.BOTTOM_CENTER],
+    ];
+
+    buttons.forEach(([text, mode, amount, position]) => {
+      const controlDiv = document.createElement('div');
+      const controlUI = document.createElement('button');
+
+      controlUI.classList.add('ui-button');
+      controlUI.innerText = `${text}`;
+      controlUI.addEventListener('click', () => {
+        adjustMap(mode, amount);
+      });
+      controlDiv.appendChild(controlUI);
+      map.controls[position].push(controlDiv);
+    });
+
+    const adjustMap = (mode: string, amount: number) => {
+      switch (mode) {
+        case 'tilt':
+          map.setTilt(map.getTilt()! + amount);
+          break;
+        case 'rotate':
+          map.setHeading(map.getHeading()! + amount);
+          break;
+        default:
+          break;
+      }
+    };
+
     this.subscriptions.add(
       this.authService.token.asObservable().subscribe((value) => {
         if (value) {
@@ -125,71 +174,7 @@ export class CourseMapComponent {
     this.loadingService.loading.next(true);
     this.center.lat = this.courseData.googleDetails.geometry.location.lat;
     this.center.lng = this.courseData.googleDetails.geometry.location.lng;
-
-    this.map = new google.maps.Map(
-      document.getElementById('map') as HTMLElement,
-      {
-        zoom: 16,
-        center: this.center,
-        mapTypeId: 'hybrid',
-        minZoom: 15,
-        heading: 0,
-        tilt: 0,
-        disableDefaultUI: true,
-        mapId: "90f87356969d889c",
-      }
-    );
-
-    let map = this.map;
-
-    const buttons: [string, string, number, google.maps.ControlPosition][] = [
-      ['Rotate Left', 'rotate', 20, google.maps.ControlPosition.LEFT_CENTER],
-      ['Rotate Right', 'rotate', -20, google.maps.ControlPosition.RIGHT_CENTER],
-      // ['Tilt Down', 'tilt', 20, google.maps.ControlPosition.TOP_CENTER],
-      // ['Tilt Up', 'tilt', -20, google.maps.ControlPosition.BOTTOM_CENTER],
-    ];
-
-    buttons.forEach(([text, mode, amount, position]) => {
-      const controlDiv = document.createElement('div');
-      const controlUI = document.createElement('button');
-
-      controlUI.classList.add('ui-button');
-      controlUI.innerText = `${text}`;
-      controlUI.addEventListener('click', () => {
-        adjustMap(mode, amount);
-      });
-      controlDiv.appendChild(controlUI);
-      map.controls[position].push(controlDiv);
-    });
-    
-    // const rotateBtnLeftEl: any = document.getElementById('rotateLeftBtn');
-    // const rotateDivLeftEl: any = document.getElementById('rotateLeftDiv');
-    // const rotateBtnRightEl: any = document.getElementById('rotateRightBtn'); 
-    // const rotateDivRightEl: any = document.getElementById('rotateRightDiv');
-
-    // console.log(rotateBtnLeftEl)
-
-    // rotateBtnLeftEl?.addEventListener('click', () => {
-    //   adjustMap('rotate', 20);
-    // });
-    // map.controls[google.maps.ControlPosition.LEFT_CENTER].push(rotateDivLeftEl);
-    // rotateBtnRightEl?.addEventListener('click', () => {
-    //   adjustMap('rotate', -20);
-    // });
-    // map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(rotateDivRightEl);
-
-    const adjustMap = (mode: string, amount: number) => {
-      switch (mode) {
-        case 'tilt':
-          map.setTilt(map.getTilt()! + amount);
-          break;
-        case 'rotate':
-          map.setHeading(map.getHeading()! + amount);
-          break;
-        default:
-          break;
-      }
-    };
+    this.map.setCenter(this.center);
 
     this.isNineHole = this.courseData.courseDetails.nineHoleGolfCourse;
     this.layoutData = this.courseData.mapLayout;
@@ -282,7 +267,7 @@ export class CourseMapComponent {
     this.map.setCenter(holeLayout.location);
     this.map.setHeading(holeLayout.heading);
     if (this.isPhone) {
-      this.map.setZoom(holeLayout.zoom - 1);
+      this.map.setZoom(holeLayout.zoom - 2);
     } else {
       this.map.setZoom(holeLayout.zoom);
     }
@@ -590,7 +575,8 @@ export class CourseMapComponent {
       .getCenter()!
       .lng();
     this.courseData.mapLayout[this.selectedMapView].zoom = this.map.getZoom();
-    this.courseData.mapLayout[this.selectedMapView].heading = this.map.getHeading();
+    this.courseData.mapLayout[this.selectedMapView].heading =
+      this.map.getHeading();
     // get position of tee markers
     if (this.markers.length != 0) {
       const layoutData = this.courseData.mapLayout[this.selectedMapView];
