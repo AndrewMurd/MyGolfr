@@ -53,6 +53,8 @@ export class ScoreInputComponent {
           } else {
             this.showField = false;
           }
+        } else {
+          this.showField = false;
         }
       })
     );

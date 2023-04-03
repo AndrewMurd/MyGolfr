@@ -147,7 +147,7 @@ export class RoundsPageComponent {
   // show round page for clicked on round
   showOverview(score: any) {
     if (score.statusComplete == 0) {
-      if (this.userData.id != score.userId) {
+      if (this.userData?.id != score.userId || !this.userData?.id) {
         this.router.navigate(['/round', score.id]);
         return
       }
