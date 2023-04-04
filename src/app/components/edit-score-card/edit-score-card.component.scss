@@ -92,7 +92,7 @@ h1 {
 #removebacknineBtn {
   top: 8px;
   height: 30px;
-  width: 100px;
+  width: auto;
   position: absolute;
   background-color: $green;
   border: 1px solid #13aa52;
@@ -126,7 +126,6 @@ h1 {
 }
 
 #removebacknineBtn {
-  width: 170px;
   left: 0;
 }
 
@@ -167,7 +166,6 @@ h1 {
   #addBtn {
     font-size: 80%;
     height: 25px;
-    width: 60px;
     margin-right: 40px;
     &:hover {
       transform: scale(1) translateY(0px);
@@ -178,7 +176,6 @@ h1 {
     font-size: 80%;
     font-weight: bold;
     height: 25px;
-    width: 60px;
     right: 10px;
     &:hover {
       transform: scale(1) translateY(0px);
@@ -186,7 +183,6 @@ h1 {
   }
 
   #removebacknineBtn {
-    width: 95px;
     font-size: 80%;
     left: 10px;
     font-weight: bold;

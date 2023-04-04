@@ -92,6 +92,7 @@ export class StartRoundPageComponent {
             JSON.stringify(this.courseData.scorecard)
           );
           this.checkCompleteTees();
+          this.loadingService.loading.next(false);
         }
       })
     );

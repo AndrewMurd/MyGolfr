@@ -5,11 +5,6 @@ import { Router } from '@angular/router';
 import { CourseDetailsService } from './services/course-details.service';
 import { LoadingService } from './services/loading.service';
 import { ScoreService } from './services/score.service';
-import {
-  disableBodyScroll,
-  enableBodyScroll,
-  clearAllBodyScrollLocks,
-} from 'body-scroll-lock';
 
 @Component({
   selector: 'app-root',
@@ -51,17 +46,11 @@ export class AppComponent {
       const response: any = await this.scoreService.getUser(this.userData.id, 0);
       this.scoreService.inProgressScoreData.next(response.scores[0]);
     } catch (error) {}
+    this.loading = false;
     
     this.loadingService.loading.asObservable().subscribe((value) => {
       // disable or enable body scrolling based whether app is loading
-      const body = document.getElementsByTagName('body')[0];
-      if (!value) {
-        enableBodyScroll(body);
-      } else {
-        disableBodyScroll(body);
-      }
       this.loading = value;
     });
-    this.loading = false;
   }
 }

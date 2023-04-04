@@ -46,14 +46,17 @@
       <button id="btnSetColor" (click)="setColor()">Set</button>
     </div>
     <div *ngIf="displayColorNamer && editing">
-      <input
-        id="colorNamer"
-        onkeydown="return /[a-z]/i.test(event.key)"
-        type="text"
-        placeholder="Enter Tee Color"
-        [(ngModel)]="nameColor"
-        (keyup.enter)="submitColorName()"
-      />
+      <form action="">
+        <input
+          id="colorNamer"
+          onkeydown="return /[a-z]/i.test(event.key)"
+          (keypress)="submitColorName($event)"
+          type="text"
+          placeholder="Enter Tee Color"
+          name="nameColor"
+          [(ngModel)]="nameColor"
+        />
+      </form>
     </div>
   </div>
   <div

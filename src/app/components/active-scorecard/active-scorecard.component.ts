@@ -294,6 +294,9 @@ export class ActiveScorecardComponent {
     frontNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });
+    frontNineTee.instance.loading.subscribe((value) => {
+      this.isLoading = value;
+    });
     frontNineTee.instance.submitInput = this.onSubmitInput.asObservable();
 
     if (this.removedBackNine) return;
@@ -307,6 +310,9 @@ export class ActiveScorecardComponent {
       : backNineTee.setInput('selectedScore', false);
     backNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
+    });
+    frontNineTee.instance.loading.subscribe((value) => {
+      this.isLoading = value;
     });
     backNineTee.instance.submitInput = this.onSubmitInput.asObservable();
   }

@@ -122,7 +122,6 @@ export class CourseMapComponent {
 
   // reloads map with correct selectedMapView (hole) value
   reload() {
-    this.loadingService.loading.next(true);
     let map: any;
     if (this.map == undefined) {
       this.map = new google.maps.Map(
@@ -195,7 +194,7 @@ export class CourseMapComponent {
     } else {
       this.isPhone = false;
     }
-    this.loadingService.loading.next(false);
+    
   }
   // clear map of all markers on reload
   clearOverlays() {

@@ -14,7 +14,7 @@
 #colorPicker {
   border-radius: 5px;
   height: 25px;
-  width: 60px;
+  width: 90%;
   position: relative;
   margin-left: 5px;
 }
@@ -56,6 +56,7 @@
 #btnSetColor {
   position: relative;
   height: 25px;
+  width: 100%;
   bottom: 3px;
   border-radius: 5px;
   border: 0px solid;
@@ -66,6 +67,9 @@
   margin-left: 5px;
   border-radius: 5px;
   border: 0px solid;
+  text-align: center;
+  padding: 0px;
+  width: 40%;
   &:hover {
     background-color: rgb(202, 202, 202);
   }
@@ -75,6 +79,7 @@
 #copySI {
   top: -4px;
   height: 30px;
+  width: auto;
   position: relative;
   background-color: $green;
   border: 1px solid #13aa52;
@@ -157,7 +162,6 @@ div {
     margin-left: 2px;
     height: 17px;
     font-size: 75%;
-    width: 46px;
     margin-top: 5px;
     &:hover {
       transform: translateY(0px);
@@ -165,15 +169,17 @@ div {
   }
 
   #colorPicker {
+    margin-top: 20px;
+    margin-left: 0px;
     border-radius: 5px;
     height: 25px;
-    width: 60px;
     position: relative;
   }
 
   #btnSetColor {
     position: relative;
-    height: 25px;
+    font-size: smaller;
+    height: 20px;
     bottom: 3px;
     border-radius: 5px;
     border: 0px solid;
@@ -181,7 +187,7 @@ div {
 
   #colorNamer {
     position: relative;
-    width: 80%;
+    width: 70%;
     border-radius: 3px;
     font-size: 80%;
     margin-left: 0px;
@@ -197,7 +203,7 @@ div {
     border-radius: 5px;
     border: 0px solid;
     height: 100%;
-    width: 90%;
+    width: 100%;
     font-size: 100%;
     margin-left: 0px;
   }

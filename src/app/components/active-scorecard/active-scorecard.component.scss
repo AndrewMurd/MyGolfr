@@ -67,7 +67,7 @@ h1 {
 #deleteScoreBtn {
   top: 8px;
   height: 30px;
-  width: 100px;
+  width: auto;
   position: absolute;
   background-color: $green;
   border: 1px solid #13aa52;
@@ -142,7 +142,6 @@ h1 {
     font-size: 80%;
     font-weight: bold;
     height: 25px;
-    width: 100px;
     right: 10px;
     &:hover {
       transform: scale(1) translateY(0px);
@@ -150,7 +149,6 @@ h1 {
   }
 
   #removebacknineBtn, #deleteScoreBtn {
-    width: 95px;
     font-size: 80%;
     left: 10px;
     font-weight: bold;

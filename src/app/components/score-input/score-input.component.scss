@@ -1,66 +1,7 @@
 @import "../../utilities/variables.scss";
 
-#container {
-  position: relative;
-  // top: -20px;
-  height: 40px;
-}
-
-#border {
-  text-align: center;
-  height: 20px;
-  width: 50%;
-  position: absolute;
-  width: 50%;
-}
-
-p {
-  font-weight: 400;
-}
-
-.par {
-  border: 0px solid black;
-  top: 9px;
-  p {
-    line-height: 24px;
-  }
-}
-
-.bogey {
-  top: 10px;
-  border: 1px solid black;
-  p {
-    line-height: 20px;
-  }
-}
-
-.doublebogey {
-  top: 8px;
-  border-style: double;
-  p {
-    line-height: 20px;
-  }
-}
-
-.birdie {
-  top: 10px;
-  border: 1px solid black;
-  border-radius: 50%;
-  p {
-    line-height: 20px;
-  }
-}
-
-.eagle {
-  top: 8px;
-  border-style: double;
-  border-radius: 50%;
-  p {
-    line-height: 20px;
-  }
-}
-
 .hoverDiv {
+  position: relative;
   cursor: pointer;
   transition: transform 150ms, box-shadow 150ms;
   border-radius: 5px;
@@ -72,6 +13,7 @@ p {
 }
 
 .nohoverDiv {
+  position: relative;
   cursor: pointer;
   transition: transform 150ms, box-shadow 150ms;
   border-radius: 5px;
@@ -79,9 +21,7 @@ p {
 }
 
 input {
-  // top: 10px;
   position: relative;
-  margin-top: 5px;
   border-radius: 3px;
   border-radius: 3px;
   border: 1px solid;
@@ -93,63 +33,75 @@ input {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  margin: 0;
+}
+
+p {
+  position: relative;
+  font-weight: 400;
+  margin-bottom: 0px;
+  left: 5px;
+}
+
+.bogey {
+  .border {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    margin-top: 10px;
+    border: 1px solid black;
+  }
+}
+
+.doublebogey {
+  .border {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    margin-top: 8px;
+    border-style: double;
+  }
+  p {
+    left: 7px;
+  }
+}
+
+.birdie {
+  .border {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    margin-top: 10px;
+    border: 1px solid black;
+    border-radius: 50%;
+  }
+  p {
+    left: 6px;
+  }
+}
+
+.eagle {
+  .border {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    margin-top: 8px;
+    border-style: double;
+    border-radius: 50%;
+  }
+  p {
+    left: 7px;
+  }
 }
 
 @media (max-width: 830px) {
-  #container {
-    position: relative;
-    top: -22px;
-    height: 20px;
-  }
-
   input {
-    top: 20px;
-  }
-
-  #border {
-    height: 13px;
-    width: 38%;
-  }
-
-  .par {
-    top: 22px;
-    p {
-      line-height: 20px;
-    }
-  }
-  .bogey {
-    top: 25px;
-    p {
-      line-height: 13px;
-    }
-  }
-  .doublebogey {
-    top: 23px;
-    p {
-      line-height: 13px;
-    }
-  }
-  .birdie {
-    top: 25px;
-    p {
-      line-height: 13px;
-    }
-  }
-  .eagle {
-    top: 23px;
-    p {
-      line-height: 13px;
-    }
-  }
-
-  input {
-    height: 12px;
+    height: 15px;
+    padding: 0px;
     &::placeholder {
       font-size: 0.5rem;
     }
     font-size: 0.8rem;
-    width: 60%;
+    width: 80%;
   }
 
   .hoverDiv {
@@ -160,6 +112,64 @@ input::-webkit-inner-spin-button {
       box-shadow: rgba(0, 0, 0, 0) 0 0 0 0;
       transform: translateY(0px);
     }
+    // z-index: 10;
+  }
+
+  p {
+    position: relative;
+    font-weight: 400;
+    margin-bottom: 0px;
+    left: 4px;
+  }
+
+  .bogey {
+    .border {
+      position: absolute;
+      height: 12px;
+      width: 12px;
+      margin-top: 3px;
+      border: 1px solid black;
+    }
+  }
+
+  .doublebogey {
+    .border {
+      position: absolute;
+      height: 12px;
+      width: 12px;
+      margin-top: 1px;
+      border-style: double;
+    }
+    p {
+      left: 6px;
+    }
+  }
+
+  .birdie {
+    .border {
+      position: absolute;
+      height: 12px;
+      width: 12px;
+      margin-top: 3px;
+      border: 1px solid black;
+      border-radius: 50%;
+    }
+    p {
+      left: 4px;
+    }
+  }
+
+  .eagle {
+    .border {
+      position: absolute;
+      height: 12px;
+      width: 12px;
+      margin-top: 1px;
+      border-style: double;
+      border-radius: 50%;
+    }
+    p {
+      left: 6px;
+    }
   }
 }
-

@@ -19,9 +19,7 @@
 }
 
 input {
-  top: 0;
   position: relative;
-  margin-top: 5px;
   border-radius: 3px;
   border-radius: 3px;
   border: 1px solid;
@@ -33,22 +31,22 @@ input {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  margin: 0;
 }
 
 p {
   font-weight: 400;
+  margin-bottom: 0px;
 }
 
 @media (max-width: 830px) {
   input {
-    top: -5px;
     height: 15px;
+    padding: 0px;
     &::placeholder {
       font-size: 0.5rem;
     }
     font-size: 0.8rem;
-    width: 60%;
+    width: 80%;
   }
 
   .hoverDiv {

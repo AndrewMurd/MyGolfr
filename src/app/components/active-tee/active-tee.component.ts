@@ -21,6 +21,7 @@ export class ActiveTeeComponent {
   @Input() selectedScore!: boolean;
   @Input() submitInput!: Observable<any>;
   @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
+  @Output() loading: EventEmitter<any> = new EventEmitter();
   scorecard: any;
   scoreData: any;
   editing: boolean = false;
@@ -126,7 +127,9 @@ export class ActiveTeeComponent {
     this.onSubmitofInput.emit(data);
   }
 
-  async submitColorName() {
+  async submitColorName(ev: any) {
+    this.loading.emit(true);
+    if (ev.keyCode != 13) return;
     if (!this.nameColor) {
       this.alertService.alert('Must enter value!', {
         color: 'green',
@@ -162,9 +165,11 @@ export class ActiveTeeComponent {
         value: this.nameColor,
       });
     }
+    this.loading.emit(false);
   }
 
   async setColor() {
+    this.loading.emit(true);
     this.displayColorPicker = false;
     if (this.teeData.ColorName) {
       this.displayInputSelector = false;
@@ -196,5 +201,6 @@ export class ActiveTeeComponent {
       id: [this.teeData.id, 'Color'],
       value: this.color,
     });
+    this.loading.emit(false);
   }
 }

@@ -14,7 +14,7 @@
 #colorPicker {
   border-radius: 5px;
   height: 25px;
-  width: 60px;
+  width: 90%;
   position: relative;
   margin-left: 5px;
 }
@@ -57,6 +57,7 @@
 #btnSetColor {
   position: relative;
   height: 25px;
+  width: 100%;
   bottom: 3px;
   border-radius: 5px;
   border: 0px solid;
@@ -67,36 +68,11 @@
   margin-left: 5px;
   border-radius: 5px;
   border: 0px solid;
+  text-align: center;
+  padding: 0px;
+  width: 40%;
   &:hover {
     background-color: rgb(202, 202, 202);
-  }
-}
-
-#copyPar,
-#copySI {
-  top: -4px;
-  height: 30px;
-  position: relative;
-  background-color: $green;
-  border: 1px solid #13aa52;
-  border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
-  box-sizing: border-box;
-  color: black;
-  cursor: pointer;
-  font-size: 10px;
-  font-weight: bold;
-  outline: none;
-  outline: 0;
-  text-align: center;
-  transform: translateY(0);
-  transition: transform 150ms, box-shadow 150ms;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  &:hover {
-    box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
-    transform: translateY(-2px);
   }
 }
 
@@ -147,12 +123,12 @@ div {
     border-bottom: 1px solid rgb(88, 88, 88);
   }
 
+  
   #copyPar,
   #copySI {
     margin-left: 2px;
     height: 17px;
     font-size: 75%;
-    width: 46px;
     margin-top: 5px;
     &:hover {
       transform: translateY(0px);
@@ -169,15 +145,17 @@ div {
   }
 
   #colorPicker {
+    margin-top: 20px;
+    margin-left: 0px;
     border-radius: 5px;
     height: 25px;
-    width: 60px;
     position: relative;
   }
 
   #btnSetColor {
     position: relative;
-    height: 25px;
+    font-size: smaller;
+    height: 20px;
     bottom: 3px;
     border-radius: 5px;
     border: 0px solid;
@@ -185,7 +163,7 @@ div {
 
   #colorNamer {
     position: relative;
-    width: 80%;
+    width: 70%;
     border-radius: 3px;
     font-size: 80%;
     margin-left: 0px;
@@ -201,7 +179,7 @@ div {
     border-radius: 5px;
     border: 0px solid;
     height: 100%;
-    width: 90%;
+    width: 100%;
     font-size: 100%;
     margin-left: 0px;
   }

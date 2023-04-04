@@ -1,6 +1,5 @@
 <div
-  (click)="editing ? showField = true : showField = false"
-  id="container"
+  (click)="editing ? (showField = true) : (showField = false)"
   [ngClass]="showField || !editing ? 'nohoverDiv' : 'hoverDiv'"
 >
   <input
@@ -15,8 +14,10 @@
     oninput="validity.valid || (value='');"
     step="1"
   />
-  <div id="border" *ngIf="!showField" [ngClass]="borderClass">
+  <div *ngIf="!showField" [ngClass]="borderClass">
+    <div class="border"></div>
     <p
+      *ngIf="!showField"
       [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
     >
       {{ value }}

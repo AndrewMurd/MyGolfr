@@ -162,10 +162,10 @@ export class EditScoreCardComponent {
   }
 
   edit() {
-    if (!this.signedIn) {
-      this.router.navigate(['/login']);
-      return;
-    }
+    // if (!this.signedIn) {
+    //   this.router.navigate(['/login']);
+    //   return;
+    // }
     this.editing = true;
     this.courseService.editingScoreCard.next(this.editing);
   }
@@ -224,6 +224,9 @@ export class EditScoreCardComponent {
     frontNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });
+    frontNineTee.instance.loading.subscribe((value) => {
+      this.isLoading = value;
+    });
     frontNineTee.instance.submitInput = this.onSubmitInput.asObservable();
 
     if (this.removedBackNine) return;
@@ -235,6 +238,9 @@ export class EditScoreCardComponent {
     backNineTee.setInput('isFrontNine', false);
     backNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
+    });
+    backNineTee.instance.loading.subscribe((value) => {
+      this.isLoading = value;
     });
     backNineTee.instance.submitInput = this.onSubmitInput.asObservable();
   }

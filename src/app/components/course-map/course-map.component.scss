@@ -95,22 +95,44 @@
   height: 30px;
 }
 
-.selectionboxPhone {
-  display: grid;
-  grid-template-columns: repeat(9, 20px);
-  grid-template-rows: 1fr 1fr;
-}
-
-.selectionboxPhone9 {
-  display: grid;
-  grid-template-columns: repeat(9, 20px);
-  grid-template-rows: 1fr 1fr;
-}
-
 .selectionbox9 {
   display: grid;
   grid-template-columns: repeat(9, 30px);
   height: 30px;
+}
+
+.selectionboxPhone {
+  display: grid;
+  grid-template-columns: repeat(9, 25px);
+  grid-template-rows: 25px 25px;
+}
+
+.selectionboxPhone9 {
+  display: grid;
+  grid-template-columns: repeat(9, 25px);
+  grid-template-rows: 25px;
+}
+
+.mapselectionBtn {
+  cursor: pointer;
+  background-color: lightgray;
+  border: none;
+  border-right: 1px solid grey;
+  text-align: center;
+  padding: 0px;
+  &:hover {
+    background-color: $green;
+  }
+}
+
+.mapselectionBtnSelected {
+  cursor: pointer;
+  background-color: $green;
+  padding: 0px;
+  border: none;
+  border-right: 1px solid grey;
+  font-size: larger;
+  text-align: center;
 }
 
 #courseBtn {
@@ -166,26 +188,6 @@
   &:active {
     background-color: green;
   }
-}
-
-.mapselectionBtn {
-  cursor: pointer;
-  background-color: lightgray;
-  border: none;
-  border-right: 1px solid grey;
-  text-align: center;
-  &:hover {
-    background-color: $green;
-  }
-}
-
-.mapselectionBtnSelected {
-  cursor: pointer;
-  background-color: $green;
-  border: none;
-  border-right: 1px solid grey;
-  font-size: larger;
-  text-align: center;
 }
 
 /* The switch - the box around the slider */
@@ -258,23 +260,10 @@ input:checked + .slider:before {
 @media (max-width: 830px) {
   .mapselectionBtn {
     font-size: 10px;
-    min-width: 5px;
-    height: 20px;
-    border-top: 1px solid grey;
-    text-align: center;
-    &:hover {
-      background-color: lightgray;
-    }
   }
 
   .mapselectionBtnSelected {
-    text-align: center;
-    font-size: 10px;
-    min-width: 5px;
-    height: 20px;
-    border-top: 1px solid grey;
-    font-size: 12px;
-    background-color: $green;
+    font-size: 15px;
   }
 
   #teeColorsDisplay {

@@ -59,7 +59,6 @@ export class RoundInProgressPageComponent {
 
   async ngOnInit() {
     this.loadingService.loading.next(true);
-
     this.subscriptions.add(
       this.scoreService.inProgressScoreData
         .asObservable()
