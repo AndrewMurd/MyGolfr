@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
@@ -27,6 +33,8 @@ export class ScoreInputComponent {
   borderClass: string = 'par';
   arrId: any;
   isWhite: boolean = false;
+  isPhone!: boolean;
+  borderWidth: string = '20px';
 
   constructor(
     private scoreService: ScoreService,
@@ -35,6 +43,7 @@ export class ScoreInputComponent {
   ) {}
 
   ngOnInit() {
+    this.onResize();
     // get font color
     this.subscriptions.add(
       this.whiteEvent.subscribe((value: boolean) => {
@@ -102,7 +111,7 @@ export class ScoreInputComponent {
     // update border for the new score
     this.setBorder();
   }
-  // set the border based on score 
+  // set the border based on score
   setBorder() {
     const diff = Number(this.value) - this.par;
     if (diff == 0) {
@@ -115,6 +124,28 @@ export class ScoreInputComponent {
       this.borderClass = 'bogey';
     } else if (diff >= 2) {
       this.borderClass = 'doublebogey';
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    if (window.innerWidth < 830) {
+      this.isPhone = true;
+    } else {
+      this.isPhone = false;
+    }
+    if (Number(this.value) >= 10) {
+      if (this.isPhone) {
+        this.borderWidth = '17px';
+      } else {
+        this.borderWidth = '30px';
+      }
+    } else {
+      if (this.isPhone) {
+        this.borderWidth = '12px';
+      } else {
+        this.borderWidth = '20px';
+      }
     }
   }
 }

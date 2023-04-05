@@ -149,7 +149,7 @@ export class RoundsPageComponent {
     if (score.statusComplete == 0) {
       if (this.userData?.id != score.userId || !this.userData?.id) {
         this.router.navigate(['/round', score.id]);
-        return
+        return;
       }
       this.router.navigate(['/round/in-progress', score.id]);
       setTimeout(() => {

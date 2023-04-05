@@ -15,7 +15,7 @@
     step="1"
   />
   <div *ngIf="!showField" [ngClass]="borderClass">
-    <div class="border"></div>
+    <div [ngStyle]="{ width: borderWidth }" class="border"></div>
     <p
       *ngIf="!showField"
       [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"

@@ -148,6 +148,8 @@ export class SearchBarComponent {
           this.courses.push(index.course);
         }
         this.setBorder();
+        
+        console.log('from database: ', this.courses);
 
         // if database produces less than 5 saved courses search google
         if (this.courses.length < 5) {
@@ -168,6 +170,7 @@ export class SearchBarComponent {
             });
             this.setBorder();
             this.isLoading = false;
+            console.log('from google: ', this.courses);
             // add these new places from google search to database
             this.http
               .post(ROOT_URL + 'courses/add', {

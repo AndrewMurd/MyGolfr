@@ -118,6 +118,7 @@ export class CourseMapComponent {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.clearOverlays();
   }
 
   // reloads map with correct selectedMapView (hole) value
@@ -194,7 +195,6 @@ export class CourseMapComponent {
     } else {
       this.isPhone = false;
     }
-    
   }
   // clear map of all markers on reload
   clearOverlays() {
