@@ -1,10 +1,11 @@
 <app-rounds-page
   [scoresSubject]="scoresSubject"
-  *ngIf="rounds"
+  (editedScores)="scoresSubject.next($event)"
+  *ngIf="rounds && rendered"
 ></app-rounds-page>
 <app-stats-page
   [scoresSubject]="scoresSubject"
-  *ngIf="!rounds"
+  *ngIf="!rounds && rendered"
 ></app-stats-page>
 
 <div id="profileHeader" class="headerContent">

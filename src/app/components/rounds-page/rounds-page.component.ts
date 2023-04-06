@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
@@ -42,6 +42,7 @@ export class RoundsPageComponent {
   selectedUser: boolean = true;
   userData: any;
   @Input() scoresSubject!: Observable<any>;
+  @Output() editedScores: EventEmitter<any> = new EventEmitter();
   scores: any = [];
   userName: string = 'Guest';
   numberOfScores: number = 0;
@@ -162,6 +163,7 @@ export class RoundsPageComponent {
           this.scores = this.scores.filter((score: any) => {
             return s.id != score.id;
           });
+          this.editedScores.emit(this.scores);
           const response: any = await this.scoreService.delete(s);
           const userData = this.authService.user.getValue();
           userData.hdcp = response.scoreData.hdcp;

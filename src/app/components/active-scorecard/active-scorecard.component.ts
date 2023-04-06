@@ -7,6 +7,7 @@ import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { ActiveTeeComponent } from '../active-tee/active-tee.component';
+import * as moment from 'moment';
 
 // this component is used for displaying and editing rounds/scores user is currently playing or has completed
 @Component({
@@ -132,6 +133,7 @@ export class ActiveScorecardComponent {
           this.loadingService.loading.next(true);
           try {
             this.scoreData.statusComplete = 1;
+            this.scoreData.endTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
             const response: any = await this.scoreService.update(
               this.scoreData,
               'statusComplete'
@@ -162,6 +164,7 @@ export class ActiveScorecardComponent {
           this.loadingService.loading.next(true);
           try {
             this.scoreData.statusComplete = 1;
+            this.scoreData.endTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
             await this.scoreService.update(this.scoreData, 'statusComplete');
             this.scoreService.inProgressScoreData.next(null);
             this.router.navigate(['/round', this.scoreData.id]);

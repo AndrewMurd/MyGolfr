@@ -14,6 +14,7 @@ import {
   animate,
   transition,
 } from '@angular/animations';
+import * as moment from 'moment';
 
 // start round page where user can start a new round based on completed tees in scorecard
 @Component({
@@ -113,13 +114,18 @@ export class StartRoundPageComponent {
     try {
       if (this.hdcpType == 'basic') {
         // need a slope and rating for calculating hdcp
-        if (this.selectedTee.Rating != '' && this.selectedTee.Rating != undefined && this.selectedTee.Slope != '' && this.selectedTee.Rating != undefined) {
+        if (
+          this.selectedTee.Rating != '' &&
+          this.selectedTee.Rating != undefined &&
+          this.selectedTee.Slope != '' &&
+          this.selectedTee.Rating != undefined
+        ) {
           await this.scoreService.newScore(
             this.userData.id,
             this.courseData.id,
             this.selectedTee,
             this.hdcpType,
-            this.sqlDate()
+            moment.utc().format('YYYY-MM-DD HH:mm:ss')
           );
           const response: any = await this.scoreService.getUser(
             this.userData.id,
@@ -147,7 +153,7 @@ export class StartRoundPageComponent {
           this.courseData.id,
           this.selectedTee,
           this.hdcpType,
-          this.sqlDate()
+          moment.utc().format('YYYY-MM-DD HH:mm:ss')
         );
         const response: any = await this.scoreService.getUser(
           this.userData.id,
@@ -171,7 +177,7 @@ export class StartRoundPageComponent {
       document.getElementById('selectTeeBtn')!.style.top = '145px';
     }
   }
-  // checks which tees are complete 
+  // checks which tees are complete
   // to prevent user from starting round with incomplete data for selected tee
   checkCompleteTees() {
     if (this.courseData.courseDetails.nineHoleGolfCourse) {
@@ -198,11 +204,6 @@ export class StartRoundPageComponent {
     this.completedTees = this.completedTees.sort((a: any, b: any) => {
       return a.Position - b.Position;
     });
-  }
-  // convert date to sql format
-  sqlDate() {
-    const date = new Date();
-    return date.toISOString().slice(0, 19).replace('T', ' ');
   }
   // alert user if there are no tees ready to be played with
   alertUserOfTees() {

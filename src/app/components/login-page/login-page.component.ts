@@ -43,16 +43,6 @@ export class LoginPageComponent {
     this.passwordInput!.addEventListener('keyup', () => {
       this.passwordInput!.setAttribute('value', this.passwordInput.value);
     });
-
-    window.addEventListener(
-      'popstate',
-      (event) => {
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        });
-      },
-      false
-    );
   }
 
   navigateToForgotPassword() {

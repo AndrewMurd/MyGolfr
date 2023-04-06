@@ -323,9 +323,7 @@ router.post("/update", async (req, res) => {
         scoreData.hdcp = await calcHandicapIndex(scoreData);
       }
     } else if (type == "statusComplete") {
-      const endTime = new Date().toISOString().slice(0, 19).replace("T", " ");
-      await Score.update(endTime, "endTime", scoreData.id);
-
+      await Score.update(scoreData.endTime, "endTime", scoreData.id);
       await Score.update(JSON.stringify(scoreData[type]), type, scoreData.id);
 
       // calc and update hdcp for player on submission of new hdcp score (basic)

@@ -75,6 +75,18 @@ export class RoundInProgressPageComponent {
           }
         })
     );
+
+    this.subscriptions.add(
+      this.authService.user.asObservable().subscribe((value) => {
+        if (value) {
+          if (this.scoreData.userId != value.id) {
+            this.router.navigate(['']);
+          }
+        } else {
+          this.router.navigate(['']);
+        }
+      })
+    );
   }
 
   ngOnDestroy() {

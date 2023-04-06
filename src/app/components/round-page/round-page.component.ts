@@ -7,7 +7,8 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
-import { convertSqlDateTime, toStandardTime } from '../../utilities/functions';
+import { toStandardTime } from '../../utilities/functions';
+import * as moment from 'moment';
 
 // this component displays the a selected round that has been completed
 @Component({
@@ -67,15 +68,16 @@ export class RoundPageComponent {
           }
           this.scoreLn = count;
           // convert date from database
-          this.date = convertSqlDateTime(this.scoreData.startTime);
+          this.date = new Date(this.scoreData.endTime).toLocaleDateString();
           // get the time lasped from start to finish of round
-          this.timeDifference = new Date(
-            convertSqlDateTime(this.scoreData.endTime) - this.date
-          )
-            .toISOString()
-            .slice(14, 19);
-          
-          this.time = toStandardTime(this.date.toString().slice(15, 25), false) + ` (${this.timeDifference})`;
+          this.timeDifference = this.hm(
+            new Date(this.scoreData.endTime).getTime() -
+            new Date(this.scoreData.startTime).getTime()
+          );
+
+          this.time =
+            toStandardTime(new Date(this.scoreData.endTime).toString().slice(15, 25), false) +
+            ` (${this.timeDifference})`;
 
           let stringArray =
             this.scoreData.googleDetails.plus_code.compound_code.split(/(\s+)/);
@@ -137,7 +139,7 @@ export class RoundPageComponent {
               score.push({ hole: key, value: value, sum: sum });
             }
           }
-          // create line chart for displaying increase in score sum vs increase in par sum for each hole 
+          // create line chart for displaying increase in score sum vs increase in par sum for each hole
           this.charts.push(
             new Chart(canvas, {
               type: 'line',
@@ -273,8 +275,8 @@ export class RoundPageComponent {
       { color: 'red', content: 'Delete' },
       async () => {
         try {
-          this.router.navigate(['/rounds', this.userData.id]);
           const response: any = await this.scoreService.delete(this.scoreData);
+          this.router.navigate(['/profile', 'rounds', this.userData.id]);
           const userData = this.authService.user.getValue();
           userData.hdcp = response.scoreData.hdcp;
           this.authService.user.next(userData);
@@ -307,7 +309,10 @@ export class RoundPageComponent {
 
     // check whether user should be able to switch round to count towards hdcp calculation
     if (this.hdcpType == 'basic') {
-      if (Object.keys(this.scoreData.score).length >= factor && count == factor) {
+      if (
+        Object.keys(this.scoreData.score).length >= factor &&
+        count == factor
+      ) {
         try {
           this.scoreData.hdcpType = this.hdcpType;
           await this.scoreService.update(this.scoreData, 'hdcpType');
@@ -365,5 +370,13 @@ export class RoundPageComponent {
     } else {
       this.top = '0px';
     }
+  }
+
+  hm(ms: number) {
+    const daysms = ms % (24 * 60 * 60 * 1000);
+    const hours = Math.floor(daysms / (60 * 60 * 1000));
+    const hoursms = ms % (60 * 60 * 1000);
+    const minutes = Math.floor(hoursms / (60 * 1000));
+    return hours + 'h ' + minutes + 'm';
   }
 }

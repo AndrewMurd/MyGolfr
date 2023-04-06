@@ -11,6 +11,7 @@ import {
   convertDateTime,
   numberOfHolesPlayed,
 } from '../../utilities/functions';
+import { faC } from '@fortawesome/free-solid-svg-icons';
 
 // stats page for displaying all stats and info based on a user's career and submitted scores
 @Component({
@@ -31,9 +32,7 @@ export class StatsPageComponent {
   lowestScore: any = null;
   highestScore: any = null;
   scoreAvg: string = 'N/A';
-  limit: any = 40;
-  avgScoreToParData: any = [];
-  typeOfScore: any = {
+  avgTypesOfScores: any = {
     'Eagles or Better': 0,
     Birdies: 0,
     Pars: 0,
@@ -41,6 +40,8 @@ export class StatsPageComponent {
     'Double Bogeys': 0,
     'Triples or Worse': 0,
   };
+  limit: any = 40;
+  avgScoreToParData: any = [];
   charts: any = [];
   canvas: any;
   convertDateTime: Function = convertDateTime;
@@ -69,8 +70,8 @@ export class StatsPageComponent {
           for (let score of this.scores) {
             if (score.usedForHdcp == 1) this.usedForHdcpScores.push(score);
           }
-          if (!this.scores[0].hdcp) {
-            this.hdcp = 0.0
+          if (this.scores.length == 0 || !this.scores[0]?.hdcp) {
+            this.hdcp = 0.0;
           } else {
             this.hdcp = this.scores[0].hdcp;
           }
@@ -141,9 +142,7 @@ export class StatsPageComponent {
                 const handicapRange = 54 - 0;
                 const anglesRange = -0.5 - 1.5;
                 const angleValue =
-                  ((54 - this.hdcp - 0) * anglesRange) /
-                    handicapRange +
-                  1.5;
+                  ((54 - this.hdcp - 0) * anglesRange) / handicapRange + 1.5;
 
                 // Animate arc on canvas
                 requestAnimationFrame(animate);
@@ -229,11 +228,7 @@ export class StatsPageComponent {
         this.userName = this.scores[0].username;
       } else {
         // number of rounds selected (5, 20, 40)
-        response = await this.scoreService.getUser(
-          id,
-          1,
-          this.limit
-        );
+        response = await this.scoreService.getUser(id, 1, this.limit);
         this.scores = response.scores;
         this.userName = this.scores[0].username;
       }
@@ -252,20 +247,21 @@ export class StatsPageComponent {
 
     let sumTime = 0,
       scoreSum = 0;
-    this.lowestScore = this.scores[0];
-    this.highestScore = this.scores[0];
+    this.lowestScore = null;
+    this.highestScore = null;
     const scoreByPar: any = { 3: [], 4: [], 5: [] };
     this.avgScoreToParData = [];
-    this.typeOfScore = {
-      'Eagles or Better': 0,
-      Birdies: 0,
-      Pars: 0,
-      Bogeys: 0,
-      'Double Bogeys': 0,
-      'Triples or Worse': 0,
-    };
+    let typesOfScoresArr = [];
     let scoresLn = this.scores.length;
     for (let score of this.scores) {
+      let typeOfScore: any = {
+        'Eagles or Better': 0,
+        Birdies: 0,
+        Pars: 0,
+        Bogeys: 0,
+        'Double Bogeys': 0,
+        'Triples or Worse': 0,
+      };
       let factor = 0;
       score.courseDetails.nineHoleGolfCourse ? (factor = 10) : (factor = 20);
 
@@ -277,27 +273,29 @@ export class StatsPageComponent {
         }
       }
 
+      // get the total time played for user
+      sumTime +=
+        new Date(score.endTime).getTime() - new Date(score.startTime).getTime();
+
       // remove score from calculations if it is not completed
       if (Object.keys(score.score).length < factor || count != factor) {
         scoresLn--;
         continue;
       }
-      // get the total time played for user
-      sumTime += new Date(
-        convertSqlDateTime(score.endTime) - convertSqlDateTime(score.startTime)
-      ).getTime();
 
       scoreSum += Number(this.calculateShotsToPar(score));
       // calculate best and worst score
       if (
         Number(this.calculateShotsToPar(this.lowestScore)) >
-        Number(this.calculateShotsToPar(score))
+          Number(this.calculateShotsToPar(score)) ||
+        this.lowestScore == null
       ) {
         this.lowestScore = score;
       }
       if (
         Number(this.calculateShotsToPar(this.highestScore)) <
-        Number(this.calculateShotsToPar(score))
+          Number(this.calculateShotsToPar(score)) ||
+        this.highestScore == null
       ) {
         this.highestScore = score;
       }
@@ -315,20 +313,28 @@ export class StatsPageComponent {
           const hole = key.length == 2 ? key.charAt(1) : key.slice(-2);
           const diff = Number(score.score[hole]) - value;
           if (diff <= -2) {
-            this.typeOfScore['Eagles or Better']++;
+            typeOfScore['Eagles or Better']++;
           } else if (diff <= -1) {
-            this.typeOfScore['Birdies']++;
+            typeOfScore['Birdies']++;
           } else if (diff == 0) {
-            this.typeOfScore['Pars']++;
+            typeOfScore['Pars']++;
           } else if (diff == 1) {
-            this.typeOfScore['Bogeys']++;
+            typeOfScore['Bogeys']++;
           } else if (diff == 2) {
-            this.typeOfScore['Double Bogeys']++;
+            typeOfScore['Double Bogeys']++;
           } else if (diff >= 3) {
-            this.typeOfScore['Triples or Worse']++;
+            typeOfScore['Triples or Worse']++;
           }
         }
       }
+      for (let [key, value] of Object.entries(typeOfScore)) {
+        if (score.courseDetails.nineHoleGolfCourse) {
+          typeOfScore[key] = Number(value) * 2;
+        } else {
+          typeOfScore[key] = Number(value);
+        }
+      }
+      typesOfScoresArr.push(typeOfScore);
     }
     this.timePlayed = this.dhm(sumTime);
     // caculate avg score
@@ -421,25 +427,15 @@ export class StatsPageComponent {
         },
       })
     );
-
-    for (let [key, value] of Object.entries(this.typeOfScore)) {
-      const newValue = Number(value) / scoresLn;
-      if (Number.isNaN(newValue)) {
-        this.typeOfScore[key] = '0.0';
-        continue;
-      } else if (newValue == 0) {
-        this.typeOfScore[key] = '0.0';
-        continue;
+    
+    for (let score of typesOfScoresArr) {
+      for ([key, value] of Object.entries(score)) {
+        this.avgTypesOfScores[key] += Number(value);
       }
-      if (newValue < 1) {
-        this.typeOfScore[key] = newValue.toFixed(3);
-        this.typeOfScore[key] = parseFloat(this.typeOfScore[key]);
-        this.typeOfScore[key] = this.typeOfScore[key]
-          .toString()
-          .replace(/^./, '');
-      } else {
-        this.typeOfScore[key] = newValue.toFixed(1);
-      }
+    }
+    for ([key, value] of Object.entries(this.avgTypesOfScores)) {
+      this.avgTypesOfScores[key] = parseFloat((Number(value) / scoresLn).toFixed(2));
+      if (isNaN(parseFloat((Number(value) / scoresLn).toFixed(2)))) this.avgTypesOfScores[key] = '0.0';
     }
     // doughnut charts for displaying the avg amount of each type of score
     const parChart: any = document.getElementById('doughnutChartPar');
@@ -450,7 +446,7 @@ export class StatsPageComponent {
           labels: ['grey', 'Pars'],
           datasets: [
             {
-              data: [this.typeOfScore.Pars, 18 - this.typeOfScore.Pars],
+              data: [this.avgTypesOfScores.Pars, 18 - this.avgTypesOfScores.Pars],
               borderWidth: 0,
               backgroundColor: ['blue', 'grey'],
             },
@@ -479,7 +475,7 @@ export class StatsPageComponent {
           labels: ['grey', 'Bogeys'],
           datasets: [
             {
-              data: [this.typeOfScore.Bogeys, 18 - this.typeOfScore.Bogeys],
+              data: [this.avgTypesOfScores.Bogeys, 18 - this.avgTypesOfScores.Bogeys],
               borderWidth: 0,
               backgroundColor: ['yellow', 'grey'],
             },
@@ -508,7 +504,7 @@ export class StatsPageComponent {
           labels: ['grey', 'Bogeys'],
           datasets: [
             {
-              data: [this.typeOfScore.Birdies, 18 - this.typeOfScore.Birdies],
+              data: [this.avgTypesOfScores.Birdies, 18 - this.avgTypesOfScores.Birdies],
               borderWidth: 0,
               backgroundColor: ['green', 'grey'],
             },
@@ -538,8 +534,8 @@ export class StatsPageComponent {
           datasets: [
             {
               data: [
-                this.typeOfScore['Eagles or Better'],
-                18 - this.typeOfScore['Eagles or Better'],
+                this.avgTypesOfScores['Eagles or Better'],
+                18 - this.avgTypesOfScores['Eagles or Better'],
               ],
               borderWidth: 0,
               backgroundColor: ['rgb(2, 207, 2)', 'grey'],
@@ -572,8 +568,8 @@ export class StatsPageComponent {
           datasets: [
             {
               data: [
-                this.typeOfScore['Double Bogeys'],
-                18 - this.typeOfScore['Double Bogeys'],
+                this.avgTypesOfScores['Double Bogeys'],
+                18 - this.avgTypesOfScores['Double Bogeys'],
               ],
               borderWidth: 0,
               backgroundColor: ['red', 'grey'],
@@ -606,8 +602,8 @@ export class StatsPageComponent {
           datasets: [
             {
               data: [
-                this.typeOfScore['Triples or Worse'],
-                18 - this.typeOfScore['Triples or Worse'],
+                this.avgTypesOfScores['Triples or Worse'],
+                18 - this.avgTypesOfScores['Triples or Worse'],
               ],
               borderWidth: 0,
               backgroundColor: ['black', 'grey'],

@@ -19,6 +19,7 @@ export class ProfilePageComponent {
   limit: number = 40;
   scoresSubject = new BehaviorSubject<any>(null);
   id!: string;
+  rendered: boolean = false;
 
   constructor(
     private courseService: CourseDetailsService,
@@ -31,20 +32,10 @@ export class ProfilePageComponent {
   ) {}
 
   async ngOnInit() {
-    window.addEventListener(
-      'popstate',
-      (event) => {
-        console.log(event)
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        });
-      },
-      false
-    );
-
-    this.loadingService.loading.next(true);
     this.subscriptions.add(
       this.route.params.subscribe(async (params) => {
+        this.rendered = false;
+        this.loadingService.loading.next(true);
         if (params['location'] == 'stats') {
           this.rounds = false;
         } else {
@@ -58,11 +49,13 @@ export class ProfilePageComponent {
             2,
             this.limit
           );
+          this.rendered = true;
           this.scoresSubject.next(response.scores);
 
           this.loadingService.loading.next(false);
         } catch (error) {
           this.loadingService.loading.next(false);
+          this.scoresSubject.next([]);
         }
       })
     );
