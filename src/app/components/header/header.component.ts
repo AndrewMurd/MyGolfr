@@ -97,12 +97,8 @@ export class HeaderComponent {
     });
   }
 
-  navigateToRounds() {
-    this.router.navigate(['/rounds', this.userData.id]);
-  }
-
-  navigateToStats() {
-    this.router.navigate(['/stats', this.userData.id]);
+  navigateToProfile() {
+    this.router.navigate(['/profile', 'rounds', this.userData.id]);
   }
 
   closeBox() {

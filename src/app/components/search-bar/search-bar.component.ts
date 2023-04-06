@@ -25,11 +25,6 @@ import {
   animations: [
     trigger('listAnimation', [
       transition('* => *', [
-        query(
-          ':leave',
-          [stagger(100, [animate('0.5s', style({ opacity: 0 }))])],
-          { optional: true }
-        ),
         query(':enter', [
           style({ opacity: 0 }),
           stagger(100, [animate('0.5s', style({ opacity: 1 }))]),
@@ -125,7 +120,6 @@ export class SearchBarComponent {
   // search for courses on google and saved in database
   async searchCourses() {
     this.amountToDisplay = 5;
-    this.courses = [];
     // create session id for google search
     if (this.sessionToken == null) {
       this.sessionToken = uuidv4();
@@ -141,15 +135,14 @@ export class SearchBarComponent {
           this.search
         );
         // sort courses by clicks
-        let temp = searchRes.data.sort((a: any, b: any) => {
+        searchRes = searchRes.data.sort((a: any, b: any) => {
           return b.clicks - a.clicks;
         });
-        for (let index of temp) {
-          this.courses.push(index.course);
+        this.courses.length = 0;
+        for (let course of searchRes) {
+          this.courses.push(course.course);
         }
         this.setBorder();
-        
-        console.log('from database: ', this.courses);
 
         // if database produces less than 5 saved courses search google
         if (this.courses.length < 5) {
@@ -170,7 +163,6 @@ export class SearchBarComponent {
             });
             this.setBorder();
             this.isLoading = false;
-            console.log('from google: ', this.courses);
             // add these new places from google search to database
             this.http
               .post(ROOT_URL + 'courses/add', {
@@ -185,9 +177,8 @@ export class SearchBarComponent {
       } catch (error: any) {
         console.log(error.error.error);
       }
-    } else {
-      document.getElementById('homepageSearch')!.style.borderRadius = '10px';
     }
+    this.setBorder();
   }
   // sets border of input for search based on search
   setBorder() {

@@ -1,0 +1,28 @@
+<app-rounds-page
+  [scoresSubject]="scoresSubject"
+  *ngIf="rounds"
+></app-rounds-page>
+<app-stats-page
+  [scoresSubject]="scoresSubject"
+  *ngIf="!rounds"
+></app-stats-page>
+
+<div id="profileHeader" class="headerContent">
+  <div id="roundsContainer" class="linkContainer">
+    <a
+      (click)="rounds = true; setUnderline()"
+      id="roundsLink"
+      class="headerLink"
+      >Rounds</a
+    >
+    <div class="underline" id="roundsBorder"></div>
+  </div>
+  <div id="statsContainer" class="linkContainer">
+    <a
+      (click)="rounds = false; setUnderline()"
+      id="statsLink"
+      >Stats</a
+    >
+    <div class="underline" id="statsBorder"></div>
+  </div>
+</div>

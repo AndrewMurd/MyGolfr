@@ -28,7 +28,7 @@
 
 #roundsPageContainer {
   height: 100%;
-  top: 170px;
+  top: 190px;
   color: white;
   position: relative;
   left: 50%;
@@ -214,12 +214,6 @@
     }
   }
 
-  #title {
-    position: relative;
-    font-weight: bold;
-    font-size: 35px;
-  }
-
   #numberInfo {
     font-weight: normal;
     font-size: 20px;
@@ -256,6 +250,12 @@
     h2 {
       margin-top: 0px;
       font-size: 12px;
+    }
+  }
+
+  .headerContent {
+    #title {
+      font-size: 22px;
     }
   }
 }

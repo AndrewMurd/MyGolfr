@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { LoadingService } from 'src/app/services/loading.service';
@@ -41,6 +41,7 @@ export class RoundsPageComponent {
   subscriptions: Subscription = new Subscription();
   selectedUser: boolean = true;
   userData: any;
+  @Input() scoresSubject!: Observable<any>;
   scores: any = [];
   userName: string = 'Guest';
   numberOfScores: number = 0;
@@ -71,25 +72,15 @@ export class RoundsPageComponent {
   ) {}
 
   async ngOnInit() {
-    this.loadingService.loading.next(true);
-    this.subscriptions.add(
-      this.route.params.subscribe(async (params) => {
-        try {
-          const response: any = await this.scoreService.getUser(params['id']);
-          this.scores = response.scores;
-          this.userName = this.scores[0].username;
-
-          this.reload();
-
-          this.loadingService.loading.next(false);
-        } catch (error) {
-          console.log(error);
-          this.loadingService.loading.next(false);
-        }
+    this.subscriptions.add(this.scoresSubject.subscribe((value) => {
+      if (value) {
+        this.scores = value;
+        this.reload();
         this.subscriptions.add(
           this.authService.user.asObservable().subscribe(async (value) => {
             if (value) {
               this.userData = value;
+              this.userName = this.scores[0]?.username;
               this.selectedUser = true;
               // check whether these rounds are from the currently logged in user or not
               if (
@@ -100,8 +91,8 @@ export class RoundsPageComponent {
             }
           })
         );
-      })
-    );
+      }
+    }));
   }
 
   // reload rounds page data

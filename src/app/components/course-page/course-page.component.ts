@@ -90,8 +90,8 @@ export class CoursePageComponent {
     this.router.navigate(['/start-round', this.courseData.id]);
   }
 
-  navigateToRounds(score: any) {
-    this.router.navigate(['/rounds', score.userId]);
+  navigateToProfile(score: any) {
+    this.router.navigate(['/profile', 'rounds', score.userId]);
   }
 
   navigateToRound(score: any) {

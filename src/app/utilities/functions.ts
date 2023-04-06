@@ -55,7 +55,7 @@ export function convertDateTime(score: any) {
   const currentDateTime: any = new Date();
   const diffTime = currentDateTime - convertSqlDateTime(score.endTime);
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
-  
+
   if (Math.round(diffDays * 24) < 1) {
     return `${Math.round(diffDays * 24 * 48)} mins`;
   } else if (diffDays <= 3) {
@@ -76,4 +76,34 @@ export function makeid(length: number) {
     counter += 1;
   }
   return result;
+}
+
+export function toStandardTime(
+  time: any,
+  sec: boolean = true,
+  min: boolean = true,
+  hour: boolean = true
+) {
+  time = time.split(':'); // convert to array
+
+  // fetch
+  var hours = Number(time[0]);
+  var minutes = Number(time[1]);
+  var seconds = Number(time[2]);
+
+  // calculate
+  var timeValue;
+
+  if (hours > 0 && hours <= 12) {
+    timeValue = '' + hours;
+  } else if (hours > 12) {
+    timeValue = '' + (hours - 12);
+  } else if (hours == 0) {
+    timeValue = '12';
+  }
+  if (min) timeValue += minutes < 10 ? ':0' + minutes : ':' + minutes; // get minutes
+  if (sec) timeValue += seconds < 10 ? ':0' + seconds : ':' + seconds; // get seconds
+  if (hour) timeValue += hours >= 12 ? 'pm' : 'am'; // get AM/PM
+
+  return timeValue;
 }

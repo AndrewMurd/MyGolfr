@@ -34,7 +34,7 @@ export class ScoreInputComponent {
   arrId: any;
   isWhite: boolean = false;
   isPhone!: boolean;
-  borderWidth: string = '20px';
+  borderWidth!: string;
 
   constructor(
     private scoreService: ScoreService,
@@ -43,7 +43,6 @@ export class ScoreInputComponent {
   ) {}
 
   ngOnInit() {
-    this.onResize();
     // get font color
     this.subscriptions.add(
       this.whiteEvent.subscribe((value: boolean) => {
@@ -76,6 +75,7 @@ export class ScoreInputComponent {
     this.par = this.data.teeData['P' + this.id];
 
     this.setBorder();
+    this.onResize();
   }
 
   ngOnDestroy() {

@@ -7,7 +7,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
-import { convertSqlDateTime } from '../../utilities/functions';
+import { convertSqlDateTime, toStandardTime } from '../../utilities/functions';
 
 // this component displays the a selected round that has been completed
 @Component({
@@ -29,6 +29,7 @@ export class RoundPageComponent {
   popUp: boolean = false;
   hdcpType!: string;
   editing: boolean = false;
+  time: string = '';
 
   constructor(
     private courseService: CourseDetailsService,
@@ -72,7 +73,9 @@ export class RoundPageComponent {
             convertSqlDateTime(this.scoreData.endTime) - this.date
           )
             .toISOString()
-            .slice(11, 19);
+            .slice(14, 19);
+          
+          this.time = toStandardTime(this.date.toString().slice(15, 25), false) + ` (${this.timeDifference})`;
 
           let stringArray =
             this.scoreData.googleDetails.plus_code.compound_code.split(/(\s+)/);

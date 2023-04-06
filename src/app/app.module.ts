@@ -35,6 +35,7 @@ import { RoundPageComponent } from './components/round-page/round-page.component
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { AccountComponent } from './components/account/account.component';
+import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { AccountComponent } from './components/account/account.component';
     ForgotPasswordComponent,
     ResetPasswordComponent,
     AccountComponent,
+    ProfilePageComponent,
   ],
   imports: [
     BrowserModule,

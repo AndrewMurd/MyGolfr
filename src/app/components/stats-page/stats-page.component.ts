@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
@@ -21,7 +21,9 @@ import {
 export class StatsPageComponent {
   subscriptions: Subscription = new Subscription();
   userData: any;
+  @Input() scoresSubject!: Observable<any>;
   scores: any = [];
+  hdcp!: number;
   usedForHdcpScores: any = [];
   selectedUser: boolean = true;
   userName: string = 'Guest';
@@ -40,6 +42,7 @@ export class StatsPageComponent {
     'Triples or Worse': 0,
   };
   charts: any = [];
+  canvas: any;
   convertDateTime: Function = convertDateTime;
   numberOfHolesPlayed: Function = numberOfHolesPlayed;
 
@@ -55,135 +58,106 @@ export class StatsPageComponent {
   }
 
   async ngOnInit() {
-    this.loadingService.loading.next(true);
     this.subscriptions.add(
-      this.route.params.subscribe(async (params) => {
-        try {
-          const response: any = await this.scoreService.getUser(
-            params['id'],
-            1,
-            this.limit
-          );
-          this.scores = response.scores;
-          this.userName = this.scores[0].username;
+      this.scoresSubject.subscribe((value) => {
+        if (value) {
+          for (let score of value) {
+            if (score.statusComplete == 1) this.scores.push(score);
+          }
+          this.userName = this.scores[0]?.username;
           // filter scores used in hdcp calculation
           for (let score of this.scores) {
             if (score.usedForHdcp == 1) this.usedForHdcpScores.push(score);
           }
+          if (!this.scores[0].hdcp) {
+            this.hdcp = 0.0
+          } else {
+            this.hdcp = this.scores[0].hdcp;
+          }
+          this.subscriptions.add(
+            this.authService.user.asObservable().subscribe(async (value) => {
+              if (value) {
+                this.userData = value;
+                this.selectedUser = true;
+                if (
+                  this.scores[0]?.userId == this.userData.id ||
+                  this.scores.length == 0
+                )
+                  this.selectedUser = false;
 
-          this.loadingService.loading.next(false);
-        } catch (error) {
-          this.loadingService.loading.next(false);
-        }
-        this.subscriptions.add(
-          this.authService.user.asObservable().subscribe(async (value) => {
-            if (value) {
-              this.userData = value;
-              if (!this.userData.hdcp) this.userData.hdcp = 0.0;
-              this.selectedUser = true;
-              if (
-                this.scores[0]?.userId == this.userData.id ||
-                this.scores.length == 0
-              )
-                this.selectedUser = false;
+                this.reload();
 
-              this.reload();
+                // create doughnut visual for handicap index
+                const canvas: any = document.getElementById('indexChart');
+                const ctx = canvas.getContext('2d');
+                this.canvas = canvas;
 
-              // create doughnut visual for handicap index
-              const canvas: any = document.getElementById('indexChart');
-              const ctx = canvas.getContext('2d');
+                ctx.translate(50, 30);
 
-              ctx.translate(50, 30);
+                var greenPart = ctx.createLinearGradient(0, 0, 0, 335);
+                greenPart.addColorStop(0, 'red');
+                greenPart.addColorStop(1, 'yellow');
 
-              var greenPart = ctx.createLinearGradient(0, 0, 0, 335);
-              greenPart.addColorStop(0, 'red');
-              greenPart.addColorStop(1, 'yellow');
+                var whitePart = ctx.createLinearGradient(0, 0, 0, 335);
+                whitePart.addColorStop(0, 'green');
+                whitePart.addColorStop(1, 'yellow');
 
-              var whitePart = ctx.createLinearGradient(0, 0, 0, 335);
-              whitePart.addColorStop(0, 'green');
-              whitePart.addColorStop(1, 'yellow');
+                var width = 40;
+                ctx.lineWidth = width;
 
-              var width = 40;
-              ctx.lineWidth = width;
+                const size = 150;
 
-              const size = 150;
-
-              // First we make a clipping region for the left half
-              ctx.save();
-              ctx.beginPath();
-              ctx.rect(-width, -width, size + width, size + 200 + width * 2);
-              ctx.clip();
-
-              // Then we draw the left half
-              ctx.strokeStyle = greenPart;
-              ctx.beginPath();
-              ctx.arc(size, size, size, 0, Math.PI * 2, false);
-              ctx.stroke();
-
-              ctx.restore(); // restore clipping region to default
-
-              // Then we make a clipping region for the right half
-              ctx.save();
-              ctx.beginPath();
-              ctx.rect(size, -width, size + width, size + 200 + width * 2);
-              ctx.clip();
-
-              // Then we draw the right half
-              ctx.strokeStyle = whitePart;
-              ctx.beginPath();
-              ctx.arc(size, size, size, 0, Math.PI * 2, false);
-              ctx.stroke();
-
-              ctx.restore();
-
-              // A handicap ranges from [0, 54]
-              // The angles range from [1.5, -0.5] * Math.PI
-              // We need to convert handicap range to angle range while keeping same ratio
-              const handicapRange = 54 - 0;
-              const anglesRange = -0.5 - 1.5;
-              const angleValue =
-                ((54 - this.userData.hdcp - 0) * anglesRange) / handicapRange +
-                1.5;
-
-              // Animate arc on canvas
-              requestAnimationFrame(animate);
-              let eAngle = 1.5;
-              function animate() {
-                if (eAngle >= angleValue) {
-                  draw(eAngle);
-                  eAngle -= 0.01;
-                  requestAnimationFrame(animate);
-                }
-              }
-
-              function draw(eAngle: number) {
-                ctx.strokeStyle = 'grey';
+                // First we make a clipping region for the left half
+                ctx.save();
                 ctx.beginPath();
-                ctx.arc(
-                  size,
-                  size,
-                  size,
-                  Math.PI * 1.5,
-                  Math.PI * eAngle,
-                  true
-                );
-                ctx.lineWidth = 41;
+                ctx.rect(-width, -width, size + width, size + 200 + width * 2);
+                ctx.clip();
+
+                // Then we draw the left half
+                ctx.strokeStyle = greenPart;
+                ctx.beginPath();
+                ctx.arc(size, size, size, 0, Math.PI * 2, false);
                 ctx.stroke();
-              }
-              // animate when user hdcp is zero
-              if (this.userData.hdcp == 0) {
+
+                ctx.restore(); // restore clipping region to default
+
+                // Then we make a clipping region for the right half
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(size, -width, size + width, size + 200 + width * 2);
+                ctx.clip();
+
+                // Then we draw the right half
+                ctx.strokeStyle = whitePart;
+                ctx.beginPath();
+                ctx.arc(size, size, size, 0, Math.PI * 2, false);
+                ctx.stroke();
+
+                ctx.restore();
+
+                // A handicap ranges from [0, 54]
+                // The angles range from [1.5, -0.5] * Math.PI
+                // We need to convert handicap range to angle range while keeping same ratio
+                const handicapRange = 54 - 0;
+                const anglesRange = -0.5 - 1.5;
+                const angleValue =
+                  ((54 - this.hdcp - 0) * anglesRange) /
+                    handicapRange +
+                  1.5;
+
+                // Animate arc on canvas
                 requestAnimationFrame(animate);
                 let eAngle = 1.5;
                 function animate() {
-                  if (eAngle >= 1.5) {
-                    eAngle += 0.01;
+                  if (eAngle >= angleValue) {
                     draw(eAngle);
+                    eAngle -= 0.01;
                     requestAnimationFrame(animate);
                   }
                 }
 
                 function draw(eAngle: number) {
-                  ctx.strokeStyle = 'green';
+                  ctx.strokeStyle = 'grey';
                   ctx.beginPath();
                   ctx.arc(
                     size,
@@ -191,32 +165,60 @@ export class StatsPageComponent {
                     size,
                     Math.PI * 1.5,
                     Math.PI * eAngle,
-                    false
+                    true
                   );
                   ctx.lineWidth = 41;
                   ctx.stroke();
                 }
+                // animate when user hdcp is zero
+                if (this.hdcp == 0) {
+                  requestAnimationFrame(animate);
+                  let eAngle = 1.5;
+                  function animate() {
+                    if (eAngle >= 1.5) {
+                      eAngle += 0.01;
+                      draw(eAngle);
+                      requestAnimationFrame(animate);
+                    }
+                  }
+
+                  function draw(eAngle: number) {
+                    ctx.strokeStyle = 'green';
+                    ctx.beginPath();
+                    ctx.arc(
+                      size,
+                      size,
+                      size,
+                      Math.PI * 1.5,
+                      Math.PI * eAngle,
+                      false
+                    );
+                    ctx.lineWidth = 41;
+                    ctx.stroke();
+                  }
+                }
               }
-            }
-          })
-        );
+            })
+          );
+        }
       })
     );
   }
   // when queries a different range of rounds reload calculations
   async newQuery() {
+    let id = this.scores[0].userId;
     this.scores.length = 0;
     let response: any;
     try {
       this.loadingService.loading.next(true);
       // all rounds
       if (this.limit == 'all') {
-        response = await this.scoreService.getUser(this.userData.id, 1, 0);
+        response = await this.scoreService.getUser(id, 1, 0);
         this.scores = response.scores;
         this.userName = this.scores[0].username;
       } else if (this.limit == 'thisYear') {
         // rounds only this year
-        response = await this.scoreService.getUser(this.userData.id, 1, 0);
+        response = await this.scoreService.getUser(id, 1, 0);
         for (let score of response.scores) {
           const currentDate = new Date();
           const newDate = convertSqlDateTime(score.endTime);
@@ -228,7 +230,7 @@ export class StatsPageComponent {
       } else {
         // number of rounds selected (5, 20, 40)
         response = await this.scoreService.getUser(
-          this.userData.id,
+          id,
           1,
           this.limit
         );
