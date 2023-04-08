@@ -3,6 +3,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://mygolfr.onrender.com",
   "http://ec2-18-220-49-19.us-east-2.compute.amazonaws.com:3000",
+  "http://ec2-18-220-49-19.us-east-2.compute.amazonaws.com",
 ];
 
 module.exports = allowedOrigins;
