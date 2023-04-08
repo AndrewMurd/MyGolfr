@@ -9,8 +9,8 @@ const path = require("path");
 const fs = require("fs");
 const https = require("https");
 
-const key = fs.readFileSync(__dirname + "cert/private.key");
-const cert = fs.readFileSync(__dirname + "cert/certificate.crt");
+const key = fs.readFileSync("./cert/private.key");
+const cert = fs.readFileSync("./cert/certificate.crt");
 
 const app = express();
 // const PORT = process.env.PORT || 3000;
