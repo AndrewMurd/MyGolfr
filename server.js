@@ -29,7 +29,7 @@ app.use("/backend/scores", require("./backend/routes/scoreRoutes"));
 app.get(
   "/.well-known/pki-validation/996719CF19C662CA1222D420016BAD3E.txt",
   (req, res) => {
-    res.sendFile(__dirname + "/MyGolfr/996719CF19C662CA1222D420016BAD3E.txt");
+    res.sendFile(__dirname + "/996719CF19C662CA1222D420016BAD3E.txt");
   }
 );
 
