@@ -6,10 +6,20 @@ const { logger } = require("./backend/middleware/logger");
 const cookieParser = require("cookie-parser");
 const corsOptions = require("./backend/config/corsOptions");
 const path = require("path");
+const fs = require("fs");
+const https = require("https");
+
+const key = fs.readFileSync(__dirname + "cert/private.key");
+const cert = fs.readFileSync(__dirname + "cert/certificate.crt");
 
 const app = express();
 // const PORT = process.env.PORT || 3000;
 const PORT = 3000;
+
+const cred = {
+  key: key,
+  cert: cert,
+};
 
 app.use(logger);
 app.use(cors(corsOptions));
@@ -24,15 +34,11 @@ app.use("/backend/google", require("./backend/routes/googleAPIRoutes"));
 app.use("/backend/auth", require("./backend/routes/authRoutes"));
 app.use("/backend/scores", require("./backend/routes/scoreRoutes"));
 
-app.get(
-  "/.well-known/pki-validation/996719CF19C662CA1222D420016BAD3E.txt",
-  (req, res) => {
-    res.sendFile(__dirname + "/996719CF19C662CA1222D420016BAD3E.txt");
-  }
-);
-
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname + "/dist/my-golfr/index.html"));
 });
 
 app.listen(PORT, console.log(`Server Running on port ${PORT}`));
+
+const httpsServer = https.createServer(cred, app);
+httpsServer.listen(8443);
