@@ -7,9 +7,6 @@ const cookieParser = require("cookie-parser");
 const corsOptions = require("./backend/config/corsOptions");
 const path = require("path");
 
-const fs = require("fs");
-const file = fs.readFileSync("./996719CF19C662CA1222D420016BAD3E.txt");
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
