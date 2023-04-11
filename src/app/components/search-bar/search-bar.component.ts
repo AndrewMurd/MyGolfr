@@ -14,7 +14,6 @@ import {
   stagger,
   query,
   transition,
-  // ...
 } from '@angular/animations';
 
 // this is the input used on landing page/home page for searching course from google or saved in database

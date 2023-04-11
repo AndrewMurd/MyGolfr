@@ -27,6 +27,7 @@ export class StatsPageComponent {
   hdcp!: number;
   usedForHdcpScores: any = [];
   selectedUser: boolean = true;
+  selectedUserData: any;
   userName: string = 'Guest';
   timePlayed: string = '0d 0h 0m';
   lowestScore: any = null;
@@ -62,10 +63,11 @@ export class StatsPageComponent {
     this.subscriptions.add(
       this.scoresSubject.subscribe((value) => {
         if (value) {
-          for (let score of value) {
+          for (let score of value.scores) {
             if (score.statusComplete == 1) this.scores.push(score);
           }
-          this.userName = this.scores[0]?.username;
+          this.selectedUserData = value.selectedUserData;
+          this.userName = this.selectedUserData.name;
           // filter scores used in hdcp calculation
           for (let score of this.scores) {
             if (score.usedForHdcp == 1) this.usedForHdcpScores.push(score);
@@ -80,10 +82,7 @@ export class StatsPageComponent {
               if (value) {
                 this.userData = value;
                 this.selectedUser = true;
-                if (
-                  this.scores[0]?.userId == this.userData.id ||
-                  this.scores.length == 0
-                )
+                if (this.selectedUserData.id == this.userData.id)
                   this.selectedUser = false;
 
                 this.reload();
@@ -427,15 +426,18 @@ export class StatsPageComponent {
         },
       })
     );
-    
+
     for (let score of typesOfScoresArr) {
       for ([key, value] of Object.entries(score)) {
         this.avgTypesOfScores[key] += Number(value);
       }
     }
     for ([key, value] of Object.entries(this.avgTypesOfScores)) {
-      this.avgTypesOfScores[key] = parseFloat((Number(value) / scoresLn).toFixed(2));
-      if (isNaN(parseFloat((Number(value) / scoresLn).toFixed(2)))) this.avgTypesOfScores[key] = '0.0';
+      this.avgTypesOfScores[key] = parseFloat(
+        (Number(value) / scoresLn).toFixed(2)
+      );
+      if (isNaN(parseFloat((Number(value) / scoresLn).toFixed(2))))
+        this.avgTypesOfScores[key] = '0.0';
     }
     // doughnut charts for displaying the avg amount of each type of score
     const parChart: any = document.getElementById('doughnutChartPar');
@@ -446,7 +448,10 @@ export class StatsPageComponent {
           labels: ['grey', 'Pars'],
           datasets: [
             {
-              data: [this.avgTypesOfScores.Pars, 18 - this.avgTypesOfScores.Pars],
+              data: [
+                this.avgTypesOfScores.Pars,
+                18 - this.avgTypesOfScores.Pars,
+              ],
               borderWidth: 0,
               backgroundColor: ['blue', 'grey'],
             },
@@ -475,7 +480,10 @@ export class StatsPageComponent {
           labels: ['grey', 'Bogeys'],
           datasets: [
             {
-              data: [this.avgTypesOfScores.Bogeys, 18 - this.avgTypesOfScores.Bogeys],
+              data: [
+                this.avgTypesOfScores.Bogeys,
+                18 - this.avgTypesOfScores.Bogeys,
+              ],
               borderWidth: 0,
               backgroundColor: ['yellow', 'grey'],
             },
@@ -504,7 +512,10 @@ export class StatsPageComponent {
           labels: ['grey', 'Bogeys'],
           datasets: [
             {
-              data: [this.avgTypesOfScores.Birdies, 18 - this.avgTypesOfScores.Birdies],
+              data: [
+                this.avgTypesOfScores.Birdies,
+                18 - this.avgTypesOfScores.Birdies,
+              ],
               borderWidth: 0,
               backgroundColor: ['green', 'grey'],
             },

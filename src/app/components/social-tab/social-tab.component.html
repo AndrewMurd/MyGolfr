@@ -1,0 +1,49 @@
+<div
+  [ngStyle]="{ height: 'auto' }"
+  id="socialtab"
+  [@openCloseSocial]="showSocial ? 'open' : 'closed'"
+>
+  <div class="searchContainer">
+    <input
+      class="searchInput"
+      id="socialSearch"
+      [(ngModel)]="search"
+      type="text"
+      placeholder="Search Player"
+      (ngModelChange)="searchPlayers()"
+    />
+    <div class="searchItemsContainer">
+      <div id="loadingContainer" *ngIf="isLoading">
+        <app-loading-animation></app-loading-animation>
+      </div>
+      <div [@listAnimation]="players.slice(0, amountToDisplay).length">
+        <div
+          class="playerSearchItem"
+          *ngFor="let player of players.slice(0, amountToDisplay)"
+          (click)="navigateToProfile(player)"
+        >
+          <h1>{{ player.name }} #{{ player.id }}</h1>
+          <button
+            (click)="addFollow(player, $event)"
+            class="js-toggle-state || c-button-reset c-plus-to-check"
+            id="{{ player.state }}"
+          ></button>
+        </div>
+      </div>
+      <div *ngIf="players.length > 0" (click)="showMore()" id="showMore">
+        <i class="arrowDown"></i>
+        <span>Show More</span>
+      </div>
+    </div>
+  </div>
+  <div id="playerFollowContainer" [@listAnimation]="follows?.length">
+    <div
+      class="playerFollowItem"
+      *ngFor="let player of follows"
+      (click)="navigateToProfile(player)"
+    >
+      <h1>{{ player.name }} #{{ player.id }}</h1>
+      <div>{{ player.status }}</div>
+    </div>
+  </div>
+</div>

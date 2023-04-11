@@ -8,14 +8,8 @@
     (ngModelChange)="searchCourses()"
   />
   <div class="searchItemsContainer">
-    <div *ngIf="isLoading" id="loadingContainer">
-      <div class="lds-ellipsis">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
+    <div id="loadingContainer" *ngIf="isLoading">
+      <app-loading-animation></app-loading-animation>
     </div>
     <div [@listAnimation]="courses.slice(0, amountToDisplay).length">
       <app-search-item
@@ -24,7 +18,7 @@
         (onClickItem)="resetSession($event)"
       ></app-search-item>
     </div>
-    <div *ngIf="this.courses.length > 0" (click)="showMore()" id="showMore">
+    <div *ngIf="courses.length > 0" (click)="showMore()" id="showMore">
       <i class="arrowDown"></i>
       <span>Show More</span>
     </div>

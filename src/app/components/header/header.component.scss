@@ -4,6 +4,11 @@
   user-select: none;
 }
 
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+}
+
 .arrow {
   border: solid white;
   border-width: 0 3px 3px 0;
@@ -174,7 +179,7 @@ a {
   width: 161px;
 }
 
-#profileLink {
+#profileLink, #socialLink {
   position: relative;
   margin-right: 40px;
 }

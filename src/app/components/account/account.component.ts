@@ -36,7 +36,6 @@ import { makeid } from 'src/app/utilities/functions';
       transition('open => closed', [animate('0.2s')]),
       transition('closed => open', [animate('0.2s')]),
     ]),
-
     trigger('openCloseRow', [
       state(
         'open',

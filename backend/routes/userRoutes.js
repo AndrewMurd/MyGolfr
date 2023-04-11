@@ -18,6 +18,74 @@ function convertUTCDateToLocalDate(date) {
   return newDate;
 }
 
+function parseData(user) {
+  if (user.follows) user.follows = JSON.parse(user.follows);
+  if (user.followers) user.followers = JSON.parse(user.followers);
+  return user;
+}
+
+// @desc Get User
+// @route GET /users/get
+// @access Private
+router.get("/get", async (req, res) => {
+  const { id } = req.query;
+
+  try {
+    const users = await User.findId(id);
+
+    if (users.length == 0) {
+      res.status(404).send({ error: "No users were found!" });
+    } else {
+      res.status(200).send({ user: users[0] });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
+
+// @desc Get Array of Users
+// @route POST /users/getUsers
+// @access Private
+router.post("/getUsers", async (req, res) => {
+  const { ids } = req.body;
+  const users = [];
+
+  for (const id of ids) {
+    try {
+      const res = await User.findId(id);
+      users.push(parseData(res[0]));
+    } catch (error) {
+      console.log(error);
+      res.status(500).send(error);
+    }
+  }
+  res.status(200).send({ users: users });
+});
+
+// @desc Search users table in database
+// @route GET /users/search
+// @access Public
+router.get("/search", async (req, res) => {
+  const { query } = req.query;
+
+  try {
+    const users = await User.search(query);
+
+    if (users.length == 0) {
+      res.status(404).send({ error: "No users were found!" });
+    } else {
+      for (const user of users) {
+        parseData(user);
+      }
+      res.status(200).send({ users: users });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
+
 // @desc Register user
 // @route GET /users/signup
 // @access Public
@@ -94,6 +162,38 @@ router.post("/update", async (req, res) => {
   }
 
   res.json({ user: user });
+});
+
+// @desc update follows
+// @route POST /users/follows
+// @access Public
+router.post("/follows", async (req, res) => {
+  const { id, follows } = req.body;
+
+  try {
+    await User.updateFollows(id, JSON.stringify(follows));
+    console.log(`Updating follows for: ${id}`);
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.end();
+});
+
+// @desc update followers
+// @route POST /users/followers
+// @access Public
+router.post("/followers", async (req, res) => {
+  const { id, followers } = req.body;
+
+  try {
+    await User.updateFollowers(id, JSON.stringify(followers));
+    console.log(`Updating followers for: ${id}`);
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.end();
 });
 
 // @desc update user name

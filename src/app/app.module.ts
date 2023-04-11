@@ -36,6 +36,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { AccountComponent } from './components/account/account.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
+import { SocialTabComponent } from './components/social-tab/social-tab.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { ProfilePageComponent } from './components/profile-page/profile-page.com
     ResetPasswordComponent,
     AccountComponent,
     ProfilePageComponent,
+    SocialTabComponent,
   ],
   imports: [
     BrowserModule,

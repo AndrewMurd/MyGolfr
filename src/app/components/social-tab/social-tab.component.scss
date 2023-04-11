@@ -1,0 +1,244 @@
+@import "../../utilities/variables.scss";
+
+#socialtab {
+  overflow: hidden;
+  width: 297px;
+  position: absolute;
+  top: 60px;
+  right: 120px;
+  background-color: lightgrey;
+  z-index: 1000000000000;
+  max-height: calc(100vh - 100px);
+}
+
+#playerFollowContainer {
+  overflow: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  max-height: calc(100vh - 164px);
+  margin-top: 10px;
+}
+
+#playerFollowContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.playerFollowItem {
+  display: flex;
+  cursor: pointer;
+  height: 35px;
+  border-top: 1px solid grey;
+  h1 {
+    line-height: 35px;
+    margin-left: 10px;
+    font-size: 16px;
+  }
+  &:hover {
+    background-color: grey;
+  }
+}
+
+.playerSearchItem {
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  height: 40px;
+  cursor: pointer;
+  padding: 0px 20px;
+  h1 {
+    font-size: 16px;
+    line-height: 38px;
+  }
+  &:hover {
+    background-color: #3d3d3d;
+  }
+}
+
+app-loading-animation {
+  transform: scale(3);
+}
+
+.searchContainer {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: 95%;
+}
+
+.searchItemsContainer {
+  top: -1px;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  position: relative;
+  background-color: $theme;
+  border-radius: 0px 0px 10px 10px;
+  width: 100%;
+}
+
+.searchInput {
+  text-indent: 20px;
+  left: 0;
+  right: 0;
+  position: relative;
+  z-index: 1;
+  border-radius: 40px;
+  border: 0px solid $theme;
+  width: 100%;
+  height: 20px;
+  font-size: 1rem;
+  padding: 12px 0px;
+  background-color: $theme;
+  color: white;
+  background-image: url("../../../assets/search.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-position-x: 93%;
+  background-size: 20px 20px;
+  &:focus {
+    outline: none;
+    border-radius: 10px;
+  }
+}
+
+#loadingContainer {
+  position: relative;
+  left: -10px;
+  height: 50px;
+  text-align: center;
+  color: white;
+}
+
+#showMore {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  height: 25px;
+  color: white;
+  border-radius: 0px 0px 10px 10px;
+  &:hover {
+    background-color: #3d3d3d;
+  }
+  span {
+    font-size: 15px;
+    margin-top: 2px;
+  }
+  i {
+    margin-top: 13px;
+    margin-left: 40px;
+    margin-right: 15px;
+  }
+}
+
+.arrowDown {
+  position: relative;
+  top: -9px;
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-right: 0.2em solid white;
+  border-top: 0.2em solid white;
+  transform: rotate(135deg);
+}
+
+.js-toggle-state {
+  position: relative;
+  left: 15px;
+  bottom: 2px;
+}
+
+.c-button-reset {
+	display: inline-block;
+	font-family: inherit;
+	font-size: 1em;
+	outline: none;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	text-shadow: none;
+	color: inherit;
+	cursor: pointer;
+	padding: 0;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.c-plus-to-check {
+	position: relative;
+	min-width: 40px;
+	min-height: 40px;
+	width: 2.5em;
+	height: 2.5em;
+	background-color: transparent;
+	
+	&:before, &:after {
+		background-color: #2AB2C0;
+		content: "";
+		display: inline-block;
+		position: absolute;
+		top: 50%;
+		left: 0.375em;
+		right: 0.375em;
+		height: 0.250em;
+		transition: transform 300ms cubic-bezier(.75,-0.6,.14,1.59) 150ms;
+		will-change: transform background-color;
+	}
+
+	&:before {
+		transform: translate(0, 0) rotate(-90deg) scale(1, 1);
+	}
+
+	&:after {
+		transform: translate(0, 0) rotate(180deg) scale(1, 1);
+	}
+	
+	&[id='active'] {
+		&:before, &:after {
+			background-color: #89B937;
+			transition-duration: 150ms;
+			transition-timing-function: ease-out;
+			transition-delay: 0s;
+		}
+		
+		&:before {
+			transform: translate(24%, -.14em) rotate(-45deg) scale(1, 1);
+		}
+
+
+		&:after {
+			transform: translate(-25%, .175em) rotate(45deg) scale(.43, 1);
+		}
+	}
+  &[id='followed'] {
+		&:before, &:after {
+			background-color: red;
+			transition-duration: 150ms;
+			transition-timing-function: ease-out;
+			transition-delay: 0s;
+		}
+		
+		&:before {
+			transform: translate(0, 0) rotate(-45deg) scale(1, 1);
+		}
+
+
+		&:after {
+			transform: translate(0, 0) rotate(45deg) scale(1, 1);
+		}
+	}
+}
+
+@media (max-width: 830px) {
+  #socialtab {
+    top: 228px;
+    right: 0px;
+    max-height: calc(100vh - 300px);
+  }
+
+  #playerFollowContainer {
+    max-height: calc(100vh - 364px);
+  }
+}

@@ -9,6 +9,18 @@ const router = Router();
 
 router.use(cookieParser());
 
+function parsedDataToUser(data) {
+  return {
+    id: data.id,
+    name: data.name,
+    email: data.email,
+    favCourses: JSON.parse(data.favCourses),
+    hdcp: data.hdcp,
+    follows: JSON.parse(data.follows),
+    followers: JSON.parse(data.followers),
+  };
+}
+
 // @desc Login
 // @route POST /auth/login
 // @access Public
@@ -20,13 +32,7 @@ router.post("/login", loginLimiter, async (req, res) => {
     if (result.length == 0) return res.status(404).send({ type: "email" });
 
     if (await bcrypt.compare(req.body.password, result[0].password)) {
-      const user = {
-        id: result[0].id,
-        name: result[0].name,
-        email: result[0].email,
-        favCourses: JSON.parse(result[0].favCourses),
-        hdcp: result[0].hdcp,
-      };
+      const user = parsedDataToUser(result[0]);
 
       const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1d",
@@ -51,7 +57,7 @@ router.post("/login", loginLimiter, async (req, res) => {
   }
 });
 
-// @desc Refresh access token after expiration
+// @desc Refresh access token
 // @route GET /auth/refresh
 // @access Public
 router.get("/refresh", async (req, res) => {
@@ -70,14 +76,7 @@ router.get("/refresh", async (req, res) => {
         const result = await User.find(decoded.email);
         if (result.length == 0)
           return res.status(401).json({ message: "Unauthorized" });
-
-        const user = {
-          id: result[0].id,
-          name: result[0].name,
-          email: result[0].email,
-          favCourses: JSON.parse(result[0].favCourses),
-          hdcp: result[0].hdcp,
-        };
+        const user = parsedDataToUser(result[0]);
 
         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
           expiresIn: "1d",

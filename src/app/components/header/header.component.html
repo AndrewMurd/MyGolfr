@@ -20,9 +20,17 @@
           >{{ userData.name }} <i id="userArrow" class="arrow down"></i
         ></a>
       </div>
-      <div (clickOutside)="showAccount = false; showAccountSub.next(false)" id="selectUserDropdown" class="slide">
+      <div
+        (clickOutside)="showAccount = false; showAccountSub.next(false)"
+        id="selectUserDropdown"
+        class="slide"
+      >
         <app-account [showAccountObs]="showAccountSub"></app-account>
-        <p (click)="showAccount = !showAccount; showAccountSub.next(showAccount)">Account</p>
+        <p
+          (click)="showAccount = !showAccount; showAccountSub.next(showAccount)"
+        >
+          Account
+        </p>
         <p (click)="signOut()">Logout</p>
       </div>
     </div>
@@ -36,6 +44,15 @@
       class="headerLink"
       >Profile</a
     >
+    <div *ngIf="signedIn" (clickOutside)="showSocial = false; showSocialSub.next(false)" class="flexColumn">
+      <a
+        (click)="showSocial = !showSocial; showSocialSub.next(showSocial)"
+        id="socialLink"
+        class="headerLink"
+        >Social</a
+      >
+      <app-social-tab [showSocialObs]="showSocialSub"></app-social-tab>
+    </div>
     <div id="roundContainer" class="underline">
       <a
         *ngIf="signedIn && scoreData"
@@ -71,19 +88,24 @@
         class="menu__item"
         >{{ userData.name }} <i id="userArrow" class="arrow down"></i
       ></a>
-      <div (clickOutside)="showAccount = false; showAccountSub.next(false)" id="selectUserDropdown" class="slide">
+      <div
+        (clickOutside)="showAccount = false; showAccountSub.next(false)"
+        id="selectUserDropdown"
+        class="slide"
+      >
         <app-account [showAccountObs]="showAccountSub"></app-account>
         <p (click)="showAccountSub.next(true)">Account</p>
         <p (click)="signOut()">Logout</p>
       </div>
     </li>
-    <li>
+    <li (clickOutside)="showSocial = false; showSocialSub.next(false)">
       <a
-        *ngIf="signedIn && scoreData"
+        *ngIf="signedIn"
         class="menu__item"
-        (click)="closeBox(); navigateToInProgressRound()"
-        >Continue Round</a
+        (click)="showSocial = !showSocial; showSocialSub.next(showSocial)"
+        >Social</a
       >
+      <app-social-tab [showSocialObs]="showSocialSub"></app-social-tab>
     </li>
     <li>
       <a
@@ -92,6 +114,14 @@
         class="menu__item"
         (click)="closeBox()"
         >Profile</a
+      >
+    </li>
+    <li>
+      <a
+        *ngIf="signedIn && scoreData"
+        class="menu__item"
+        (click)="closeBox(); navigateToInProgressRound()"
+        >Continue Round</a
       >
     </li>
   </ul>

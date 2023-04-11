@@ -6,6 +6,7 @@ import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { Location } from '@angular/common';
+import { UserService } from 'src/app/services/user.service';
 
 // profile page uses the rounds page and stats page component to display profile information for user
 @Component({
@@ -20,10 +21,12 @@ export class ProfilePageComponent {
   scoresSubject = new BehaviorSubject<any>(null);
   id!: string;
   rendered: boolean = false;
+  selectedUserData: any;
 
   constructor(
     private courseService: CourseDetailsService,
     private authService: AuthenticationService,
+    private userService: UserService,
     private scoreService: ScoreService,
     private loadingService: LoadingService,
     private route: ActivatedRoute,
@@ -44,18 +47,22 @@ export class ProfilePageComponent {
         this.id = params['id'];
         this.setUnderline();
         try {
+          const userData: any = await this.userService.get(params['id']);
+          this.selectedUserData = userData.user;
           const response: any = await this.scoreService.getUser(
             params['id'],
             2,
             this.limit
           );
           this.rendered = true;
-          this.scoresSubject.next(response.scores);
+
+          this.scoresSubject.next({selectedUserData: this.selectedUserData, scores: response.scores});
 
           this.loadingService.loading.next(false);
         } catch (error) {
+          this.rendered = true;
+          this.scoresSubject.next({selectedUserData: this.selectedUserData, scores: []});
           this.loadingService.loading.next(false);
-          this.scoresSubject.next([]);
         }
       })
     );

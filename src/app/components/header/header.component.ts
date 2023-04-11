@@ -20,7 +20,9 @@ export class HeaderComponent {
   isPhone!: boolean;
   isChecked: boolean = false;
   showAccount: boolean = false;
+  showSocial: boolean = false;
   showAccountSub: Subject<any> = new Subject<any>();
+  showSocialSub: Subject<any> = new Subject<any>();
 
   constructor(
     private authService: AuthenticationService,

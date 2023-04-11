@@ -10,7 +10,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 export class CourseDetailsService {
   courseData = new BehaviorSubject<any>(null); // course data for selected course
   editingScoreCard = new BehaviorSubject<any>(false); // boolean for turning on/off editing of scorecard
-  
+
   constructor(private http: HttpClient) {}
   // search database for saved courses based on text query
   async searchCourses(searchString: string) {
@@ -53,7 +53,7 @@ export class CourseDetailsService {
     return await new Promise((resolve, reject) => {
       this.http
         .post(ROOT_URL + 'courses/update', {
-          data: data
+          data: data,
         })
         .subscribe({
           next: (data) => {
@@ -87,7 +87,7 @@ export class CourseDetailsService {
     return await new Promise((resolve, reject) => {
       this.http
         .post(ROOT_URL + 'courses/courses', {
-          ids: ids
+          ids: ids,
         })
         .subscribe({
           next: (data: any) => {
@@ -104,7 +104,7 @@ export class CourseDetailsService {
     return await new Promise((resolve, reject) => {
       this.http
         .post(ROOT_URL + 'courses/courses_clicks', {
-          limit: limit
+          limit: limit,
         })
         .subscribe({
           next: (data: any) => {

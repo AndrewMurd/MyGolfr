@@ -41,6 +41,7 @@ export class RoundsPageComponent {
   subscriptions: Subscription = new Subscription();
   selectedUser: boolean = true;
   userData: any;
+  selectedUserData: any;
   @Input() scoresSubject!: Observable<any>;
   @Output() editedScores: EventEmitter<any> = new EventEmitter();
   scores: any = [];
@@ -73,27 +74,27 @@ export class RoundsPageComponent {
   ) {}
 
   async ngOnInit() {
-    this.subscriptions.add(this.scoresSubject.subscribe((value) => {
-      if (value) {
-        this.scores = value;
-        this.reload();
-        this.subscriptions.add(
-          this.authService.user.asObservable().subscribe(async (value) => {
-            if (value) {
-              this.userData = value;
-              this.userName = this.scores[0]?.username;
-              this.selectedUser = true;
-              // check whether these rounds are from the currently logged in user or not
-              if (
-                this.scores[0]?.userId == this.userData.id ||
-                this.scores.length == 0
-              )
-                this.selectedUser = false;
-            }
-          })
-        );
-      }
-    }));
+    this.subscriptions.add(
+      this.scoresSubject.subscribe((value) => {
+        if (value) {
+          this.scores = value.scores;
+          this.selectedUserData = value.selectedUserData;
+          this.userName = this.selectedUserData.name;
+          this.reload();
+          this.subscriptions.add(
+            this.authService.user.asObservable().subscribe(async (value) => {
+              if (value) {
+                this.userData = value;
+                this.selectedUser = true;
+                // check whether these rounds are from the currently logged in user or not
+                if (this.selectedUserData.id == this.userData.id)
+                  this.selectedUser = false;
+              }
+            })
+          );
+        }
+      })
+    );
   }
 
   // reload rounds page data
