@@ -110,6 +110,10 @@ export class StartRoundPageComponent {
   }
   // start round based on selected inputs
   async startRound() {
+    if (!this.userData) {
+      this.router.navigate(['/login']);
+      return;
+    }
     this.loadingService.loading.next(true);
     try {
       if (this.hdcpType == 'basic') {

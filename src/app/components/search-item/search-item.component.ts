@@ -4,6 +4,8 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
 import { Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
+import { HttpClient } from '@angular/common/http';
+import { ROOT_URL } from 'src/app/utilities/enviroment';
 // import { apiKey } from '../../utilities/enviroment';
 
 // this component is dynamically created in the from search bar for each searched for course
@@ -30,6 +32,7 @@ export class SearchItemComponent {
     private scoreService: ScoreService,
     private authService: AuthenticationService,
     private userService: UserService,
+    private http: HttpClient,
     private router: Router
   ) {}
 
@@ -79,19 +82,17 @@ export class SearchItemComponent {
     this.subscriptions.unsubscribe();
   }
   // navigate to course page
-  clickItem() {
+  async clickItem() {
     if (this.disable) return;
+    await this.addCourseToDatabase();
     this.onClickItem.emit(this.data);
     this.router.navigate(['/course', this.data.reference]);
     this.addClickToUser();
   }
   // navigate to start round page
-  startRound() {
-    if (!this.signedIn) {
-      this.router.navigate(['/login']);
-      return;
-    }
+  async startRound() {
     this.disable = true;
+    await this.addCourseToDatabase();
     this.onClickItem.emit(this.data);
     this.router.navigate(['/start-round', this.data.reference]);
     this.addClickToUser();
@@ -106,5 +107,13 @@ export class SearchItemComponent {
     }
     this.authService.user.next(this.userData);
     await this.userService.update(this.userData);
+  }
+
+  async addCourseToDatabase() {
+    await this.http
+      .post(ROOT_URL + 'courses/add', {
+        courses: [this.data],
+      })
+      .subscribe(() => {});
   }
 }

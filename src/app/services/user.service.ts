@@ -79,10 +79,10 @@ export class UserService {
   }
 
   // register user for new account
-  signUp(name: string, email: string, password: string, confirmPass: string) {
+  register(name: string, email: string, password: string, confirmPass: string) {
     return new Promise((resolve, reject) => {
       this.http
-        .post(ROOT_URL + 'users/signup', {
+        .post(ROOT_URL + 'users/register', {
           name: name,
           email: email,
           password: password,

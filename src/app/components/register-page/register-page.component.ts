@@ -93,7 +93,7 @@ export class RegisterPageComponent {
     this.resetInputClass();
 
     this.userService
-      .signUp(this.name, this.email, this.password, this.confirmPass)
+      .register(this.name, this.email, this.password, this.confirmPass)
       .then((data) => {
         this.btn.classList.remove('onclic');
         this.btn.classList.add('validate');

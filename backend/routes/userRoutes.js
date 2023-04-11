@@ -90,7 +90,7 @@ router.get("/search", async (req, res) => {
 // @route GET /users/signup
 // @access Public
 router.post(
-  "/signup",
+  "/register",
   [
     check("name")
       .trim()

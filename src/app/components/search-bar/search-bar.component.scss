@@ -86,6 +86,14 @@
   }
 }
 
+#cantFind {
+  position: absolute;
+  right: 40px;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 @media (max-width: 840px) {
   .searchContainer {
     width: 85%;

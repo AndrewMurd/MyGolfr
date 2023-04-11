@@ -3,7 +3,7 @@ const executeQuery = require("../util/database");
 module.exports = class Course {
   static search(searchQuery) {
     return executeQuery(
-      `SELECT * FROM courses WHERE name Like "%${searchQuery}%"`
+      `SELECT * FROM courses WHERE name Like "%${searchQuery}%" ORDER BY clicks desc limit ${20}`
     );
   }
 

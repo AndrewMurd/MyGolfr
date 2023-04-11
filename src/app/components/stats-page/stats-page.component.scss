@@ -24,7 +24,7 @@
 #queryContainer {
   position: relative;
   right: 0px;
-  top: 0px;
+  top: 10px;
   width: 155px;
   select {
     padding-left: 10px;
@@ -289,10 +289,6 @@
 }
 
 @media (max-width: 830px) {
-  #queryContainer {
-    top: 40px;
-  }
-
   app-active-scorecard {
     margin-left: 0;
     width: 100%;
@@ -309,8 +305,10 @@
   }
 
   #queryContainer {
+    top: 30px;
+    right: -20px;
+    transform: scale(0.8);
     position: absolute;
-    left: 50%;
     width: 155px;
     select {
       padding-left: 10px;
@@ -323,7 +321,7 @@
       outline: none;
       border-radius: 5px;
       option {
-        zoom: 1;
+        zoom: 0.8;
       }
     }
   }

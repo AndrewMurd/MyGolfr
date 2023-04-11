@@ -5,7 +5,7 @@
     [(ngModel)]="search"
     type="text"
     placeholder="Search Course Name"
-    (ngModelChange)="searchCourses()"
+    (ngModelChange)="onSearchChange()"
   />
   <div class="searchItemsContainer">
     <div id="loadingContainer" *ngIf="isLoading">
@@ -21,6 +21,7 @@
     <div *ngIf="courses.length > 0" (click)="showMore()" id="showMore">
       <i class="arrowDown"></i>
       <span>Show More</span>
+      <span (click)="enableCantFind($event)" id="cantFind">Cannot Find?</span>
     </div>
   </div>
 </div>

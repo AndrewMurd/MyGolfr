@@ -24,10 +24,14 @@ import {
   animations: [
     trigger('listAnimation', [
       transition('* => *', [
-        query(':enter', [
-          style({ opacity: 0 }),
-          stagger(100, [animate('0.5s', style({ opacity: 1 }))]),
-        ], { optional: true }),
+        query(
+          ':enter',
+          [
+            style({ opacity: 0 }),
+            stagger(100, [animate('0.5s', style({ opacity: 1 }))]),
+          ],
+          { optional: true }
+        ),
       ]),
     ]),
   ],
@@ -35,12 +39,14 @@ import {
 export class SearchBarComponent {
   subscriptions: Subscription = new Subscription();
   userData: any;
-  search!: string;
+  search: string = '';
   courses: any = [];
   sessionToken: any = null;
   src: any = '../../../assets/check.png';
   isLoading: boolean = false;
   amountToDisplay: number = 5;
+  cannotFind: boolean = false;
+  timeout: any = null;
 
   constructor(
     private http: HttpClient,
@@ -64,6 +70,7 @@ export class SearchBarComponent {
               const response: any = await this.courseService.getCoursesByClicks(
                 15
               );
+              if (this.search != '') return; 
               for (let course of response.courses) {
                 this.courses.push(course.googleDetails);
               }
@@ -77,7 +84,9 @@ export class SearchBarComponent {
               });
               items.slice(0, this.amountToDisplay * 3);
               // get course data from backend
+              if (this.search != '') return;
               const response: any = await this.courseService.getCourses(items);
+              if (this.search != '') return;
               for (let course of response.courses) {
                 this.courses.push(course.googleDetails);
               }
@@ -98,6 +107,7 @@ export class SearchBarComponent {
         if (value == '') {
           // if user is not logged in get courses with most clicks
           const response: any = await this.courseService.getCoursesByClicks(15);
+          if (this.search != '') return;
           for (let course of response.courses) {
             this.courses.push(course.googleDetails);
           }
@@ -112,12 +122,38 @@ export class SearchBarComponent {
     this.subscriptions.unsubscribe();
   }
 
+  enableCantFind(event: any) {
+    event.stopPropagation();
+    this.cannotFind = true;
+    this.courses.length = 0;
+    this.search = '';
+    this.setBorder();
+  }
+
   async resetSession(data: any) {
     this.sessionToken = null;
     await this.courseService.addClick(data.reference);
   }
+
+  onSearchChange() {
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      this.searchCourses();
+    }, 1000);
+  }
+
   // search for courses on google and saved in database
   async searchCourses() {
+    // if user cannot find course just search google with no filter
+    if (this.cannotFind) {
+      const response: any = await this.getCourses();
+      this.courses = response.results;
+
+      this.setBorder();
+      this.isLoading = false;
+      return;
+    }
+
     this.amountToDisplay = 5;
     // create session id for google search
     if (this.sessionToken == null) {
@@ -143,12 +179,14 @@ export class SearchBarComponent {
         }
         this.setBorder();
 
+        console.log('database:', this.courses)
+
         // if database produces less than 5 saved courses search google
         if (this.courses.length < 5) {
           try {
             const res: any = await this.getCourses();
             // filter google search for golf courses
-            this.courses = res.results.filter((course: any) => {
+            this.courses.concat(res.results.filter((course: any) => {
               return (
                 !course.name.toLowerCase().includes('mini') &&
                 !course.name.toLowerCase().includes('disc') &&
@@ -159,7 +197,15 @@ export class SearchBarComponent {
                   course.name.toLowerCase().includes('course') ||
                   course.name.toLowerCase().includes('club'))
               );
-            });
+            }));
+
+            if (this.courses.length == 0) {
+              this.cannotFind = true;
+              this.courses.length = 0;
+              this.setBorder();
+              this.searchCourses();
+            }
+
             this.setBorder();
             this.isLoading = false;
             // add these new places from google search to database

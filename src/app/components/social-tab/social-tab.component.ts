@@ -95,6 +95,10 @@ export class SocialTabComponent {
     );
   }
 
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   async searchPlayers() {
     this.players.length = 0;
     if (this.search.length > 0) {
@@ -163,6 +167,7 @@ export class SocialTabComponent {
       playerFollowers = playerFollowers.filter((user: any) => {
         return this.userData.id != user;
       });
+      player.followers = playerFollowers;
       await this.userService.updateFollowers(playerFollowers, player.id);
     } else if (event.target.getAttribute('id') == 'inactive') {
       event.target.setAttribute('id', 'active');
@@ -175,6 +180,7 @@ export class SocialTabComponent {
       this.follows.push(user.user);
       const playerFollowers = JSON.parse(JSON.stringify(player.followers));
       playerFollowers.push(this.userData.id);
+      player.followers.push(this.userData.id);
       await this.userService.updateFollowers(playerFollowers, player.id);
       setTimeout(() => {
         event.target.setAttribute('id', 'followed');
