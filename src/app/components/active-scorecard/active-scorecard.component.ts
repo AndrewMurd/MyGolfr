@@ -104,9 +104,7 @@ export class ActiveScorecardComponent {
 
     this.createTeeComponents(this.teeData);
 
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 500);
+    this.isLoading = false;
   }
 
   async submitScore() {

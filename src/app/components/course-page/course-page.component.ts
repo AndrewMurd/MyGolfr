@@ -5,10 +5,7 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import {
-  convertDateTime,
-  numberOfHolesPlayed,
-} from '../../utilities/functions';
+import { diffCurrentTime, numberOfHolesPlayed } from '../../utilities/functions';
 
 // this component displays the data for the currently selected course
 @Component({
@@ -22,7 +19,6 @@ export class CoursePageComponent {
   roundInProgress: boolean = false;
   scores: any;
   signedIn!: boolean;
-  convertDateTime: Function = convertDateTime;
   numberOfHolesPlayed: Function = numberOfHolesPlayed;
 
   constructor(
@@ -68,7 +64,7 @@ export class CoursePageComponent {
         }
       })
     );
-    
+
     this.scoreService.inProgressScoreData.asObservable().subscribe((value) => {
       if (value) {
         this.roundInProgress = true;
@@ -83,10 +79,6 @@ export class CoursePageComponent {
   }
 
   startRound() {
-    if (!this.signedIn) {
-      this.router.navigate(['/login']);
-      return;
-    }
     this.router.navigate(['/start-round', this.courseData.id]);
   }
 
@@ -96,5 +88,9 @@ export class CoursePageComponent {
 
   navigateToRound(score: any) {
     this.router.navigate(['/round', score.id]);
+  }
+
+  getTimeDifference(score: any) {
+    return diffCurrentTime(score.endTime);
   }
 }

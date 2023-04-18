@@ -5,13 +5,8 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
-import { convertSqlDateTime } from 'src/app/utilities/functions';
 import { Chart, registerables } from 'chart.js';
-import {
-  convertDateTime,
-  numberOfHolesPlayed,
-} from '../../utilities/functions';
-import { faC } from '@fortawesome/free-solid-svg-icons';
+import { numberOfHolesPlayed, diffCurrentTime } from '../../utilities/functions';
 
 // stats page for displaying all stats and info based on a user's career and submitted scores
 @Component({
@@ -45,15 +40,12 @@ export class StatsPageComponent {
   avgScoreToParData: any = [];
   charts: any = [];
   canvas: any;
-  convertDateTime: Function = convertDateTime;
   numberOfHolesPlayed: Function = numberOfHolesPlayed;
 
   constructor(
-    private courseService: CourseDetailsService,
     private authService: AuthenticationService,
     private scoreService: ScoreService,
     private loadingService: LoadingService,
-    private route: ActivatedRoute,
     private router: Router
   ) {
     Chart.register(...registerables);
@@ -219,7 +211,7 @@ export class StatsPageComponent {
         response = await this.scoreService.getUser(id, 1, 0);
         for (let score of response.scores) {
           const currentDate = new Date();
-          const newDate = convertSqlDateTime(score.endTime);
+          const newDate = new Date(score.endTime);
           if (newDate.getFullYear() == currentDate.getFullYear()) {
             this.scores.push(score);
           }
@@ -671,5 +663,9 @@ export class StatsPageComponent {
     const minutesms = ms % (60 * 1000);
     const sec = Math.floor(minutesms / 1000);
     return days + 'd ' + hours + 'h ' + minutes + 'm ';
+  }
+
+  getTimeDifference(score: any) {
+    return diffCurrentTime(score.endTime);
   }
 }

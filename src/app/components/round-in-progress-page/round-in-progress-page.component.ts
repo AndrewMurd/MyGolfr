@@ -77,14 +77,8 @@ export class RoundInProgressPageComponent {
     );
 
     this.subscriptions.add(
-      this.authService.user.asObservable().subscribe((value) => {
-        if (value) {
-          if (this.scoreData.userId != value.id) {
-            this.router.navigate(['']);
-          }
-        } else {
-          this.router.navigate(['']);
-        }
+      this.authService.token.asObservable().subscribe((value) => {
+        if (value == '') this.router.navigate(['']);
       })
     );
   }
@@ -95,7 +89,13 @@ export class RoundInProgressPageComponent {
 
   async reload() {
     // get the current hole last played in round
-    this.currentHole = this.getCurrentHoleInProgress(this.scoreData.score);
+    if (this.scoreData.lastInput) {
+      if (this.scoreData.lastInput == 18) {
+        this.currentHole = 1;
+      } else {
+        this.currentHole = this.scoreData.lastInput + 1;
+      }
+    } else this.currentHole = 1;
     // set view on map based on current hole
     this.changeView.next(this.currentHole);
   }
@@ -130,12 +130,6 @@ export class RoundInProgressPageComponent {
         this.selectedScore = 'Strokes';
       }
     } catch (error) {}
-  }
-  // get last hole played
-  getCurrentHoleInProgress(score: any) {
-    const ln = Object.keys(score).length;
-    if (ln == 2) return 1;
-    return ln - 2;
   }
   // set height of score dropdown
   scoreDropdown(set: boolean) {

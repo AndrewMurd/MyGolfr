@@ -162,10 +162,10 @@ export class EditScoreCardComponent {
   }
 
   edit() {
-    // if (!this.signedIn) {
-    //   this.router.navigate(['/login']);
-    //   return;
-    // }
+    if (!this.signedIn) {
+      this.router.navigate(['/login']);
+      return;
+    }
     this.editing = true;
     this.courseService.editingScoreCard.next(this.editing);
   }

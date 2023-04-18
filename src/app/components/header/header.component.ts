@@ -70,7 +70,7 @@ export class HeaderComponent {
   // sign out user
   signOut() {
     this.signedIn = false;
-    this.authService.token.next(null);
+    this.authService.token.next('');
     this.authService.user.next(null);
     this.scoreService.inProgressScoreData.next(null);
     this.router.navigate(['/login']);

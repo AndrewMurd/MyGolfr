@@ -7,8 +7,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
-import { toStandardTime } from '../../utilities/functions';
-import * as moment from 'moment';
+import { toStandardTime, hm } from '../../utilities/functions';
 
 // this component displays the a selected round that has been completed
 @Component({
@@ -70,7 +69,7 @@ export class RoundPageComponent {
           // convert date from database
           this.date = new Date(this.scoreData.endTime).toLocaleDateString();
           // get the time lasped from start to finish of round
-          this.timeDifference = this.hm(
+          this.timeDifference = hm(
             new Date(this.scoreData.endTime).getTime() -
             new Date(this.scoreData.startTime).getTime()
           );
@@ -370,13 +369,5 @@ export class RoundPageComponent {
     } else {
       this.top = '0px';
     }
-  }
-
-  hm(ms: number) {
-    const daysms = ms % (24 * 60 * 60 * 1000);
-    const hours = Math.floor(daysms / (60 * 60 * 1000));
-    const hoursms = ms % (60 * 60 * 1000);
-    const minutes = Math.floor(hoursms / (60 * 1000));
-    return hours + 'h ' + minutes + 'm';
   }
 }

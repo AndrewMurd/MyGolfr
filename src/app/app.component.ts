@@ -33,9 +33,7 @@ export class AppComponent {
     // refresh login token
     try {
       const res: any = await this.authService.refresh();
-      if (res.accessToken) {
-        this.authService.token.next(res.accessToken);
-      }
+      if (res.accessToken) this.authService.token.next(res.accessToken);
       this.userData = jwt_decode(this.authService.token.getValue());
       this.authService.user.next(this.userData);
     } catch (error) {
@@ -43,11 +41,14 @@ export class AppComponent {
     }
     // check whether user has in progress rounds
     try {
-      const response: any = await this.scoreService.getUser(this.userData.id, 0);
+      const response: any = await this.scoreService.getUser(
+        this.userData.id,
+        0
+      );
       this.scoreService.inProgressScoreData.next(response.scores[0]);
     } catch (error) {}
     this.loading = false;
-    
+
     this.loadingService.loading.asObservable().subscribe((value) => {
       // disable or enable body scrolling based whether app is loading
       this.loading = value;

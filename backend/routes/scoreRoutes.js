@@ -318,6 +318,7 @@ router.post("/update", async (req, res) => {
       scoreData.score.In = In;
 
       await Score.update(JSON.stringify(scoreData[type]), type, scoreData.id);
+      await Score.update(scoreData['lastInput'], 'lastInput', scoreData.id);
 
       if (scoreData.statusComplete == 1 && scoreData.hdcpType == "basic") {
         scoreData.hdcp = await calcHandicapIndex(scoreData);

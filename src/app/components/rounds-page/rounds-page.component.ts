@@ -5,7 +5,6 @@ import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
-import { convertSqlDateTime } from '../../utilities/functions';
 import {
   trigger,
   state,
@@ -14,7 +13,6 @@ import {
   stagger,
   query,
   transition,
-  // ...
 } from '@angular/animations';
 
 // this component diplays all completed and in progress rounds by the selected user
@@ -69,7 +67,6 @@ export class RoundsPageComponent {
     private authService: AuthenticationService,
     private scoreService: ScoreService,
     private loadingService: LoadingService,
-    private route: ActivatedRoute,
     private router: Router
   ) {}
 
@@ -104,16 +101,13 @@ export class RoundsPageComponent {
 
     // sort rounds based on finish date time
     this.scores.sort((a: any, b: any) => {
-      return (
-        convertSqlDateTime(b.endTime).getTime() -
-        convertSqlDateTime(a.endTime).getTime()
-      );
+      return new Date(b.endTime).getTime() - new Date(a.endTime).getTime();
     });
 
     const currentDate = new Date();
     for (let score of this.scores) {
       // count number of rounds this year
-      const newDate = convertSqlDateTime(score.startTime);
+      const newDate = new Date(score.startTime);
       if (newDate.getFullYear() == currentDate.getFullYear()) {
         this.amountOfRoundsThisYear += 1;
       }
@@ -164,14 +158,16 @@ export class RoundsPageComponent {
           this.scores = this.scores.filter((score: any) => {
             return s.id != score.id;
           });
-          this.editedScores.emit(this.scores);
+          this.editedScores.emit({
+            selectedUserData: this.selectedUserData,
+            scores: this.scores,
+          });
           const response: any = await this.scoreService.delete(s);
           const userData = this.authService.user.getValue();
           userData.hdcp = response.scoreData.hdcp;
           this.authService.user.next(userData);
-          if (s.statusComplete == 0) {
+          if (s.statusComplete == 0)
             this.scoreService.inProgressScoreData.next(null);
-          }
           this.reload();
         } catch (error) {}
         this.loadingService.loading.next(false);

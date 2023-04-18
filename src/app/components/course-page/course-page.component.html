@@ -14,7 +14,7 @@
       <a (click)="navigateToRound(score)">{{ numberOfHolesPlayed(score) }} hole,
         {{ score.score.In + score.score.Out }} stroke round</a
       >
-      here {{ convertDateTime(score) }} ago
+      here {{ getTimeDifference(score) }} ago
     </div>
   </div>
 </div>

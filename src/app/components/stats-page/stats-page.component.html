@@ -66,7 +66,7 @@
                 >{{ numberOfHolesPlayed(score) }} hole,
                 {{ score.score.In + score.score.Out }} stroke round</a
               >
-              {{ convertDateTime(score) }} ago at {{ score.courseName }}
+              {{ getTimeDifference(score) }} ago at {{ score.courseName }}
             </div>
           </div>
         </div>

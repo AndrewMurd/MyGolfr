@@ -1,18 +1,17 @@
+// gets rgb values of hexRGB
 export function getRGB(ev: string) {
   if (!ev) return { r: 0, g: 0, b: 0 };
   const color = ev;
   const r = parseInt(color.substr(1, 2), 16);
   const g = parseInt(color.substr(3, 2), 16);
   const b = parseInt(color.substr(5, 2), 16);
-  // console.log(`red: ${r}, green: ${g}, blue: ${b}`)
   return { r: r, g: g, b: b };
 }
-
+// create arbitrary array of certain length
 export function createRange(number: number) {
-  // return new Array(number);
   return new Array(number).fill(0).map((n, index) => index + 1);
 }
-
+// get whether font should be white based on rgb value
 export function getColorWhite(rgb: any) {
   const factor = 170;
   if (
@@ -25,22 +24,7 @@ export function getColorWhite(rgb: any) {
     return false;
   }
 }
-
-export function convertSqlDateTime(sqlDateTime: any): any {
-  return convertUTCDateToLocalDate(new Date(sqlDateTime));
-}
-
-function convertUTCDateToLocalDate(date: any) {
-  var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-
-  var offset = date.getTimezoneOffset() / 60;
-  var hours = date.getHours();
-
-  newDate.setHours(hours - offset);
-
-  return newDate;
-}
-
+// calc number of holes played on in a score (round)
 export function numberOfHolesPlayed(score: any) {
   let count = 0;
   for (let [key, value] of Object.entries(score.score)) {
@@ -50,19 +34,30 @@ export function numberOfHolesPlayed(score: any) {
   }
   return count;
 }
-
-export function convertDateTime(score: any) {
-  const currentDateTime: any = new Date();
-  const diffTime = currentDateTime - convertSqlDateTime(score.endTime);
+// get time passed from a datetime to the current datetime and format output
+export function diffCurrentTime(date: any) {
+  const diffTime = new Date().getTime() - new Date(date).getTime();
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-  if (Math.round(diffDays * 24) < 1) {
+  
+  if (Math.round(diffDays * 24 * 48) == 1) {
+    return `${Math.round(diffDays * 24 * 48)} min`;
+  } else if (Math.round(diffDays * 24) < 1) {
     return `${Math.round(diffDays * 24 * 48)} mins`;
+  } else if (Math.round(diffDays * 24) == 1) {
+    return `${Math.round(diffDays * 24)} hour`;
   } else if (diffDays <= 3) {
     return `${Math.round(diffDays * 24)} hours`;
   } else {
     return `${Math.floor(diffDays)} days`;
   }
+}
+// format ms time
+export function hm(ms: number) {
+  const daysms = ms % (24 * 60 * 60 * 1000);
+  const hours = Math.floor(daysms / (60 * 60 * 1000));
+  const hoursms = ms % (60 * 60 * 1000);
+  const minutes = Math.floor(hoursms / (60 * 1000));
+  return hours + 'h ' + minutes + 'm';
 }
 
 export function makeid(length: number) {
@@ -77,7 +72,7 @@ export function makeid(length: number) {
   }
   return result;
 }
-
+// format time
 export function toStandardTime(
   time: any,
   sec: boolean = true,

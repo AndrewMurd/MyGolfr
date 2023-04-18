@@ -24,14 +24,11 @@ export class ProfilePageComponent {
   selectedUserData: any;
 
   constructor(
-    private courseService: CourseDetailsService,
-    private authService: AuthenticationService,
     private userService: UserService,
     private scoreService: ScoreService,
     private loadingService: LoadingService,
     private route: ActivatedRoute,
-    private location: Location,
-    private router: Router
+    private location: Location
   ) {}
 
   async ngOnInit() {
@@ -56,12 +53,18 @@ export class ProfilePageComponent {
           );
           this.rendered = true;
 
-          this.scoresSubject.next({selectedUserData: this.selectedUserData, scores: response.scores});
+          this.scoresSubject.next({
+            selectedUserData: this.selectedUserData,
+            scores: response.scores,
+          });
 
           this.loadingService.loading.next(false);
         } catch (error) {
           this.rendered = true;
-          this.scoresSubject.next({selectedUserData: this.selectedUserData, scores: []});
+          this.scoresSubject.next({
+            selectedUserData: this.selectedUserData,
+            scores: [],
+          });
           this.loadingService.loading.next(false);
         }
       })

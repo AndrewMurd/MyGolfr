@@ -98,18 +98,19 @@ export class ScoreInputComponent {
     }
     // update score for this round
     this.data.score[this.id] = this.value;
+    // update border for the new score
+    this.setBorder();
+    this.data.lastInput = Number(this.id);
     const response: any = await this.scoreService.update(this.data, 'score');
     this.data = response.scoreData;
     this.selectedScore
       ? this.scoreService.selectedScoreData.next(this.data)
       : this.scoreService.inProgressScoreData.next(this.data);
     // update hdcp based on changed score value
-    // hdcp will only change on backend if this score is completed
+    // hdcp will only change on backend if this round is completed
     const userData = this.authService.user.getValue();
     userData.hdcp = this.data.hdcp;
     this.authService.user.next(userData);
-    // update border for the new score
-    this.setBorder();
   }
   // set the border based on score
   setBorder() {

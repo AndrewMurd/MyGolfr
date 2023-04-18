@@ -14,9 +14,7 @@
 
 <div id="roundsPageContainer">
   <div id="roundsContainer" [@listAnimation]="scores.length">
-    <div *ngIf="scores.length == 0" class="emptyRound">
-      No Rounds Yet
-    </div>
+    <div *ngIf="scores.length == 0" class="emptyRound">No Rounds Yet</div>
     <div
       id="roundItemContainer"
       *ngFor="let score of scores; let index = index"
