@@ -39,11 +39,16 @@
   <div id="playerFollowContainer" [@listAnimation]="follows?.length">
     <div
       class="playerFollowItem"
-      *ngFor="let player of follows"
+      *ngFor="let player of follows; let index = index"
+      id="follow{{ index }}"
+      (swipeleft)="openDelete(index)"
+      (swiperight)="closeDelete(index)"
       (click)="navigateToProfile(player)"
     >
       <h1>{{ player.name }} #{{ player.id }}</h1>
-      <div>{{ player.status }}</div>
+      <div class="deleteContainer" (click)="removeFollow(player, $event)">
+        <img src="../../../assets/delete35x35.png" alt="" />
+      </div>
     </div>
   </div>
 </div>

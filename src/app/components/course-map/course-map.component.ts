@@ -11,7 +11,12 @@ import { Observable, Subscription, take } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { CourseDetailsService } from '../../services/course-details.service';
-import { createRange, getRGB, getColorWhite } from '../../utilities/functions';
+import {
+  createRange,
+  getRGB,
+  getColorWhite,
+  makeid,
+} from '../../utilities/functions';
 import { LoadingService } from 'src/app/services/loading.service';
 
 // this component is a map view of the currently viewed course in course page or in progress round page
@@ -37,6 +42,7 @@ export class CourseMapComponent {
   isPhone: boolean = false;
   selectedMapView: string = 'course';
   map!: google.maps.Map;
+  mapDivId = makeid(5);
   markers: any = [];
   flagMarker: any = [];
   distanceMarker: any = [];
@@ -72,39 +78,45 @@ export class CourseMapComponent {
       })
     );
 
-    this.subscriptions.add(
-      this.scoreService.inProgressScoreData
-        .asObservable()
-        .subscribe((value) => {
-          // check whether map is being used for course page or in progress round page
-          if (this.router.url.split('/')[1] == 'course') {
-            this.scoreData = value;
-            this.roundInProgress = false;
-            return;
-          }
+    if (
+      this.router.url.split('/')[1] == 'course' ||
+      this.router.url.split('/')[1] == 'start-round'
+    ) {
+      this.roundInProgress = false;
+      this.subscriptions.add(
+        this.courseService.courseData.asObservable().subscribe((value) => {
           if (value) {
-            // set data for in progress round
-            this.roundInProgress = true;
-            this.scoreData = value;
-            this.courseData = JSON.parse(JSON.stringify(this.scoreData));
-            this.courseData.id = this.courseData.googleDetails.reference;
-            this.selectedTeeView = this.scoreData.teeData;
+            this.courseData = value;
             this.reload();
-          } else {
-            this.scoreData = null;
-            this.roundInProgress = false;
           }
         })
-    );
-
-    this.subscriptions.add(
-      this.courseService.courseData.asObservable().subscribe((value) => {
-        if (value && this.roundInProgress == false) {
-          this.courseData = value;
-          this.reload();
-        }
-      })
-    );
+      );
+    } else {
+      this.subscriptions.add(
+        this.scoreService.inProgressScoreData
+          .asObservable()
+          .subscribe((value) => {
+            if (value) {
+              // set data for in progress round
+              this.roundInProgress = true;
+              this.scoreData = value;
+              this.courseData = JSON.parse(JSON.stringify(this.scoreData));
+              this.courseData.id = this.courseData.googleDetails.reference;
+              this.selectedTeeView = this.scoreData.teeData;
+              setTimeout(() => {
+                this.reload();
+                if (this.scoreData.lastInput) {
+                  if (this.scoreData.lastInput == 18) {
+                    this.setMapView(1);
+                  } else {
+                    this.setMapView(this.scoreData.lastInput + 1);
+                  }
+                } else this.setMapView(1);
+              });
+            }
+          })
+      );
+    }
 
     // change view of map based on hole
     if (this.changeView) {
@@ -126,7 +138,7 @@ export class CourseMapComponent {
     let map: any;
     if (this.map == undefined) {
       this.map = new google.maps.Map(
-        document.getElementById('map') as HTMLElement,
+        document.getElementById(this.mapDivId) as HTMLElement,
         {
           zoom: 16,
           center: this.center,
@@ -166,10 +178,6 @@ export class CourseMapComponent {
       });
     }
 
-    this.center.lat = this.courseData.googleDetails.geometry.location.lat;
-    this.center.lng = this.courseData.googleDetails.geometry.location.lng;
-    this.map.setCenter(this.center);
-
     const adjustMap = (mode: string, amount: number) => {
       switch (mode) {
         case 'tilt':
@@ -182,6 +190,10 @@ export class CourseMapComponent {
           break;
       }
     };
+
+    this.center.lat = this.courseData.googleDetails.geometry.location.lat;
+    this.center.lng = this.courseData.googleDetails.geometry.location.lng;
+    this.map.setCenter(this.center);
 
     this.isNineHole = this.courseData.courseDetails.nineHoleGolfCourse;
     this.layoutData = this.courseData.mapLayout;

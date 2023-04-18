@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { ScoreService } from 'src/app/services/score.service';
 import { AuthenticationService } from '../../services/authentication.service';
+import { CourseDetailsService } from 'src/app/services/course-details.service';
 
 // header component for entire app
 @Component({
@@ -25,6 +26,7 @@ export class HeaderComponent {
   showSocialSub: Subject<any> = new Subject<any>();
 
   constructor(
+    private courseService: CourseDetailsService,
     private authService: AuthenticationService,
     private scoreService: ScoreService,
     private router: Router
@@ -94,9 +96,6 @@ export class HeaderComponent {
 
   navigateToInProgressRound() {
     this.router.navigate(['/round/in-progress', this.scoreData.id]);
-    setTimeout(() => {
-      this.scoreService.inProgressScoreData.next(this.scoreData);
-    });
   }
 
   navigateToProfile() {

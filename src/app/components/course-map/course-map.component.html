@@ -1,5 +1,5 @@
 <div id="courseMapContainer" [ngStyle]="{ height: mapHeight }">
-  <div id="map"></div>
+  <div id="{{ mapDivId }}" class="map"></div>
   <div *ngIf="selectedMapView != 'course'" id="infoDisplay">
     <div id="teeColorsDisplay">
       <div

@@ -128,8 +128,8 @@ export class ActiveTeeComponent {
   }
 
   async submitColorName(ev: any) {
-    this.loading.emit(true);
     if (ev.keyCode != 13) return;
+    this.loading.emit(true);
     if (!this.nameColor) {
       this.alertService.alert('Must enter value!', {
         color: 'green',

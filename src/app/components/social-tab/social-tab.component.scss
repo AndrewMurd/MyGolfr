@@ -25,6 +25,7 @@
 
 .playerFollowItem {
   display: flex;
+  justify-content: space-between;
   cursor: pointer;
   height: 35px;
   border-top: 1px solid grey;
@@ -33,8 +34,44 @@
     margin-left: 10px;
     font-size: 16px;
   }
+  .deleteContainer {
+    position: relative;
+    top: 5px;
+    transition: left 0.4s;
+    left: 30px;
+    img {
+      height: 25px;
+      transition: transform 0.2s;
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
   &:hover {
+    .deleteContainer {
+      left: -10px;
+    }
     background-color: grey;
+  }
+}
+
+@media (hover: none) {
+  .playerFollowItem {
+    .deleteContainer {
+      position: relative;
+      top: -1px;
+      background-color: rgb(68, 0, 0);
+      height: 36px;
+      width: 40px;
+      left: 40px;
+      border-top: 1px solid grey;
+      img {
+        position: relative;
+        top: 5px;
+        left: 8px;
+        height: 25px;
+      }
+    }
   }
 }
 
@@ -152,83 +189,84 @@ app-loading-animation {
 }
 
 .c-button-reset {
-	display: inline-block;
-	font-family: inherit;
-	font-size: 1em;
-	outline: none;
-	border: none;
-	border-radius: 0;
-	box-shadow: none;
-	text-shadow: none;
-	color: inherit;
-	cursor: pointer;
-	padding: 0;
-	-webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  font-family: inherit;
+  font-size: 1em;
+  outline: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .c-plus-to-check {
-	position: relative;
-	min-width: 40px;
-	min-height: 40px;
-	width: 2.5em;
-	height: 2.5em;
-	background-color: transparent;
-	
-	&:before, &:after {
-		background-color: #2AB2C0;
-		content: "";
-		display: inline-block;
-		position: absolute;
-		top: 50%;
-		left: 0.375em;
-		right: 0.375em;
-		height: 0.250em;
-		transition: transform 300ms cubic-bezier(.75,-0.6,.14,1.59) 150ms;
-		will-change: transform background-color;
-	}
+  position: relative;
+  min-width: 40px;
+  min-height: 40px;
+  width: 2.5em;
+  height: 2.5em;
+  background-color: transparent;
 
-	&:before {
-		transform: translate(0, 0) rotate(-90deg) scale(1, 1);
-	}
+  &:before,
+  &:after {
+    background-color: #2ab2c0;
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 0.375em;
+    right: 0.375em;
+    height: 0.25em;
+    transition: transform 300ms cubic-bezier(0.75, -0.6, 0.14, 1.59) 150ms;
+    will-change: transform background-color;
+  }
 
-	&:after {
-		transform: translate(0, 0) rotate(180deg) scale(1, 1);
-	}
-	
-	&[id='active'] {
-		&:before, &:after {
-			background-color: #89B937;
-			transition-duration: 150ms;
-			transition-timing-function: ease-out;
-			transition-delay: 0s;
-		}
-		
-		&:before {
-			transform: translate(24%, -.14em) rotate(-45deg) scale(1, 1);
-		}
+  &:before {
+    transform: translate(0, 0) rotate(-90deg) scale(1, 1);
+  }
 
+  &:after {
+    transform: translate(0, 0) rotate(180deg) scale(1, 1);
+  }
 
-		&:after {
-			transform: translate(-25%, .175em) rotate(45deg) scale(.43, 1);
-		}
-	}
-  &[id='followed'] {
-		&:before, &:after {
-			background-color: red;
-			transition-duration: 150ms;
-			transition-timing-function: ease-out;
-			transition-delay: 0s;
-		}
-		
-		&:before {
-			transform: translate(0, 0) rotate(-45deg) scale(1, 1);
-		}
+  &[id="active"] {
+    &:before,
+    &:after {
+      background-color: #89b937;
+      transition-duration: 150ms;
+      transition-timing-function: ease-out;
+      transition-delay: 0s;
+    }
 
+    &:before {
+      transform: translate(24%, -0.14em) rotate(-45deg) scale(1, 1);
+    }
 
-		&:after {
-			transform: translate(0, 0) rotate(45deg) scale(1, 1);
-		}
-	}
+    &:after {
+      transform: translate(-25%, 0.175em) rotate(45deg) scale(0.43, 1);
+    }
+  }
+  &[id="followed"] {
+    &:before,
+    &:after {
+      background-color: red;
+      transition-duration: 150ms;
+      transition-timing-function: ease-out;
+      transition-delay: 0s;
+    }
+
+    &:before {
+      transform: translate(0, 0) rotate(-45deg) scale(1, 1);
+    }
+
+    &:after {
+      transform: translate(0, 0) rotate(45deg) scale(1, 1);
+    }
+  }
 }
 
 @media (max-width: 830px) {

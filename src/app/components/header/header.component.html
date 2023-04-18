@@ -44,7 +44,11 @@
       class="headerLink"
       >Profile</a
     >
-    <div *ngIf="signedIn" (clickOutside)="showSocial = false; showSocialSub.next(false)" class="flexColumn">
+    <div
+      *ngIf="signedIn"
+      (clickOutside)="showSocial = false; showSocialSub.next(false)"
+      class="flexColumn"
+    >
       <a
         (click)="showSocial = !showSocial; showSocialSub.next(showSocial)"
         id="socialLink"
@@ -102,10 +106,15 @@
       <a
         *ngIf="signedIn"
         class="menu__item"
-        (click)="showSocial = !showSocial; showSocialSub.next(showSocial)"
+        (click)="showSocial = !showSocial; showSocialSub.next(showSocial); setDropdownUser(false)"
         >Social</a
       >
-      <app-social-tab [showSocialObs]="showSocialSub"></app-social-tab>
+      <app-social-tab
+        (closeSocialTab)="
+          showSocial = false; showSocialSub.next(false); isChecked = false
+        "
+        [showSocialObs]="showSocialSub"
+      ></app-social-tab>
     </li>
     <li>
       <a

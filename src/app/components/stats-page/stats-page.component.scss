@@ -108,7 +108,7 @@
   #statsContainer {
     width: 590px;
     height: auto;
-    max-height: 487px;
+    // max-height: 487px;
     background-color: grey;
     border-radius: 5px;
     position: relative;
@@ -433,6 +433,21 @@
     margin-right: auto;
     left: 0;
     right: 0;
+  }
+}
+
+@media (max-width: 530px) {
+  #statsPageContainer {
+    #roundInfoContainer {
+      .infoContainer {
+        h2 {
+          font-size: 2.5vw;
+        }
+      }
+    }
+  }
+  .topBlock {
+    font-size: 5vw;
   }
 }
 

@@ -139,9 +139,6 @@ export class RoundsPageComponent {
         return;
       }
       this.router.navigate(['/round/in-progress', score.id]);
-      setTimeout(() => {
-        this.scoreService.inProgressScoreData.next(score);
-      });
     } else {
       this.router.navigate(['/round', score.id]);
     }
@@ -198,7 +195,7 @@ export class RoundsPageComponent {
     if (this.selectedUser) return;
     document.getElementById(
       `roundItem${index}`
-    )!.style.transition = `transform 0.5s`;
+    )!.style.transition = `transform 0.2s`;
     document.getElementById(
       `roundItem${index}`
     )!.style.transform = `translateX(-50px)`;
@@ -210,7 +207,7 @@ export class RoundsPageComponent {
   closeDelete(index: number) {
     document.getElementById(
       `roundItem${index}`
-    )!.style.transition = `transform 0.5s`;
+    )!.style.transition = `transform 0.2s`;
     document.getElementById(
       `roundItem${index}`
     )!.style.transform = `translateX(0px)`;

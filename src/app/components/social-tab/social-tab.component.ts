@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { UserService } from 'src/app/services/user.service';
@@ -57,6 +57,7 @@ import { Router } from '@angular/router';
 export class SocialTabComponent {
   subscriptions: Subscription = new Subscription();
   @Input() showSocialObs!: Observable<any>;
+  @Output() closeSocialTab: EventEmitter<any> = new EventEmitter();
   userData: any;
   search!: string;
   isLoading: boolean = false;
@@ -91,6 +92,7 @@ export class SocialTabComponent {
     this.subscriptions.add(
       this.showSocialObs.subscribe((value) => {
         this.showSocial = value;
+        this.resetDelete();
       })
     );
   }
@@ -188,8 +190,32 @@ export class SocialTabComponent {
     }
   }
 
+  async removeFollow(player: any, event: any) {
+    event.stopPropagation();
+    this.userData.follows = this.userData.follows.filter((user: any) => {
+      return player.id != user;
+    });
+    this.follows = this.follows.filter((p: any) => {
+      return p.id != player.id;
+    });
+    // update database with new follows
+    await this.userService.updateFollows(
+      this.userData.follows,
+      this.userData.id
+    );
+    // update database with followers
+    let playerFollowers = JSON.parse(JSON.stringify(player.followers));
+    playerFollowers = playerFollowers.filter((user: any) => {
+      return this.userData.id != user;
+    });
+    player.followers = playerFollowers;
+    await this.userService.updateFollowers(playerFollowers, player.id);
+  }
+
   navigateToProfile(player: any) {
     if (this.disable) return;
+    this.closeSocialTab.emit();
+    this.resetDelete();
     this.router.navigate(['/profile', 'rounds', player.id]);
   }
 
@@ -206,5 +232,29 @@ export class SocialTabComponent {
 
   showMore() {
     if (this.amountToDisplay < this.players.length) this.amountToDisplay += 5;
+  }
+
+  // show delete button
+  openDelete(index: number) {
+    document.getElementById(
+      `follow${index}`
+    )!.style.transition = `transform 0.2s`;
+    document.getElementById(
+      `follow${index}`
+    )!.style.transform = `translateX(-40px)`;
+  }
+  // cover delete button
+  closeDelete(index: number) {
+    document.getElementById(
+      `follow${index}`
+    )!.style.transition = `transform 0.2s`;
+    document.getElementById(
+      `follow${index}`
+    )!.style.transform = `translateX(0px)`;
+  }
+  resetDelete() {
+    for (let i = 0; i < this.follows.length; i++) {
+      this.closeDelete(i);
+    }
   }
 }
