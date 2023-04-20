@@ -349,7 +349,7 @@ export class StatsPageComponent {
         label: key,
         value: avg,
       });
-      if (Math.round((sum / value.length) * 10) / 10 < 0) {
+      if ((Math.round((sum / value.length) * 10) / 10) - key < 0) {
         colors.push('green');
       } else {
         colors.push('rgb(109, 0, 0)');
