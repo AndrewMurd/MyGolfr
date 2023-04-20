@@ -107,6 +107,7 @@ export class RoundInProgressPageComponent {
       strokes != this.scoreData.score[this.currentHole]
     ) {
       this.scoreData.score[this.currentHole] = this.selectedScore;
+      this.scoreData.lastInput = Number(this.currentHole);
       const response: any = await this.scoreService.update(
         this.scoreData,
         'score'

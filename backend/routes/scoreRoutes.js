@@ -169,7 +169,7 @@ async function calcHandicapIndex(scoreData) {
       3
     ) {
       console.log("Not Enough Scores");
-      return scoreData.hdcp;
+      return { hdcp: scoreData.hdcp, scores: scores };
     }
 
     const currentHdcp = scores[0].hdcp;
@@ -277,6 +277,9 @@ async function calcHandicapIndex(scoreData) {
       sum += diff.diff;
       for (let s of diff.score) {
         await Score.update(JSON.stringify(1), "usedForHdcp", s.id);
+        for (let score of scores) {
+          if (score.id == s.id) score.usedForHdcp = 1;
+        }
       }
     }
     let HandicapIndex = (
@@ -298,7 +301,7 @@ async function calcHandicapIndex(scoreData) {
 
     console.log(`Updating Handicap for User ${scoreData.userId}`);
 
-    return HandicapIndex;
+    return { hdcp: HandicapIndex, scores: scores };
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -318,10 +321,11 @@ router.post("/update", async (req, res) => {
       scoreData.score.In = In;
 
       await Score.update(JSON.stringify(scoreData[type]), type, scoreData.id);
-      await Score.update(scoreData['lastInput'], 'lastInput', scoreData.id);
+      await Score.update(scoreData["lastInput"], "lastInput", scoreData.id);
 
       if (scoreData.statusComplete == 1 && scoreData.hdcpType == "basic") {
-        scoreData.hdcp = await calcHandicapIndex(scoreData);
+        const result = await calcHandicapIndex(scoreData);
+        scoreData.hdcp = result.hdcp;
       }
     } else if (type == "statusComplete") {
       await Score.update(scoreData.endTime, "endTime", scoreData.id);
@@ -329,11 +333,13 @@ router.post("/update", async (req, res) => {
 
       // calc and update hdcp for player on submission of new hdcp score (basic)
       if (scoreData.hdcpType == "basic") {
-        scoreData.hdcp = await calcHandicapIndex(scoreData);
+        const result = await calcHandicapIndex(scoreData);
+        scoreData.hdcp = result.hdcp;
       }
     } else if (type == "hdcpType") {
       await Score.update(scoreData[type], type, scoreData.id);
-      scoreData.hdcp = await calcHandicapIndex(scoreData);
+      const result = await calcHandicapIndex(scoreData);
+      scoreData.hdcp = result.hdcp;
     } else {
       await Score.update(JSON.stringify(scoreData[type]), type, scoreData.id);
     }
@@ -355,10 +361,14 @@ router.post("/delete", async (req, res) => {
 
   try {
     await Score.delete(scoreData.id);
-    if (scoreData.hdcpType == "basic")
-      scoreData.hdcp = await calcHandicapIndex(scoreData);
+    let result;
+    if (scoreData.hdcpType == "basic") {
+      result = await calcHandicapIndex(scoreData);
+      scoreData.hdcp = result.hdcp;
+    }
+    console.log("result", result);
     console.log(`Deleted score: ${scoreData.id}`);
-    res.json({ scoreData: scoreData });
+    res.json({ scoreData: scoreData, scores: result.scores });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);

@@ -71,12 +71,14 @@ export class RoundPageComponent {
           // get the time lasped from start to finish of round
           this.timeDifference = hm(
             new Date(this.scoreData.endTime).getTime() -
-            new Date(this.scoreData.startTime).getTime()
+              new Date(this.scoreData.startTime).getTime()
           );
 
           this.time =
-            toStandardTime(new Date(this.scoreData.endTime).toString().slice(15, 25), false) +
-            ` (${this.timeDifference})`;
+            toStandardTime(
+              new Date(this.scoreData.endTime).toString().slice(15, 25),
+              false
+            ) + ` (${this.timeDifference})`;
 
           let stringArray =
             this.scoreData.googleDetails.plus_code.compound_code.split(/(\s+)/);

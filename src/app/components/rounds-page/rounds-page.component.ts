@@ -155,13 +155,14 @@ export class RoundsPageComponent {
           this.scores = this.scores.filter((score: any) => {
             return s.id != score.id;
           });
-          this.editedScores.emit({
-            selectedUserData: this.selectedUserData,
-            scores: this.scores,
-          });
           const response: any = await this.scoreService.delete(s);
           const userData = this.authService.user.getValue();
           userData.hdcp = response.scoreData.hdcp;
+          console.log(response)
+          this.editedScores.emit({
+            selectedUserData: this.selectedUserData,
+            scores: response.scores,
+          });
           this.authService.user.next(userData);
           if (s.statusComplete == 0)
             this.scoreService.inProgressScoreData.next(null);
