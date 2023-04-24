@@ -92,7 +92,9 @@ export class StartRoundPageComponent {
           this.completedTees = JSON.parse(
             JSON.stringify(this.courseData.scorecard)
           );
-          this.checkCompleteTees();
+          this.completedTees = this.completedTees.sort((a: any, b: any) => {
+            return a.Position - b.Position;
+          });
           this.loadingService.loading.next(false);
         }
       })
@@ -116,58 +118,19 @@ export class StartRoundPageComponent {
     }
     this.loadingService.loading.next(true);
     try {
-      if (this.hdcpType == 'basic') {
-        // need a slope and rating for calculating hdcp
-        if (
-          this.selectedTee.Rating != '' &&
-          this.selectedTee.Rating != undefined &&
-          this.selectedTee.Slope != '' &&
-          this.selectedTee.Rating != undefined
-        ) {
-          await this.scoreService.newScore(
-            this.userData.id,
-            this.courseData.id,
-            this.selectedTee,
-            this.hdcpType,
-            moment.utc().format('YYYY-MM-DD HH:mm:ss')
-          );
-          const response: any = await this.scoreService.getUser(
-            this.userData.id,
-            0
-          );
-          this.router.navigate(['/round/in-progress', response.scores[0].id]);
-          // update the current in progress round
-          setTimeout(() => {
-            this.scoreService.inProgressScoreData.next(response.scores[0]);
-          });
-        } else {
-          this.alertService.alert(
-            'Must enter Slope Rating and Course Rating for selected tee in Basic Mode (Needed for Handicap Calculation).',
-            {
-              color: 'green',
-              content: 'Accept',
-            }
-          );
-          this.popUp = false;
-          this.showScorecard = true;
-        }
-      } else {
-        await this.scoreService.newScore(
-          this.userData.id,
-          this.courseData.id,
-          this.selectedTee,
-          this.hdcpType,
-          moment.utc().format('YYYY-MM-DD HH:mm:ss')
-        );
-        const response: any = await this.scoreService.getUser(
-          this.userData.id,
-          0
-        );
-        this.router.navigate(['/round/in-progress', response.scores[0].id]);
-        setTimeout(() => {
-          this.scoreService.inProgressScoreData.next(response.scores[0]);
-        });
-      }
+      await this.scoreService.newScore(
+        this.userData.id,
+        this.courseData.id,
+        this.selectedTee,
+        this.hdcpType,
+        moment.utc().format('YYYY-MM-DD HH:mm:ss')
+      );
+      const response: any = await this.scoreService.getUser(
+        this.userData.id,
+        0
+      );
+      this.router.navigate(['/round/in-progress', response.scores[0].id]);
+      this.scoreService.inProgressScoreData.next(response.scores[0]);
     } catch (error) {
       console.log(error);
     }
@@ -181,33 +144,29 @@ export class StartRoundPageComponent {
       document.getElementById('selectTeeBtn')!.style.top = '145px';
     }
   }
-  // checks which tees are complete
-  // to prevent user from starting round with incomplete data for selected tee
-  checkCompleteTees() {
+  // filters completed tees
+  checkSelectedTee() {
+    let countTeeData = 0;
     if (this.courseData.courseDetails.nineHoleGolfCourse) {
-      this.completedTees = this.completedTees.filter((tee: any) => {
-        let count = 0;
-        for (let key of Object.keys(tee)) {
-          if (key.slice(0, 2) != 'S.I') {
-            count++;
-          }
+      for (let [key, value] of Object.entries(this.selectedTee)) {
+        if (
+          (key.charAt(0) == 'H' && Number(key.slice(1, 3)) > 9) ||
+          (key.charAt(0) == 'P' && Number(key.slice(1, 3)) > 9) ||
+          key == 'SumOutPar' || key == 'SumOut'
+        ) {
+          continue;
         }
-        return count >= 26;
-      });
+        if (key.slice(0, 2) != 'SI' && value != '') countTeeData++;
+      }
+      if (countTeeData == 26) return true;
+      else return false;
     } else {
-      this.completedTees = this.completedTees.filter((tee: any) => {
-        let count = 0;
-        for (let key of Object.keys(tee)) {
-          if (key.slice(0, 2) != 'S.I') {
-            count++;
-          }
-        }
-        return count >= 62;
-      });
+      for (let [key, value] of Object.entries(this.selectedTee)) {
+        if (key.slice(0, 2) != 'SI' && value != '') countTeeData++;
+      }
+      if (countTeeData == 46) return true;
+      else return false;
     }
-    this.completedTees = this.completedTees.sort((a: any, b: any) => {
-      return a.Position - b.Position;
-    });
   }
   // alert user if there are no tees ready to be played with
   alertUserOfTees() {

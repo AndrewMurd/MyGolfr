@@ -95,34 +95,74 @@ export class ActiveScorecardComponent {
 
   async reload() {
     this.isLoading = true;
-
     // clear scorecard of dymically added tees
     if (this.frontNineContainer && this.backNineContainer) {
       this.frontNineContainer.clear();
       this.backNineContainer.clear();
     }
-
     this.createTeeComponents(this.teeData);
-
     this.isLoading = false;
   }
 
   async submitScore() {
-    let factor = 0;
-    this.scoreData.courseDetails.nineHoleGolfCourse
-      ? (factor = 10)
-      : (factor = 20);
-
-    // count number of inputed score values
-    let count = 0;
-    for (let value of Object.values(this.scoreData.score)) {
-      if (value != '') {
-        count++;
+    let countTeeData = 0;
+    if (this.scoreData.courseDetails.nineHoleGolfCourse) {
+      for (let [key, value] of Object.entries(this.teeData)) {
+        if (
+          (key.charAt(0) == 'H' && Number(key.slice(1, 3)) > 9) ||
+          (key.charAt(0) == 'P' && Number(key.slice(1, 3)) > 9) ||
+          key == 'SumOutPar' ||
+          key == 'SumOut' ||
+          key == 'Slope' ||
+          key == 'Rating'
+        ) {
+          continue;
+        }
+        if (key.slice(0, 2) != 'SI' && value != '') countTeeData++;
+      }
+      if (countTeeData != 24) {
+        this.alertService.alert(
+          'The data for this tee is incomplete! You must complete the data by editing the scorecard in top right.',
+          {
+            color: 'green',
+            content: 'Accept',
+          }
+        );
+        return;
+      }
+    } else {
+      for (let [key, value] of Object.entries(this.teeData)) {
+        if (key == 'Slope' || key == 'Rating') continue;
+        if (key.slice(0, 2) != 'SI' && value != '') countTeeData++;
+      }
+      if (countTeeData != 44) {
+        this.alertService.alert(
+          'The data for this tee is incomplete! You must complete the data by editing the scorecard in top right.',
+          {
+            color: 'green',
+            content: 'Accept',
+          }
+        );
+        return;
       }
     }
 
+    let factorScore = 0;
+    this.scoreData.courseDetails.nineHoleGolfCourse
+      ? (factorScore = 10)
+      : (factorScore = 20);
+
+    // count number of inputed score values
+    let countScore = 0;
+    for (let value of Object.values(this.scoreData.score)) {
+      if (value != '') countScore++;
+    }
+
     // Check whether user can submit score
-    if (Object.keys(this.scoreData.score).length >= factor && count == factor) {
+    if (
+      Object.keys(this.scoreData.score).length >= factorScore &&
+      countScore == factorScore
+    ) {
       // confirm user wants to submit valid score (completed)
       this.alertService.confirm(
         'Are you sure you want to submit this score?',

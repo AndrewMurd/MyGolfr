@@ -293,6 +293,10 @@ export class RoundPageComponent {
 
   // edit whether course should be counted towards hdcp
   async submitEdit() {
+    if (this.scoreData.hdcpType == this.hdcpType) {
+      this.popUp = false;
+      return;
+    }
     this.loadingService.loading.next(true);
 
     let factor = 0;
@@ -310,6 +314,26 @@ export class RoundPageComponent {
 
     // check whether user should be able to switch round to count towards hdcp calculation
     if (this.hdcpType == 'basic') {
+      // need a slope and rating for calculating hdcp
+      if (
+        this.scoreData.teeData.Rating == '' ||
+        this.scoreData.teeData.Rating == undefined ||
+        this.scoreData.teeData.Slope == '' ||
+        this.scoreData.teeData.Rating == undefined
+      ) {
+        this.alertService.alert(
+          'Must enter Slope Rating and Course Rating for Basic Mode (Needed for Handicap Calculation).',
+          {
+            color: 'green',
+            content: 'Accept',
+          }
+        );
+        this.hdcpType = 'none';
+        this.popUp = false;
+        this.loadingService.loading.next(false);
+        return;
+      }
+
       if (
         Object.keys(this.scoreData.score).length >= factor &&
         count == factor

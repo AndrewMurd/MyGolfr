@@ -157,7 +157,7 @@ router.post("/set_scorecard_value", async (req, res) => {
 
     let length;
     if (data.id == "new") {
-      length = scorecard.push({ id: uuidv4(), Position: scorecard.length + 1 });
+      length = scorecard.push({ id: uuidv4(), Position: scorecard.length + 1, ColorName: `New Tee ${scorecard.length + 1}` });
     } else {
       for (let tee of scorecard) {
         if (tee.id == data.id[0]) {

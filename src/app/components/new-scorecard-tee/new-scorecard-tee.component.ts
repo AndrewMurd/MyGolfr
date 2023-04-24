@@ -71,40 +71,29 @@ export class NewScorecardTeeComponent {
           key.charAt(0) == 'P' &&
           Number(key.charAt(1)) <= 9 &&
           !Number(key.slice(-2))
-        ) {
+        )
           countPar++;
-        } else if (
+        else if (
           key.charAt(0) == 'S' &&
           Number(key.charAt(2)) <= 9 &&
           !Number(key.slice(-2))
-        ) {
+        )
           countSI++;
-        }
       }
-      if (countPar < 9) {
-        this.showCopyPar = true;
-      }
-      if (countSI < 9) {
-        this.showCopySI = true;
-      }
+      if (countPar < 9) this.showCopyPar = true;
+
+      if (countSI < 9) this.showCopySI = true;
     } else {
       for ([key, value] of Object.entries(this.teeData)) {
         if (key.charAt(0) == 'P') {
-          if (Number(key.slice(-2)) >= 10) {
-            countPar++;
-          }
+          if (Number(key.slice(-2)) >= 10) countPar++;
         } else if (key.charAt(0) == 'S') {
-          if (Number(key.slice(-2)) >= 10) {
-            countSI++;
-          }
+          if (Number(key.slice(-2)) >= 10) countSI++;
         }
       }
-      if (countPar < 9) {
-        this.showCopyPar = true;
-      }
-      if (countSI < 9) {
-        this.showCopySI = true;
-      }
+      if (countPar < 9) this.showCopyPar = true;
+
+      if (countSI < 9) this.showCopySI = true;
     }
 
     if (!this.teeData.ColorName) {

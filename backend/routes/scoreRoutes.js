@@ -366,9 +366,8 @@ router.post("/delete", async (req, res) => {
       result = await calcHandicapIndex(scoreData);
       scoreData.hdcp = result.hdcp;
     }
-    console.log("result", result);
     console.log(`Deleted score: ${scoreData.id}`);
-    res.json({ scoreData: scoreData, scores: result.scores });
+    res.json({ scoreData: scoreData, scores: result?.scores });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);

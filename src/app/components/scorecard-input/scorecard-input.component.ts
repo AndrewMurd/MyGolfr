@@ -56,7 +56,7 @@ export class ScorecardInputComponent {
       this.subscriptions.add(
         this.submitInput.subscribe((value) => {
           if (this.data.id == value.id[0] && this.arrId[1] == value.id[1]) {
-            this.showField = false;
+            // this.showField = false;
             this.value = value.value;
           }
         })
@@ -70,13 +70,13 @@ export class ScorecardInputComponent {
 
   async submit(ev: any) {
     if (ev.keyCode == 13) {
-      if (!this.value || this.value == '') {
-        this.alertService.alert('Must enter Value!', {
-          color: 'green',
-          content: 'Accept',
-        });
-        return;
-      }
+      // if (!this.value || this.value == '') {
+      //   this.alertService.alert('Must enter Value!', {
+      //     color: 'green',
+      //     content: 'Accept',
+      //   });
+      //   return;
+      // }
       if (this.value.slice(-1) == '.') this.value = this.value.slice(0, -1);
       this.showField = false;
       this.onSubmitInput.emit({ id: this.arrId, value: this.value });
@@ -107,6 +107,8 @@ export class ScorecardInputComponent {
       setTimeout(() => {
         this.value = '';
       });
+    } else {
+      this.onSubmitInput.emit({ id: this.arrId, value: this.value });
     }
   }
 
