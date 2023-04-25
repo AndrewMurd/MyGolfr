@@ -110,7 +110,7 @@ export class ScoreInputComponent {
     // hdcp will only change on backend if this round is completed
     const userData = this.authService.user.getValue();
     userData.hdcp = this.data.hdcp;
-    this.authService.user.next(userData)
+    this.authService.user.next(userData);
   }
   // set the border based on score
   setBorder() {

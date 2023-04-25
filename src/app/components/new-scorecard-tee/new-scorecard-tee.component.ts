@@ -81,7 +81,6 @@ export class NewScorecardTeeComponent {
           countSI++;
       }
       if (countPar < 9) this.showCopyPar = true;
-
       if (countSI < 9) this.showCopySI = true;
     } else {
       for ([key, value] of Object.entries(this.teeData)) {
@@ -92,7 +91,6 @@ export class NewScorecardTeeComponent {
         }
       }
       if (countPar < 9) this.showCopyPar = true;
-
       if (countSI < 9) this.showCopySI = true;
     }
 

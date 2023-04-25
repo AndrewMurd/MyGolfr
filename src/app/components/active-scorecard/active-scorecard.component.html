@@ -1,6 +1,6 @@
 <div class="container">
   <img
-    *ngIf="!editing && !selectedScore"
+    *ngIf="!editing && signedIn && isUser"
     id="editBtn"
     (click)="edit()"
     src="../../../assets/edit.png"

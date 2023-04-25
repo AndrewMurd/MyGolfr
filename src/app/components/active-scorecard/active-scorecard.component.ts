@@ -20,6 +20,7 @@ export class ActiveScorecardComponent {
   @Input() selectedScore: boolean = false;
   @Input() showScorecard!: boolean;
   signedIn: boolean = false;
+  isUser: boolean = true;
   title!: string;
   scoreData: any;
   teeData: any;
@@ -43,13 +44,15 @@ export class ActiveScorecardComponent {
   ) {}
 
   async ngOnInit() {
-    this.authService.token.asObservable().subscribe((value) => {
-      if (value) {
-        this.signedIn = true;
-      } else {
-        this.signedIn = false;
-      }
-    });
+    this.subscriptions.add(
+      this.authService.token.asObservable().subscribe((value) => {
+        if (value) {
+          this.signedIn = true;
+        } else {
+          this.signedIn = false;
+        }
+      })
+    );
   }
 
   async ngAfterViewInit() {
@@ -62,6 +65,7 @@ export class ActiveScorecardComponent {
             .subscribe((value) => {
               if (value) {
                 this.scoreData = value;
+                this.getUser();
                 this.teeData = value.teeData;
                 this.title = this.scoreData.courseName;
                 this.removedBackNine =
@@ -77,6 +81,7 @@ export class ActiveScorecardComponent {
             .subscribe((value) => {
               if (value) {
                 this.scoreData = value;
+                this.getUser();
                 this.teeData = value.teeData;
                 this.title = this.scoreData.courseName;
                 this.removedBackNine =
@@ -87,6 +92,21 @@ export class ActiveScorecardComponent {
         );
       }
     });
+  }
+
+  getUser() {
+    this.subscriptions.add(
+      this.authService.user.asObservable().subscribe(async (value) => {
+        if (value) {
+          // check whether to allow user to edit the score based on logged in user
+          if (this.scoreData.userId == value.id) {
+            this.isUser = true;
+          } else {
+            this.isUser = false;
+          }
+        }
+      })
+    );
   }
 
   ngOnDestroy() {
@@ -104,7 +124,7 @@ export class ActiveScorecardComponent {
     this.isLoading = false;
   }
 
-  async submitScore() {
+  checkTeeData() {
     let countTeeData = 0;
     if (this.scoreData.courseDetails.nineHoleGolfCourse) {
       for (let [key, value] of Object.entries(this.teeData)) {
@@ -122,14 +142,15 @@ export class ActiveScorecardComponent {
       }
       if (countTeeData != 24) {
         this.alertService.alert(
-          'The data for this tee is incomplete! You must complete the data by editing the scorecard in top right.',
+          'The data for this tee is incomplete! You must complete the data by editing the scorecard.',
           {
             color: 'green',
             content: 'Accept',
           }
         );
-        return;
+        return false;
       }
+      return true;
     } else {
       for (let [key, value] of Object.entries(this.teeData)) {
         if (key == 'Slope' || key == 'Rating') continue;
@@ -137,7 +158,32 @@ export class ActiveScorecardComponent {
       }
       if (countTeeData != 44) {
         this.alertService.alert(
-          'The data for this tee is incomplete! You must complete the data by editing the scorecard in top right.',
+          'The data for this tee is incomplete! You must complete the data by editing the scorecard.',
+          {
+            color: 'green',
+            content: 'Accept',
+          }
+        );
+        return false;
+      }
+      return true;
+    }
+  }
+
+  async submitScore() {
+    if (!this.checkTeeData()) return;
+
+    // check whether user should be able to switch round to count towards hdcp calculation
+    if (this.scoreData.hdcpType == 'basic') {
+      // need a slope and rating for calculating hdcp
+      if (
+        this.scoreData.teeData.Rating == '' ||
+        this.scoreData.teeData.Rating == undefined ||
+        this.scoreData.teeData.Slope == '' ||
+        this.scoreData.teeData.Rating == undefined
+      ) {
+        this.alertService.alert(
+          'Must enter Slope Rating and Course Rating for Basic Mode (Needed for Handicap Calculation).',
           {
             color: 'green',
             content: 'Accept',
@@ -278,17 +324,56 @@ export class ActiveScorecardComponent {
       }
     }
     this.scoreData.teeData[data.id[1]] = data.value;
+    this.teeData[data.id[1]] = data.value;
   }
 
   async finishEdit() {
+    if (this.scoreData.statusComplete == 1) {
+      if (!this.checkTeeData()) return;
+      // check whether user should be able to switch round to count towards hdcp calculation
+      if (this.scoreData.hdcpType == 'basic') {
+        // need a slope and rating for calculating hdcp
+        if (
+          this.scoreData.teeData.Rating == '' ||
+          this.scoreData.teeData.Rating == undefined ||
+          this.scoreData.teeData.Slope == '' ||
+          this.scoreData.teeData.Rating == undefined
+        ) {
+          this.alertService.alert(
+            'Must enter Slope Rating and Course Rating for Basic Mode (Needed for Handicap Calculation).',
+            {
+              color: 'green',
+              content: 'Accept',
+            }
+          );
+          return;
+        }
+      }
+    }
+
     this.editing = false;
-    // update scorecard data based on edited values
     this.courseService.editingScoreCard.next(this.editing);
-    await this.courseService.updateColumn(
-      this.scoreData.googleDetails.reference,
-      this.scoreData.scorecard,
-      'scorecard'
-    );
+    if (this.scoreData.statusComplete == 0) {
+      // update scorecard data based on edited values
+      await this.courseService.updateColumn(
+        this.scoreData.googleDetails.reference,
+        this.scoreData.scorecard,
+        'scorecard'
+      );
+      this.scoreService.inProgressScoreData.next(this.scoreData);
+    } else {
+      this.scoreService.selectedScoreData.next(this.scoreData);
+      if (this.scoreData.hdcpType == 'basic') {
+        const response: any = await this.scoreService.update(
+          this.scoreData,
+          'score'
+        );
+        this.scoreData = response.scoreData;
+        const userData = this.authService.user.getValue();
+        userData.hdcp = this.scoreData.hdcp;
+        this.authService.user.next(userData);
+      }
+    }
     // update teeData with updated scorecard data for in progress score
     for (let tee of this.scoreData.scorecard) {
       if (tee.id == this.scoreData.teeData.id) {
@@ -296,7 +381,7 @@ export class ActiveScorecardComponent {
         await this.scoreService.update(this.scoreData, 'teeData');
       }
     }
-    this.scoreService.inProgressScoreData.next(this.scoreData);
+    this.reload();
   }
 
   // enable editing of scorecard
