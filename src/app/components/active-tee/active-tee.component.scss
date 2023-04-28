@@ -11,12 +11,122 @@
   border-bottom: 0px solid;
 }
 
-#colorPicker {
-  border-radius: 5px;
+.parent {
+  position: absolute;
+  left: 530px;
+  background-color: black;
+  height: 40px;
+  width: calc(100% - 534px);
+  z-index: 0;
+  border: none;
+}
+
+.close {
+  background: lightgrey;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  top: 18px;
+  right: 10px;
+  cursor: pointer;
+  &::after {
+    content: '';
+    height: 25px;
+    border-left: 2px solid black;
+    position: absolute;
+    transform: rotate(45deg);
+    left: 28px;
+  }
+  &::before {
+    content: '';
+    height: 25px;
+    border-left: 2px solid black;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 28px;
+  }
+}
+
+.checkboxInputContainer {
+  display: flex;
+  width: 100%;
   height: 25px;
-  width: 90%;
-  position: relative;
-  margin-left: 5px;
+  h3 {
+    margin-right: 20px;
+  }
+  input {
+    margin-top: 5px;
+  }
+}
+
+.PopUp {
+  margin-top: 80px;
+  div {
+    border-bottom: none;
+  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 45px;
+  height: auto;
+  width: 400px;
+  background-color: lightgrey;
+  border-radius: 16px;
+  z-index: 10000001;
+  opacity: 1;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  h1 {
+    font-weight: bold;
+  }
+  #colorNameInput {
+    height: 30px;
+    width: 100%;
+    border-radius: 5px;
+    outline: none;
+    font-size: 15px;
+  }
+  .colorPicker {
+    align-self: flex-start;
+    border-radius: 5px;
+    height: 30px;
+    width: 155px;
+  }
+  .AggregateTeeSelectorContainer {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .teeSelect{
+    height: 30px;
+    border-radius: 5px;
+    width: 45%;
+
+  }
+  .formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  label {
+    position: relative;
+    align-self: flex-start;
+  }
+  button {
+    margin-top: 10px;
+    height: 40px;
+    background-color: $green;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    &:hover {
+      background-color: rgb(0, 122, 0);
+    }
+  }
 }
 
 #deleteBtn {
@@ -42,13 +152,6 @@
   cursor: pointer;
 }
 
-#colorNamer {
-  position: relative;
-  width: 80%;
-  border-radius: 3px;
-  margin-left: 5px;
-}
-
 #inputSelector {
   position: relative;
   border-bottom: 0px solid;
@@ -61,19 +164,6 @@
   bottom: 3px;
   border-radius: 5px;
   border: 0px solid;
-}
-
-#openColorNamer,
-#openColorPicker {
-  margin-left: 5px;
-  border-radius: 5px;
-  border: 0px solid;
-  text-align: center;
-  padding: 0px;
-  width: 40%;
-  &:hover {
-    background-color: rgb(202, 202, 202);
-  }
 }
 
 p {
@@ -90,6 +180,7 @@ p {
 }
 
 div {
+  z-index: 1;
   font-size: 1.2rem;
   line-height: 40px;
   border-bottom: 1px solid rgb(88, 88, 88);
@@ -144,14 +235,6 @@ div {
     }
   }
 
-  #colorPicker {
-    margin-top: 20px;
-    margin-left: 0px;
-    border-radius: 5px;
-    height: 25px;
-    position: relative;
-  }
-
   #btnSetColor {
     position: relative;
     font-size: smaller;
@@ -161,27 +244,9 @@ div {
     border: 0px solid;
   }
 
-  #colorNamer {
-    position: relative;
-    width: 70%;
-    border-radius: 3px;
-    font-size: 80%;
-    margin-left: 0px;
-  }
-
   #inputSelector {
     position: relative;
     border-bottom: 0px solid;
-  }
-
-  #openColorNamer,
-  #openColorPicker {
-    border-radius: 5px;
-    border: 0px solid;
-    height: 100%;
-    width: 100%;
-    font-size: 100%;
-    margin-left: 0px;
   }
 
   #siHeader span {

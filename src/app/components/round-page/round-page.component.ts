@@ -366,10 +366,14 @@ export class RoundPageComponent {
 
   // calculate difference between total sum par and total score
   calculateShotsToPar() {
-    const scoreToPar =
-      this.scoreData?.score.In +
-      this.scoreData?.score.Out -
-      (this.scoreData?.teeData.SumInPar + this.scoreData?.teeData.SumOutPar);
+    let sumScore = 0, sumPar = 0;
+    for (let [key, value] of Object.entries(this.scoreData.score)) {
+      if (value != '' && key != 'Out' && key != 'In') {
+        sumScore += Number(value);
+        sumPar += Number(this.scoreData.teeData['P' + key]);
+      }
+    }
+    const scoreToPar = sumScore - sumPar;
     if (scoreToPar < 0 || scoreToPar == 0) {
       return `${scoreToPar}`;
     } else if (scoreToPar > 0) {

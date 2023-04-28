@@ -8,61 +8,97 @@
   <option value="#C0C0C0">Silver</option>
 </datalist>
 
+<div *ngIf="popUp" class="PopUp">
+  <div class="close" (click)="popUp = false; resetPopup()"></div>
+  <h1>Edit Tee</h1>
+  <div class="formContainer">
+    <label>Aggregate Tee</label>
+    <div class="checkboxInputContainer">
+      <h3>Is this tee aggregated?</h3>
+      <input
+        type="checkbox"
+        [(ngModel)]="aggregated"
+        (ngModelChange)="checkForAggregation()"
+      />
+    </div>
+    <label *ngIf="!aggregated">Select Name</label>
+    <input
+      *ngIf="!aggregated"
+      id="colorNameInput"
+      onkeydown="return /[a-z]/i.test(event.key)"
+      type="text"
+      placeholder="Enter Tee Color"
+      name="nameColor"
+      [(ngModel)]="nameColor"
+    />
+    <label *ngIf="!aggregated">Color Picker</label>
+    <input
+      *ngIf="!aggregated"
+      type="color"
+      class="colorPicker"
+      [(ngModel)]="color"
+      list="presets"
+    />
+    <label *ngIf="aggregated">Aggregation Tees</label>
+    <div *ngIf="aggregated" class="AggregateTeeSelectorContainer">
+      <select class="teeSelect" [(ngModel)]="selectedTee1">
+        <option *ngFor="let tee of completedTees" [ngValue]="tee.id">
+          {{ tee.ColorName }}
+        </option>
+      </select>
+      <select class="teeSelect" [(ngModel)]="selectedTee2">
+        <option *ngFor="let tee of completedTees" [ngValue]="tee.id">
+          {{ tee.ColorName }}
+        </option>
+      </select>
+    </div>
+    <button id="submitInfo" (click)="submitEdit()">Submit Edit</button>
+  </div>
+</div>
+
 <div class="grid-container">
-  <!-- row 1 -->
+  <!-- row 2 -->
   <div
     id="colorInputsContainer"
-    [ngStyle]="{ 'background-color': teeData.Color }"
+    [ngStyle]="
+      aggregated
+        ? {
+            'background-image':
+              'linear-gradient(to right,' +
+              (teeData[isFrontNine ? 'A1' : 'A10'] == tee1.id
+                ? tee2.Color
+                : tee1.Color) +
+              ',' +
+              (teeData[isFrontNine ? 'A1' : 'A10'] == tee1.id
+                ? tee1.Color
+                : tee2.Color) +
+              ')'
+          }
+        : { 'background-color': teeData.Color }
+    "
   >
     <p
       [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
-      *ngIf="displayColorName && !editing"
+      *ngIf="!editing"
     >
-      {{ teeData.ColorName }}
+      {{
+        aggregated ? tee1.ColorName + "/" + tee2.ColorName : teeData.ColorName
+      }}
     </p>
     <p
       [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
-      *ngIf="displayColorName && editing"
-      (click)="displayColorName = false; displayInputSelector = true"
+      *ngIf="editing"
+      (click)="popUp = true"
     >
-      {{ teeData.ColorName }}
+      {{
+        aggregated ? tee1.ColorName + "/" + tee2.ColorName : teeData.ColorName
+      }}
     </p>
-    <div *ngIf="displayInputSelector && editing" id="inputSelector">
-      <button
-        id="openColorPicker"
-        (click)="displayColorPicker = true; displayInputSelector = false"
-      >
-        Color
-      </button>
-      <button
-        id="openColorNamer"
-        (click)="displayColorNamer = true; displayInputSelector = false"
-      >
-        Name
-      </button>
-    </div>
-    <div *ngIf="displayColorPicker && editing">
-      <input type="color" id="colorPicker" [(ngModel)]="color" list="presets" />
-      <button id="btnSetColor" (click)="setColor()">Set</button>
-    </div>
-    <div *ngIf="displayColorNamer && editing">
-      <form action="">
-        <input
-          id="colorNamer"
-          onkeydown="return /[a-z]/i.test(event.key)"
-          (keypress)="submitColorName($event)"
-          type="text"
-          placeholder="Enter Tee Color"
-          name="nameColor"
-          [(ngModel)]="nameColor"
-        />
-      </form>
-    </div>
   </div>
   <div
     [ngStyle]="{ 'background-color': teeData.Color }"
     class="holes"
-    *ngFor="let a of createRange(9); let index = index"
+    *ngFor="let a of createRange(teeData.Aggregated ? 0 : 9); let index = index"
   >
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
@@ -73,6 +109,40 @@
     ></app-scorecard-input>
   </div>
   <div
+    [ngStyle]="{
+      'background-color': getHoleColor(index + (isFrontNine ? 1 : 10))
+    }"
+    class="holes"
+    *ngFor="let a of createRange(teeData.Aggregated ? 9 : 0); let index = index"
+  >
+    <app-aggregate-select
+      (onSubmitInput)="onSubmit($event)"
+      id="{{ index + (isFrontNine ? 1 : 10) }}"
+      [data]="{ teeData: teeData, courseData: scoreData }"
+      [whiteEvent]="colorEventsSubject.asObservable()"
+    ></app-aggregate-select>
+  </div>
+  <div
+    *ngIf="aggregated"
+    [ngStyle]="
+      aggregated
+        ? {
+            'background-image':
+              'linear-gradient(to right,' +
+              (teeData[isFrontNine ? 'A9' : 'A18'] == tee1?.id
+                ? tee1.Color
+                : tee2.Color) +
+              ',' +
+              (teeData[isFrontNine ? 'A9' : 'A18'] == tee1?.id
+                ? tee2.Color
+                : tee1.Color) +
+              ')'
+          }
+        : { 'background-color': teeData.Color }
+    "
+    class="parent"
+  ></div>
+  <div
     [ngStyle]="
       isWhite
         ? { 'background-color': teeData.Color, color: '#252525' }
@@ -81,7 +151,15 @@
   >
     {{ teeData[isFrontNine ? "SumOut" : "SumIn"] }}
   </div>
-  <div [ngStyle]="{ 'background-color': teeData.Color }">
+  <div
+    [ngStyle]="
+      aggregated
+        ? {
+            'background-color': 'transparent'
+          }
+        : { 'background-color': teeData.Color }
+    "
+  >
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="Slope"
@@ -91,7 +169,15 @@
       [whiteEvent]="colorEventsSubject.asObservable()"
     ></app-scorecard-input>
   </div>
-  <div [ngStyle]="{ 'background-color': teeData.Color }">
+  <div
+    [ngStyle]="
+      aggregated
+        ? {
+            'background-color': 'transparent'
+          }
+        : { 'background-color': teeData.Color }
+    "
+  >
     <app-scorecard-input
       (onSubmitInput)="onSubmit($event)"
       placeholder="Rating"

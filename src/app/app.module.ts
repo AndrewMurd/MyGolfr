@@ -37,6 +37,7 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { AccountComponent } from './components/account/account.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 import { SocialTabComponent } from './components/social-tab/social-tab.component';
+import { AggregateSelectComponent } from './components/aggregate-select/aggregate-select.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { SocialTabComponent } from './components/social-tab/social-tab.component
     AccountComponent,
     ProfilePageComponent,
     SocialTabComponent,
+    AggregateSelectComponent,
   ],
   imports: [
     BrowserModule,

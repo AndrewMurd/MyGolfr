@@ -38,11 +38,9 @@ export class ScorecardInputComponent {
     this.arrId[0] = this.arrId[0].trim();
     this.arrId[1] = this.arrId[1].trim();
     // set value of this input from database
-    if (this.arrId[0] === this.data.id) {
-      if (this.data[this.arrId[1]]) {
-        this.showField = false;
-        this.value = this.data[this.arrId[1]];
-      }
+    if (this.arrId[0] === this.data.id && this.data[this.arrId[1]]) {
+      this.showField = false;
+      this.value = this.data[this.arrId[1]];
     }
 
     this.subscriptions.add(

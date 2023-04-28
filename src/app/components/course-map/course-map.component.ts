@@ -40,6 +40,9 @@ export class CourseMapComponent {
   };
   isNineHole: boolean = false;
   isPhone: boolean = false;
+  aggregated: boolean = false;
+  tee1: any;
+  tee2: any;
   selectedMapView: string = 'course';
   map!: google.maps.Map;
   mapDivId = makeid(5);
@@ -103,6 +106,13 @@ export class CourseMapComponent {
               this.courseData = JSON.parse(JSON.stringify(this.scoreData));
               this.courseData.id = this.courseData.googleDetails.reference;
               this.selectedTeeView = this.scoreData.teeData;
+              if (this.selectedTeeView.Aggregated) this.aggregated = true;
+              if (this.aggregated) {
+                for (let tee of this.courseData.scorecard) {
+                  if (this.selectedTeeView.Tee1 == tee.id) this.tee1 = tee;
+                  if (this.selectedTeeView.Tee2 == tee.id) this.tee2 = tee;
+                }
+              }
               setTimeout(() => {
                 this.reload();
                 if (this.scoreData.lastInput) {
@@ -197,7 +207,10 @@ export class CourseMapComponent {
 
     this.isNineHole = this.courseData.courseDetails.nineHoleGolfCourse;
     this.layoutData = this.courseData.mapLayout;
-    this.scorecard = this.courseData.scorecard;
+    this.scorecard = [];
+    for (let tee of this.courseData.scorecard) {
+      if (!tee.Aggregated) this.scorecard.push(tee);
+    }
     this.googleDetails = this.courseData.googleDetails;
 
     this.setMapView(this.selectedMapView);
@@ -273,7 +286,7 @@ export class CourseMapComponent {
     }
 
     // remove layout data for each tee that isnt for in progress round
-    if (this.scorecard.length == 1) {
+    if (this.scorecard.length == 1 && !this.aggregated) {
       holeLayout.teeLocations = holeLayout.teeLocations.filter(
         (teeLoc: any) => {
           return teeLoc.id == this.scorecard[0].id;
@@ -293,8 +306,19 @@ export class CourseMapComponent {
     var offsetTee = this.offsetFactor;
     for (const teeLoc of holeLayout.teeLocations) {
       // if round is in progress skip all tees that arent being played
-      if (this.roundInProgress && teeLoc.id != this.scoreData.teeData.id)
+      if (this.roundInProgress && teeLoc.id != this.scoreData.teeData.id && !this.aggregated)
         continue;
+      if (this.aggregated && this.selectedTeeView['A' + this.selectedMapView] != teeLoc.id) {
+        continue;
+      }
+      let agg = false;
+      for (let tee of this.courseData.scorecard) {
+        if (tee.id == teeLoc.id && tee.Aggregated) {
+          agg = true;
+          break;
+        }
+      }
+      if (agg) continue;
       // get correct color of tee for map info display
       let color;
       let colorName;

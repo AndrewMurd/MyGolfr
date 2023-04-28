@@ -36,8 +36,12 @@
     </select>
     <label>Tee Type</label>
     <select id="teeType" [(ngModel)]="selectedTee">
-      <option *ngFor="let tee of completedTees" [ngValue]="tee">
-        {{ tee.ColorName }}
+      <option *ngFor="let tee of tees" [ngValue]="tee">
+        {{
+          tee.Aggregated
+            ? getTee(tee.Tee1).ColorName + "/" + getTee(tee.Tee2).ColorName
+            : tee.ColorName
+        }}
       </option>
     </select>
     <button id="submitInfo" (click)="startRound()">Start Round</button>
@@ -53,15 +57,30 @@
   />
   <div id="selectTeeBtnSlide" class="slide">
     <a
-      *ngFor="let tee of completedTees"
+      *ngFor="let tee of tees"
       [ngStyle]="
-        getColorWhite(getRGB(tee.Color))
-          ? { 'background-color': tee.Color, color: '#252525' }
-          : { 'background-color': tee.Color, color: 'White' }
+        tee.Aggregated
+          ? {
+              'background-image':
+                'linear-gradient(to right,' +
+                getTee(tee.Tee1).Color +
+                ',' +
+                getTee(tee.Tee2).Color +
+                ')',
+              color: getColorWhite(getRGB(tee.Color)) ? '#252525' : 'White'
+            }
+          : {
+              'background-color': tee.Color,
+              color: getColorWhite(getRGB(tee.Color)) ? '#252525' : 'White'
+            }
       "
-      (click)="selectTee(tee);"
+      (click)="selectTee(tee)"
       id="{{ tee.id }}"
-      >{{ tee.ColorName }}</a
+      >{{
+        tee.Aggregated
+          ? getTee(tee.Tee1).ColorName + "/" + getTee(tee.Tee2).ColorName
+          : tee.ColorName
+      }}</a
     >
   </div>
 </nav>

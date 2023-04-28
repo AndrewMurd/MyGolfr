@@ -1,0 +1,24 @@
+<div
+  (click)="idSelected = ''; editing ? (showField = true) : (showField = false)"
+  [ngClass]="showField || !editing ? 'nohoverDiv' : 'hoverDiv'"
+>
+  <select
+    *ngIf="showField && editing"
+    class="aggregateSelect"
+    [(ngModel)]="idSelected"
+    (ngModelChange)="submitValue()"
+  >
+    <option [ngValue]="tee1.id">
+      {{ tee1.ColorName }}
+    </option>
+    <option [ngValue]="tee2.id">
+      {{ tee2.ColorName }}
+    </option>
+  </select>
+  <p
+    *ngIf="!showField"
+    [ngStyle]="isWhite ? { color: '#252525' } : { color: 'White' }"
+  >
+    {{ displayValue }}
+  </p>
+</div>

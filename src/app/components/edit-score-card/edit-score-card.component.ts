@@ -131,6 +131,33 @@ export class EditScoreCardComponent {
           }
           tee['SumOutPar'] = outNum;
           tee['SumInPar'] = inNum;
+        } else if (data.id[1].charAt(0) == 'A') {
+          let inNum = 0;
+          let outNum = 0;
+          let tee1, tee2;
+          let teeData;
+          for (let tee of this.courseData.scorecard) {
+            if (data.id[0] == tee.id) teeData = tee;
+          }
+          for (let tee of this.courseData.scorecard) {
+            if (teeData.Tee1 == tee.id) tee1 = tee;
+            if (teeData.Tee2 == tee.id) tee2 = tee;
+          }
+          for (let [key, value] of Object.entries(tee)) {
+            if (key.charAt(0) == 'A' && key.length == 2) {
+              let value;
+              if (teeData[key] == tee1.id) value = tee1['H' + key.charAt(1)];
+              else if (teeData[key] == tee2.id) value = tee2['H' + key.charAt(1)];
+              outNum += Number(value);
+            } else if (key.charAt(0) == 'A' && key.length == 3) {
+              let value;
+              if (teeData[key] == tee1.id) value = tee1['H' + key.slice(-2)];
+              else if (teeData[key] == tee2.id) value = tee2['H' + key.slice(-2)];
+              inNum += Number(value);
+            }
+          }
+          tee['SumOut'] = outNum;
+          tee['SumIn'] = inNum;
         }
       }
     }

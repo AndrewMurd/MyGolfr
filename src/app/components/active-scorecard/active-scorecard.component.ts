@@ -8,6 +8,7 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { ActiveTeeComponent } from '../active-tee/active-tee.component';
 import * as moment from 'moment';
+import { modelAggregated18, modelAggregated9, modelNormal18, modelNormal9 } from 'src/app/utilities/models';
 
 // this component is used for displaying and editing rounds/scores user is currently playing or has completed
 @Component({
@@ -125,22 +126,23 @@ export class ActiveScorecardComponent {
   }
 
   checkTeeData() {
-    let countTeeData = 0;
     if (this.scoreData.courseDetails.nineHoleGolfCourse) {
+      let model;
+      if (this.teeData.Aggregated) model = modelAggregated9;
+      else model = modelNormal9;
       for (let [key, value] of Object.entries(this.teeData)) {
-        if (
-          (key.charAt(0) == 'H' && Number(key.slice(1, 3)) > 9) ||
-          (key.charAt(0) == 'P' && Number(key.slice(1, 3)) > 9) ||
-          key == 'SumOutPar' ||
-          key == 'SumOut' ||
-          key == 'Slope' ||
-          key == 'Rating'
-        ) {
-          continue;
+        if (key in model) {
+          model[key] = true;
         }
-        if (key.slice(0, 2) != 'SI' && value != '') countTeeData++;
       }
-      if (countTeeData != 24) {
+      let complete = true;
+      for (let [key, value] of Object.entries(model)) {
+        if (!value) {
+          complete = false;
+          break;
+        }
+      }
+      if (!complete) {
         this.alertService.alert(
           'The data for this tee is incomplete! You must complete the data by editing the scorecard.',
           {
@@ -152,11 +154,22 @@ export class ActiveScorecardComponent {
       }
       return true;
     } else {
+      let model;
+      if (this.teeData.Aggregated) model = modelAggregated18;
+      else model = modelNormal18;
       for (let [key, value] of Object.entries(this.teeData)) {
-        if (key == 'Slope' || key == 'Rating') continue;
-        if (key.slice(0, 2) != 'SI' && value != '') countTeeData++;
+        if (key in model) {
+          model[key] = true;
+        }
       }
-      if (countTeeData != 44) {
+      let complete = true;
+      for (let [key, value] of Object.entries(model)) {
+        if (!value) {
+          complete = false;
+          break;
+        }
+      }
+      if (!complete) {
         this.alertService.alert(
           'The data for this tee is incomplete! You must complete the data by editing the scorecard.',
           {
@@ -437,7 +450,7 @@ export class ActiveScorecardComponent {
     backNineTee.instance.onSubmitofInput.subscribe((value) => {
       this.onSubmit(value);
     });
-    frontNineTee.instance.loading.subscribe((value) => {
+    backNineTee.instance.loading.subscribe((value) => {
       this.isLoading = value;
     });
     backNineTee.instance.submitInput = this.onSubmitInput.asObservable();

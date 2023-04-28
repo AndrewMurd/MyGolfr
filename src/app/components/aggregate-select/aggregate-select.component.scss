@@ -1,0 +1,23 @@
+@import "../../utilities/variables.scss";
+
+.hoverDiv {
+  cursor: pointer;
+  transition: transform 150ms, box-shadow 150ms;
+  border-radius: 5px;
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.5) 0 10px 12px 0;
+    transform: translateY(-2px);
+  }
+  // z-index: 10;
+}
+
+.nohoverDiv {
+  cursor: pointer;
+  transition: transform 150ms, box-shadow 150ms;
+  border-radius: 5px;
+  // z-index: 10;
+}
+
+.aggregateSelect {
+  width: 100%;
+}

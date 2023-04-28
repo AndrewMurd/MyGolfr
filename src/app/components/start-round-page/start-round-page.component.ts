@@ -44,7 +44,7 @@ export class StartRoundPageComponent {
   subscriptions: Subscription = new Subscription();
   userData: any;
   courseData: any;
-  completedTees: any = [];
+  tees: any = [];
   showScorecard: boolean = false;
   openTeeDropdown: Boolean = false;
   selectedTee: any;
@@ -89,10 +89,10 @@ export class StartRoundPageComponent {
       this.courseService.courseData.asObservable().subscribe(async (value) => {
         if (value) {
           this.courseData = value;
-          this.completedTees = JSON.parse(
+          this.tees = JSON.parse(
             JSON.stringify(this.courseData.scorecard)
           );
-          this.completedTees = this.completedTees.sort((a: any, b: any) => {
+          this.tees = this.tees.sort((a: any, b: any) => {
             return a.Position - b.Position;
           });
           this.loadingService.loading.next(false);
@@ -103,6 +103,14 @@ export class StartRoundPageComponent {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  getTee(id: string) {
+    for (let tee of this.courseData.scorecard) {
+      if (tee.id == id) {
+        return tee;
+      }
+    }
   }
 
   selectTee(tee: any) {
@@ -144,33 +152,9 @@ export class StartRoundPageComponent {
       document.getElementById('selectTeeBtn')!.style.top = '145px';
     }
   }
-  // filters completed tees
-  checkSelectedTee() {
-    let countTeeData = 0;
-    if (this.courseData.courseDetails.nineHoleGolfCourse) {
-      for (let [key, value] of Object.entries(this.selectedTee)) {
-        if (
-          (key.charAt(0) == 'H' && Number(key.slice(1, 3)) > 9) ||
-          (key.charAt(0) == 'P' && Number(key.slice(1, 3)) > 9) ||
-          key == 'SumOutPar' || key == 'SumOut'
-        ) {
-          continue;
-        }
-        if (key.slice(0, 2) != 'SI' && value != '') countTeeData++;
-      }
-      if (countTeeData == 26) return true;
-      else return false;
-    } else {
-      for (let [key, value] of Object.entries(this.selectedTee)) {
-        if (key.slice(0, 2) != 'SI' && value != '') countTeeData++;
-      }
-      if (countTeeData == 46) return true;
-      else return false;
-    }
-  }
   // alert user if there are no tees ready to be played with
   alertUserOfTees() {
-    if (this.completedTees.length == 0) {
+    if (this.tees.length == 0) {
       this.alertService.alert(
         'You must complete a tee in the scorecard to start a round.',
         { color: 'green', content: 'Accept' }
@@ -180,7 +164,7 @@ export class StartRoundPageComponent {
   // set height of tee dropdown dynamically
   teeDropdown(set: boolean) {
     this.openTeeDropdown = set;
-    let pixels = 44 * this.completedTees.length;
+    let pixels = 44 * this.tees.length;
     try {
       if (this.openTeeDropdown) {
         document.getElementById(
