@@ -27,32 +27,60 @@
     <div *ngIf="selectedTeeView" id="otherInfoDisplay">
       <div
         class="parSIDisplay"
-        [ngStyle]="{
-          'background-color': aggregated
-            ? selectedTeeView['A' + selectedMapView] == tee1.id
-              ? tee1.Color
-              : tee2.Color
-            : selectedTeeView.Color,
-          color: getColorWhite(getRGB(selectedTeeView.Color))
-            ? 'black'
-            : 'White'
-        }"
+        [ngStyle]="
+          aggregated
+            ? {
+                'background-color':
+                  selectedTeeView['A' + selectedMapView] == tee1.id
+                    ? tee1.Color
+                    : tee2.Color,
+                color: getColorWhite(
+                  getRGB(
+                    selectedTeeView['A' + selectedMapView] == tee1.id
+                      ? tee1.Color
+                      : tee2.Color
+                  )
+                )
+                  ? 'black'
+                  : 'White'
+              }
+            : {
+                'background-color': selectedTeeView.Color,
+                color: getColorWhite(getRGB(selectedTeeView.Color))
+                  ? 'black'
+                  : 'White'
+              }
+        "
       >
         <p class="lineOne">Par</p>
         <p class="lineTwo">{{ selectedTeeView["P" + selectedMapView] }}</p>
       </div>
       <div
         class="parSIDisplay"
-        [ngStyle]="{
-          'background-color': aggregated
-            ? selectedTeeView['A' + selectedMapView] == tee1.id
-              ? tee1.Color
-              : tee2.Color
-            : selectedTeeView.Color,
-          color: getColorWhite(getRGB(selectedTeeView.Color))
-            ? 'black'
-            : 'White'
-        }"
+        [ngStyle]="
+          aggregated
+            ? {
+                'background-color':
+                  selectedTeeView['A' + selectedMapView] == tee1.id
+                    ? tee1.Color
+                    : tee2.Color,
+                color: getColorWhite(
+                  getRGB(
+                    selectedTeeView['A' + selectedMapView] == tee1.id
+                      ? tee1.Color
+                      : tee2.Color
+                  )
+                )
+                  ? 'black'
+                  : 'White'
+              }
+            : {
+                'background-color': selectedTeeView.Color,
+                color: getColorWhite(getRGB(selectedTeeView.Color))
+                  ? 'black'
+                  : 'White'
+              }
+        "
       >
         <p class="lineOne">SI</p>
         <p class="lineTwo">{{ selectedTeeView["SI" + selectedMapView] }}</p>

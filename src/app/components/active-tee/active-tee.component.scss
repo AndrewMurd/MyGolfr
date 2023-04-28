@@ -6,7 +6,7 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: 16.5% repeat(9, 6.2%) 8% 10% 10%;
+  grid-template-columns: 16.5% repeat(9, 6.2%) 8% 9.85% 9.85%;
   grid-auto-rows: 40px;
   border-bottom: 0px solid;
 }
@@ -16,7 +16,7 @@
   left: 530px;
   background-color: black;
   height: 40px;
-  width: calc(100% - 534px);
+  width: calc(100% - 535.5px);
   z-index: 0;
   border: none;
 }
@@ -60,7 +60,6 @@
 }
 
 .PopUp {
-  margin-top: 80px;
   div {
     border-bottom: none;
   }
@@ -69,14 +68,15 @@
   align-items: center;
   padding: 45px;
   height: auto;
-  width: 400px;
+  max-width: 400px;
+  width: 75%;
   background-color: lightgrey;
   border-radius: 16px;
   z-index: 10000001;
   opacity: 1;
-  position: absolute;
-  top: 35%;
+  position: fixed;
   left: 50%;
+  margin-top: 150px;
   margin-right: -50%;
   transform: translate(-50%, -50%);
   h1 {
@@ -115,6 +115,7 @@
   label {
     position: relative;
     align-self: flex-start;
+    font-size: normal;
   }
   button {
     margin-top: 10px;
@@ -183,6 +184,7 @@ div {
   z-index: 1;
   font-size: 1.2rem;
   line-height: 40px;
+  border: none;
   border-bottom: 1px solid rgb(88, 88, 88);
 }
 
@@ -205,15 +207,15 @@ div {
     display: grid;
     grid-template-columns: 10% repeat(9, 6.7%) 10% 10% 10%;
     grid-auto-rows: 20px;
-    border-bottom: 0px solid;
+    border-bottom: none;
   }
 
   div {
     font-size: 0.6rem;
     line-height: 20px;
+    border: none;
     border-bottom: 1px solid rgb(88, 88, 88);
   }
-
   
   #copyPar,
   #copySI {
@@ -241,12 +243,12 @@ div {
     height: 20px;
     bottom: 3px;
     border-radius: 5px;
-    border: 0px solid;
+    border: none;
   }
 
   #inputSelector {
     position: relative;
-    border-bottom: 0px solid;
+    border-bottom: none;
   }
 
   #siHeader span {
@@ -255,5 +257,26 @@ div {
 
   #siHeader::after {
     content: "S.I.";
+  }
+
+  .parent {
+    position: absolute;
+    left: 70%;
+    background-color: black;
+    height: 20px;
+    width: calc(100% - 70%);
+    z-index: 0;
+    border: none;
+  }
+
+  .PopUp {
+    label {
+      position: relative;
+      align-self: flex-start;
+      font-size: small;
+    }
+    h3 {
+      font-size: small;
+    }
   }
 }

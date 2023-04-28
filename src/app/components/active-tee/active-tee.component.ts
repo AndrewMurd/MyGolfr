@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { ScoreService } from '../../services/score.service';
 import { CourseDetailsService } from '../../services/course-details.service';
@@ -28,6 +28,7 @@ export class ActiveTeeComponent {
   @Input() submitInput!: Observable<any>;
   @Output() onSubmitofInput: EventEmitter<any> = new EventEmitter();
   @Output() loading: EventEmitter<any> = new EventEmitter();
+  isPhone: boolean = false;
   scoreData: any;
   editing: boolean = false;
   aggregated!: boolean;
@@ -53,6 +54,8 @@ export class ActiveTeeComponent {
   ) {}
 
   ngOnInit() {
+    this.onResize();
+    
     this.color = this.teeData.Color;
     this.nameColor = this.teeData.ColorName;
 
@@ -352,6 +355,15 @@ export class ActiveTeeComponent {
         return false;
       }
       return true;
+    }
+  }
+  
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    if (window.innerWidth < 830) {
+      this.isPhone = true;
+    } else {
+      this.isPhone = false;
     }
   }
 }

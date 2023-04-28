@@ -82,7 +82,11 @@
       *ngIf="!editing"
     >
       {{
-        aggregated ? tee1.ColorName + "/" + tee2.ColorName : teeData.ColorName
+        aggregated
+          ? isPhone
+            ? tee1.ColorName.charAt(0) + "/" + tee2.ColorName.charAt(0)
+            : tee1.ColorName + "/" + tee2.ColorName
+          : teeData.ColorName
       }}
     </p>
     <p
@@ -91,7 +95,11 @@
       (click)="popUp = true"
     >
       {{
-        aggregated ? tee1.ColorName + "/" + tee2.ColorName : teeData.ColorName
+        aggregated
+          ? isPhone
+            ? tee1.ColorName.charAt(0) + "/" + tee2.ColorName.charAt(0)
+            : tee1.ColorName + "/" + tee2.ColorName
+          : teeData.ColorName
       }}
     </p>
   </div>
