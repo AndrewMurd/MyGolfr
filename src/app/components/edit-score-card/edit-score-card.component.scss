@@ -2,6 +2,10 @@
 
 $width: 738px;
 
+app-new-scorecard-tee {
+  z-index: 1000000000000000000000000;
+}
+
 #container {
   position: relative;
   width: $width;
@@ -83,7 +87,7 @@ h1 {
   position: relative;
   margin-left: 45px;
   width: $width;
-  // height: 45px;
+  z-index: -1;
 }
 
 /* CSS */

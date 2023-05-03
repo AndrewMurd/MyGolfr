@@ -5,6 +5,7 @@
 }
 
 .grid-container {
+  overflow: hidden;
   display: grid;
   grid-template-columns: 16.5% repeat(9, 6.2%) 8% 9.85% 9.85%;
   grid-auto-rows: 40px;

@@ -1,4 +1,10 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+} from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { ScoreService } from '../../services/score.service';
 import { CourseDetailsService } from '../../services/course-details.service';
@@ -80,14 +86,18 @@ export class NewScorecardTeeComponent {
           this.completedTees = this.completedTees.sort((a: any, b: any) => {
             return a.Position - b.Position;
           });
-          if (!this.teeData.Tee1) this.selectedTee1 = this.completedTees[0].id;
-          else this.selectedTee1 = this.teeData.Tee1;
-          if (!this.teeData.Tee2) this.selectedTee2 = this.completedTees[1].id;
-          else this.selectedTee2 = this.teeData.Tee2;
-          for (let tee of this.scorecard) {
-            if (this.selectedTee1 == tee.id) this.tee1 = tee;
-            if (this.selectedTee2 == tee.id) this.tee2 = tee;
-          }
+          try {
+            if (!this.teeData.Tee1)
+              this.selectedTee1 = this.completedTees[0].id;
+            else this.selectedTee1 = this.teeData.Tee1;
+            if (!this.teeData.Tee2)
+              this.selectedTee2 = this.completedTees[1].id;
+            else this.selectedTee2 = this.teeData.Tee2;
+            for (let tee of this.scorecard) {
+              if (this.selectedTee1 == tee.id) this.tee1 = tee;
+              if (this.selectedTee2 == tee.id) this.tee2 = tee;
+            }
+          } catch (error) {}
         }
       })
     );
@@ -489,27 +499,27 @@ export class NewScorecardTeeComponent {
         'You need two different tees for an aggregated tee.',
         { color: 'green', content: 'Accept' }
       );
-      setTimeout(() => {
-        this.aggregated = false;
+      document.getElementById('checkbox' + this.teeData.id)?.click();
+      return;
+    } else if (this.aggregated) {
+      this.completedTees = this.scorecard.filter((tee: any) => {
+        return (
+          this.checkTeeData(tee) &&
+          (tee.Aggregated == false || tee.Aggregated == undefined) &&
+          tee.id != this.teeData.id
+        );
       });
-    }
-    this.completedTees = this.scorecard.filter((tee: any) => {
-      return (
-        this.checkTeeData(tee) &&
-        (tee.Aggregated == false || tee.Aggregated == undefined) &&
-        tee.id != this.teeData.id
-      );
-    });
-    this.completedTees = this.completedTees.sort((a: any, b: any) => {
-      return a.Position - b.Position;
-    });
-    if (!this.teeData.Tee1) this.selectedTee1 = this.completedTees[0].id;
-    else this.selectedTee1 = this.teeData.Tee1;
-    if (!this.teeData.Tee2) this.selectedTee2 = this.completedTees[1].id;
-    else this.selectedTee2 = this.teeData.Tee2;
-    for (let tee of this.scorecard) {
-      if (this.selectedTee1 == tee.id) this.tee1 = tee;
-      if (this.selectedTee2 == tee.id) this.tee2 = tee;
+      this.completedTees = this.completedTees.sort((a: any, b: any) => {
+        return a.Position - b.Position;
+      });
+      if (!this.teeData.Tee1) this.selectedTee1 = this.completedTees[0].id;
+      else this.selectedTee1 = this.teeData.Tee1;
+      if (!this.teeData.Tee2) this.selectedTee2 = this.completedTees[1].id;
+      else this.selectedTee2 = this.teeData.Tee2;
+      for (let tee of this.scorecard) {
+        if (this.selectedTee1 == tee.id) this.tee1 = tee;
+        if (this.selectedTee2 == tee.id) this.tee2 = tee;
+      }
     }
   }
 
@@ -531,13 +541,6 @@ export class NewScorecardTeeComponent {
         }
       }
       if (!complete) {
-        this.alertService.alert(
-          'The data for this tee is incomplete! You must complete the data by editing the scorecard.',
-          {
-            color: 'green',
-            content: 'Accept',
-          }
-        );
         return false;
       }
       return true;
@@ -558,13 +561,6 @@ export class NewScorecardTeeComponent {
         }
       }
       if (!complete) {
-        this.alertService.alert(
-          'The data for this tee is incomplete! You must complete the data by editing the scorecard.',
-          {
-            color: 'green',
-            content: 'Accept',
-          }
-        );
         return false;
       }
       return true;

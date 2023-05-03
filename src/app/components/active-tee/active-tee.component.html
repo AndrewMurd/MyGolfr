@@ -16,6 +16,7 @@
     <div class="checkboxInputContainer">
       <h3>Is this tee aggregated?</h3>
       <input
+        id="checkbox{{ teeData.id }}"
         type="checkbox"
         [(ngModel)]="aggregated"
         (ngModelChange)="checkForAggregation()"

@@ -2,6 +2,10 @@
 
 $containerColor: rgb(102, 102, 102);
 
+img {
+  cursor: pointer;
+}
+
 .container {
   display: flex;
   flex-direction: column;

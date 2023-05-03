@@ -8,7 +8,12 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { ActiveTeeComponent } from '../active-tee/active-tee.component';
 import * as moment from 'moment';
-import { modelAggregated18, modelAggregated9, modelNormal18, modelNormal9 } from 'src/app/utilities/models';
+import {
+  modelAggregated18,
+  modelAggregated9,
+  modelNormal18,
+  modelNormal9,
+} from 'src/app/utilities/models';
 
 // this component is used for displaying and editing rounds/scores user is currently playing or has completed
 @Component({
@@ -248,9 +253,23 @@ export class ActiveScorecardComponent {
       );
     } else if (this.scoreData.hdcpType == 'basic') {
       // warn user that score is imcomplete and they must continue since its being used for hdcp
-      this.alertService.alert(
-        'This score is incomplete! You must complete every hole when calculating handicap.',
-        { color: 'green', content: 'Accept' }
+      this.alertService.confirm(
+        'This score is incomplete! Are you sure you want to submit this score? (Incomplete Basic round will revert to None)',
+        { color: 'green', content: 'Confirm' },
+        async () => {
+          this.loadingService.loading.next(true);
+          try {
+            this.scoreData.statusComplete = 1;
+            this.scoreData.hdcpType = 'none';
+            await this.scoreService.update(this.scoreData, 'hdcpType');
+            this.scoreData.endTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+            await this.scoreService.update(this.scoreData, 'statusComplete');
+            this.scoreService.inProgressScoreData.next(null);
+            this.router.navigate(['/round', this.scoreData.id]);
+          } catch (error) {}
+          this.loadingService.loading.next(false);
+        },
+        () => {}
       );
     } else {
       // warn user that score is imcomplete and allow them to submit if score isnt being used for hdcp calculations
