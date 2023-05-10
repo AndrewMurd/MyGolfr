@@ -4,6 +4,7 @@
 >
   <input
     *ngIf="showField"
+    (focusout)="submit()"
     (keyup.enter)="submit()"
     id="{{ id }}"
     type="text"
