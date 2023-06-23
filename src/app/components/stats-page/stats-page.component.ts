@@ -1,12 +1,14 @@
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { CourseDetailsService } from 'src/app/services/course-details.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ScoreService } from 'src/app/services/score.service';
 import { Chart, registerables } from 'chart.js';
-import { numberOfHolesPlayed, diffCurrentTime } from '../../utilities/functions';
+import {
+  numberOfHolesPlayed,
+  diffCurrentTime,
+} from '../../utilities/functions';
 
 // stats page for displaying all stats and info based on a user's career and submitted scores
 @Component({
@@ -349,7 +351,7 @@ export class StatsPageComponent {
         label: key,
         value: avg,
       });
-      if ((Math.round((sum / value.length) * 10) / 10) - key < 0) {
+      if (Math.round((sum / value.length) * 10) / 10 - key < 0) {
         colors.push('green');
       } else {
         colors.push('rgb(109, 0, 0)');

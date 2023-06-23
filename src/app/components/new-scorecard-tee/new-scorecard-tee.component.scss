@@ -5,7 +5,7 @@
 }
 
 .grid-container {
-  overflow: hidden;
+  // overflow: hidden;
   display: grid;
   grid-template-columns: 16.5% repeat(9, 6.2%) 8% 9.85% 9.85%;
   grid-auto-rows: 40px;
@@ -136,7 +136,7 @@
   height: 30px;
   position: relative;
   top: -35px;
-  left: 80px;
+  left: 83px;
   transition: transform 150ms, box-shadow 150ms;
   &:hover {
     transform: scale(1.2) translateY(-3px);

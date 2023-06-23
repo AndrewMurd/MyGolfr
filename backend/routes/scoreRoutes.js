@@ -265,7 +265,7 @@ async function calcHandicapIndex(scoreData) {
       factor = 6;
     } else if (ln == 19) {
       factor = 7;
-    } else if (ln == 20) {
+    } else if (ln >= 20) {
       factor = 8;
     }
     const lowestDiffs = HandicapDiffs.sort((a, b) => a.diff - b.diff).slice(

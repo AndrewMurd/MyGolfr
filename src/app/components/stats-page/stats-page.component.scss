@@ -98,6 +98,7 @@
     left: 0;
     right: 0;
     .bottomBlock {
+      height: auto;
       justify-content: normal;
       h1 {
         margin-bottom: 0px;
@@ -140,7 +141,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 93%;
-  height: 100%;
+  height: auto;
 }
 
 #indexChart {
@@ -326,10 +327,6 @@
     }
   }
 
-  #indexChartContainer {
-    height: 150px;
-  }
-
   .headerContent {
     top: 60px;
     #title {
@@ -408,7 +405,6 @@
   }
 
   #handicapIndexContainer {
-    height: 450px !important;
     .bottomBlock {
       flex-wrap: wrap;
       h1 {
@@ -419,9 +415,13 @@
   }
 }
 
+.hdcpRoundsContainer {
+  margin-bottom: 40px;
+}
+
 @media (max-width: 699px) {
-  #indexChart {
-    position: absolute;
+  #indexChartContainer {
+    position: relative;
     margin-left: auto;
     margin-right: auto;
     left: 0;

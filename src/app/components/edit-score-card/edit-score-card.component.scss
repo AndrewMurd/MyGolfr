@@ -9,6 +9,7 @@ app-new-scorecard-tee {
 #container {
   position: relative;
   width: $width;
+  margin-bottom: 80px;
 }
 
 #loadingContainer {
@@ -87,7 +88,7 @@ h1 {
   position: relative;
   margin-left: 45px;
   width: $width;
-  z-index: -1;
+  z-index: 1;
 }
 
 /* CSS */

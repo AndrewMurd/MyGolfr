@@ -159,6 +159,7 @@ export class NewScorecardTeeComponent {
     this.subscriptions.add(
       this.courseService.editingScoreCard.asObservable().subscribe((value) => {
         this.editing = value;
+        console.log(value)
       })
     );
 

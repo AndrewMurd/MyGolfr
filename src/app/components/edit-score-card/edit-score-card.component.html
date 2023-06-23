@@ -25,21 +25,21 @@
       </div>
     </div>
   </div>
-  <div id="containerBtn">
-      <button *ngIf="!isLoading && editing" id="addBtn" (click)="addNewTee()">
-        Add Tee
-      </button>
-      <button *ngIf="!isLoading && editing" id="doneBtn" (click)="finishEdit()">
-        Done
-      </button>
-      <button
-        *ngIf="!isLoading && editing"
-        id="removebacknineBtn"
-        (click)="removebacknine()"
-      >
-        {{ removedBackNine ? "Add Back Nine" : "Remove Back Nine" }}
-      </button>
-    </div>
+  <div *ngIf="!fullSize" id="containerBtn">
+    <button *ngIf="!isLoading && editing" id="addBtn" (click)="addNewTee()">
+      Add Tee
+    </button>
+    <button *ngIf="!isLoading && editing" id="doneBtn" (click)="finishEdit()">
+      Done
+    </button>
+    <button
+      *ngIf="!isLoading && editing"
+      id="removebacknineBtn"
+      (click)="removebacknine()"
+    >
+      {{ removedBackNine ? "Add Back Nine" : "Remove Back Nine" }}
+    </button>
+  </div>
   <div id="fullSizeContainer" *ngIf="fullSize">
     <img
       *ngIf="!editing"

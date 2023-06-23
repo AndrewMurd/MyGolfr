@@ -225,10 +225,6 @@ span {
 }
 
 @media (max-width: 1200px) {
-  edit-score-card {
-    top: 200px;
-  }
-
   #bodyContainer {
     width: 100%;
   }
@@ -238,6 +234,7 @@ span {
   edit-score-card {
     margin-left: 0;
     width: 100%;
+    top: 200px;
   }
 
   .dropdown-content a {
