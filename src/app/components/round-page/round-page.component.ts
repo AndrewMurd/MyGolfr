@@ -366,7 +366,9 @@ export class RoundPageComponent {
 
   // calculate difference between total sum par and total score
   calculateShotsToPar() {
-    let sumScore = 0, sumPar = 0;
+    let sumScore = 0,
+      sumPar = 0;
+    if (!this.scoreData?.score) return '';
     for (let [key, value] of Object.entries(this.scoreData.score)) {
       if (value != '' && key != 'Out' && key != 'In') {
         sumScore += Number(value);
@@ -374,7 +376,10 @@ export class RoundPageComponent {
       }
     }
     const scoreToPar = sumScore - sumPar;
-    if (scoreToPar < 0 || scoreToPar == 0) {
+    console.log(scoreToPar);
+    if (scoreToPar == 0) {
+      return 'E';
+    } else if (scoreToPar < 0 || scoreToPar == 0) {
       return `${scoreToPar}`;
     } else if (scoreToPar > 0) {
       return `+${scoreToPar}`;

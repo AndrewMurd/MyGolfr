@@ -158,6 +158,7 @@ export class RoundsPageComponent {
           const response: any = await this.scoreService.delete(s);
           const userData = this.authService.user.getValue();
           userData.hdcp = response.scoreData.hdcp;
+          this.selectedUserData.hdcp = userData.hdcp;
           if (!response.scores) {
             this.editedScores.emit({
               selectedUserData: this.selectedUserData,

@@ -14,6 +14,7 @@ function parseData(score) {
     score.courseDetails = JSON.parse(score.courseDetails);
   if (score.scorecard) score.scorecard = JSON.parse(score.scorecard);
   if (score.mapLayout) score.mapLayout = JSON.parse(score.mapLayout);
+  if (score.hdcpHistory) score.hdcpHistory = JSON.parse(score.hdcpHistory);
   return score;
 }
 
@@ -239,7 +240,12 @@ async function calcHandicapIndex(scoreData) {
           score: [score],
           diff: (113 / score.teeData.Slope) * (AGS - score.teeData.Rating),
         };
-        if (HandicapDiff.diff < 0) HandicapDiff = 0;
+        if (HandicapDiff.diff < 0) {
+          HandicapDiff = {
+            score: [score],
+            diff: 0,
+          };
+        }
         HandicapDiffs.push(HandicapDiff);
       }
     }
@@ -298,6 +304,9 @@ async function calcHandicapIndex(scoreData) {
     }
 
     await User.updateHdcp(scoreData.userId, HandicapIndex);
+    const hdcpHis = scoreData.hdcpHistory;
+    hdcpHis.push({ hdcp: HandicapIndex, date: new Date() });
+    await User.updateHdcpHistory(scoreData.userId, hdcpHis);
 
     console.log(`Updating Handicap for User ${scoreData.userId}`);
 

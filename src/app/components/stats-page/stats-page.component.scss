@@ -106,6 +106,18 @@
       }
     }
   }
+  #handicapHistoryChartContainer {
+    position: relative;
+    background-color: grey;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 738px;
+    height: auto;
+    margin-top: 10px;
+  }
+  #handicapHistoryChart {
+    margin-bottom: 30px;
+  }
   #statsContainer {
     width: 590px;
     height: auto;
@@ -391,6 +403,10 @@
     }
     #handicapIndexContainer {
       top: 0px;
+    }
+    #handicapHistoryChartContainer {
+      margin-left: auto;
+      margin-right: auto;
     }
     #statsContainer {
       margin-left: auto;

@@ -66,10 +66,10 @@ export class StatsPageComponent {
           for (let score of this.scores) {
             if (score.usedForHdcp == 1) this.usedForHdcpScores.push(score);
           }
-          if (this.scores.length == 0 || !this.scores[0]?.hdcp) {
+          if (!this.selectedUserData?.hdcp) {
             this.hdcp = 0.0;
           } else {
-            this.hdcp = this.scores[0].hdcp;
+            this.hdcp = this.selectedUserData.hdcp;
           }
           this.subscriptions.add(
             this.authService.user.asObservable().subscribe(async (value) => {
@@ -329,6 +329,52 @@ export class StatsPageComponent {
       }
       typesOfScoresArr.push(typeOfScore);
     }
+    // chart displaying changes in hdcp over time (history)
+    const histCanvas: any = document.getElementById('handicapHistoryChart');
+    this.charts.push(
+      new Chart(histCanvas, {
+        type: 'line',
+        data: {
+          labels: this.scores[0].hdcpHistory.map((row: any) => new Date(row.date).toLocaleDateString()),
+          datasets: [
+            {
+              data: this.scores[0].hdcpHistory.map((row: any) => row.hdcp),
+            },
+          ],
+        },
+        options: {
+          color: 'black',
+          scales: {
+            x: {
+              ticks: {
+                font: {
+                  weight: 'bold',
+                },
+                color: 'black',
+              },
+            },
+            y: {
+              ticks: {
+                font: {
+                  weight: 'bold',
+                },
+                color: 'black',
+              },
+              grid: {
+                color: 'black',
+                tickBorderDash: [4],
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+        },
+      })
+    )
+
     this.timePlayed = this.dhm(sumTime);
     // caculate avg score
     const scoreAvg = Number((scoreSum / scoresLn).toFixed(1));

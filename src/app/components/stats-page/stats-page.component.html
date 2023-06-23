@@ -72,6 +72,10 @@
         </div>
       </div>
     </div>
+    <div id="handicapHistoryChartContainer">
+      <div class="topBlock">Handicap Index History</div>
+      <div class="bottomBlock"><canvas id="handicapHistoryChart"></canvas></div>
+    </div>
   </div>
   <div id="statsContainer">
     <div class="topBlock">Score By Par</div>
@@ -81,7 +85,7 @@
           <canvas id="scoreByParChart"></canvas>
           <div id="chartLegend">
             <div *ngFor="let par of avgScoreToParData" id="label">
-              <h2>Par {{ par.label }}s</h2>
+              <h2>Par {{ par.label }}</h2>
               <h1>{{ par.value }}</h1>
             </div>
           </div>

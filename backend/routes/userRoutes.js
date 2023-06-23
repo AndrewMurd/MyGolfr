@@ -21,6 +21,7 @@ function convertUTCDateToLocalDate(date) {
 function parseData(user) {
   if (user.follows) user.follows = JSON.parse(user.follows);
   if (user.followers) user.followers = JSON.parse(user.followers);
+  if (user.hdcpHistory) user.hdcpHistory = JSON.parse(user.hdcpHistory);
   return user;
 }
 

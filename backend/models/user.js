@@ -11,7 +11,7 @@ module.exports = class User {
 
   static search(searchQuery) {
     return executeQuery(
-      `SELECT id, name, email, hdcp, follows, followers FROM users WHERE name Like "%${searchQuery}%" OR id LIKE "%${searchQuery}%"`
+      `SELECT id, name, email, hdcp, follows, followers, hdcpHistory FROM users WHERE name Like "%${searchQuery}%" OR id LIKE "%${searchQuery}%"`
     );
   }
 
@@ -21,8 +21,8 @@ module.exports = class User {
 
   static save(user) {
     return executeQuery(
-      "INSERT INTO users (name, email, password, follows, followers) VALUES (?, ?, ?, ?, ?)",
-      [user.name, user.email, user.password, JSON.stringify([]), JSON.stringify([])]
+      "INSERT INTO users (name, email, password, follows, followers, hdcpHistory) VALUES (?, ?, ?, ?, ?, ?)",
+      [user.name, user.email, user.password, JSON.stringify([]), JSON.stringify([]), JSON.stringify([])]
     );
   }
 
@@ -37,6 +37,10 @@ module.exports = class User {
 
   static updateHdcp(id, hdcp) {
     return executeQuery(`UPDATE users SET hdcp = '${hdcp}' WHERE id = '${id}'`);
+  }
+  
+  static updateHdcpHistory(id, history) {
+    return executeQuery(`UPDATE users SET hdcpHistory = '${JSON.stringify(history)}' WHERE id = '${id}'`);
   }
 
   static updateToken(token, expiry, email) {
