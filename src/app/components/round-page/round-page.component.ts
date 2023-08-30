@@ -376,7 +376,6 @@ export class RoundPageComponent {
       }
     }
     const scoreToPar = sumScore - sumPar;
-    console.log(scoreToPar);
     if (scoreToPar == 0) {
       return 'E';
     } else if (scoreToPar < 0 || scoreToPar == 0) {

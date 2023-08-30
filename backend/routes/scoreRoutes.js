@@ -303,12 +303,15 @@ async function calcHandicapIndex(scoreData) {
       HandicapIndex = maxHdcpIndex;
     }
 
-    await User.updateHdcp(scoreData.userId, HandicapIndex);
+    if (HandicapIndex != scoreData.hdcp) {
+      await User.updateHdcp(scoreData.userId, HandicapIndex);
+      console.log(`Updating Handicap for User ${scoreData.userId}`);
+    }
     const hdcpHis = scoreData.hdcpHistory;
-    hdcpHis.push({ hdcp: HandicapIndex, date: new Date() });
-    await User.updateHdcpHistory(scoreData.userId, hdcpHis);
-
-    console.log(`Updating Handicap for User ${scoreData.userId}`);
+    if (hdcpHis[hdcpHis.length - 1].hdcp != HandicapIndex) {
+      hdcpHis.push({ hdcp: HandicapIndex, date: new Date() });
+      await User.updateHdcpHistory(scoreData.userId, hdcpHis);
+    }
 
     return { hdcp: HandicapIndex, scores: scores };
   } catch (error) {

@@ -331,14 +331,15 @@ export class StatsPageComponent {
     }
     // chart displaying changes in hdcp over time (history)
     const histCanvas: any = document.getElementById('handicapHistoryChart');
+    const history = this.scores[0].hdcpHistory;
     this.charts.push(
       new Chart(histCanvas, {
         type: 'line',
         data: {
-          labels: this.scores[0].hdcpHistory.map((row: any) => new Date(row.date).toLocaleDateString()),
+          labels: history.map((row: any) => new Date(row.date).toLocaleDateString()),
           datasets: [
             {
-              data: this.scores[0].hdcpHistory.map((row: any) => row.hdcp),
+              data: history.map((row: any) => row.hdcp),
             },
           ],
         },

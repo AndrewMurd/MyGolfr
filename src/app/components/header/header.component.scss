@@ -1,9 +1,5 @@
 @import "../../utilities/variables.scss";
 
-a {
-  text-decoration: none;
-}
-
 * {
   user-select: none;
 }
@@ -123,6 +119,7 @@ a {
 }
 
 a {
+  text-decoration: none;
   line-height: 50px;
   text-align: center;
   height: 50px;
