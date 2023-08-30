@@ -139,12 +139,12 @@ button {
   color: black;
   letter-spacing: 1px;
   text-shadow: 0;
+  cursor: pointer;
+  transition: width 0.25s ease;
   font: {
     size: 12px;
     weight: bold;
   }
-  cursor: pointer;
-  transition: all 0.25s ease;
   &:hover {
     background: #366d00;
   }
@@ -161,7 +161,7 @@ button {
   border-width: 5px;
   font-size: 0;
   border-left-color: $theme;
-  animation: rotating 2s 0.25s linear infinite;
+  animation: rotating 2s 0.25s linear;
   cursor: default;
 
   &:after {

@@ -144,7 +144,7 @@ button {
     weight: bold;
   }
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: width 0.25s ease;
   &:hover {
     background: #366d00;
   }

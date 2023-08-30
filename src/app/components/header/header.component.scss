@@ -1,5 +1,9 @@
 @import "../../utilities/variables.scss";
 
+a {
+  text-decoration: none;
+}
+
 * {
   user-select: none;
 }

@@ -21,9 +21,9 @@ const cred = {
   cert: cert,
 };
 
-app.get("/.well-known/pki-validation/A668539B3206B7050D9D790098238867.txt", (req, res) => {
-  res.sendFile("/Users/andre/Documents/PersonalProjects/MyGolfrProject/MyGolfr/SSL/A668539B3206B7050D9D790098238867.txt");
-});
+// app.get("/.well-known/pki-validation/A668539B3206B7050D9D790098238867.txt", (req, res) => {
+//   res.sendFile("/Users/andre/Documents/PersonalProjects/MyGolfrProject/MyGolfr/A668539B3206B7050D9D790098238867.txt");
+// });
 
 app.use(logger);
 app.use(cors(corsOptions));
